@@ -14,13 +14,13 @@ plugins {
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
     jvm("desktop") {
-        jvmToolchain(11)
+//        jvmToolchain(17)
     }
 
     androidTarget{
         compilations.all {
             kotlinOptions {
-                jvmTarget = "11"
+                jvmTarget = "17"
             }
         }
     }
@@ -62,6 +62,7 @@ kotlin {
                     api(ktorSerializationKotlinxJson)
                     api(ktorClientContentNegotiation)
                     api(ktorClientLogging)
+                    api(ktorClientAuth)
                 }
 
                 // Logback for ktor logging
@@ -79,11 +80,12 @@ kotlin {
                     api(test)
                 }
 
-                // KotlinX Serialization Json
-                implementation(Deps.Org.JetBrains.Kotlinx.kotlinxSerializationJson)
-
-                // Coroutines
-                implementation(Deps.Org.JetBrains.Kotlinx.coroutinesCore)
+                with(Deps.Org.JetBrains.Kotlinx) {
+                    // KotlinX Serialization Json
+                    implementation(kotlinxSerializationJson)
+                    // Coroutines
+                    implementation(coroutinesCore)
+                }
 
                 // MVIKotlin
                 with(Deps.ArkIvanov.MVIKotlin) {
@@ -101,6 +103,9 @@ kotlin {
                 // Image Loading
                 api(Deps.Github.imageLoader)
                 implementation(Deps.ArkIvanov.Essenty.lifecycle)
+
+                // File Picker
+                implementation(Deps.Github.filePicker)
             }
         }
         val commonTest by getting {
@@ -169,7 +174,7 @@ kotlin {
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "17"
     }
 }
 
@@ -180,14 +185,14 @@ android {
         minSdk = Configuration.minSdk
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 sqldelight {
     databases {
-        create("PokemonDatabase") {
+        create("AppDatabase") {
             packageName.set("app.duss.easyproject.core.database")
         }
     }
