@@ -38,8 +38,8 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            export(app.duss.easyproject.Deps.ArkIvanov.Decompose.decompose)
-            export(app.duss.easyproject.Deps.ArkIvanov.Essenty.lifecycle)
+            export(Deps.ArkIvanov.Decompose.decompose)
+            export(Deps.ArkIvanov.Essenty.lifecycle)
         }
     }
 
@@ -56,7 +56,7 @@ kotlin {
                 }
 
                 // Ktor
-                with(app.duss.easyproject.Deps.Io.Ktor) {
+                with(Deps.Io.Ktor) {
                     api(ktorClientCore)
                     api(ktorSerializationKotlinxJson)
                     api(ktorClientContentNegotiation)
@@ -64,42 +64,42 @@ kotlin {
                 }
 
                 // Logback for ktor logging
-                implementation(app.duss.easyproject.Deps.Logback.logbackClassic)
+                implementation(Deps.Logback.logbackClassic)
 
                 // SqlDelight
-                with(app.duss.easyproject.Deps.CashApp.SQLDelight) {
+                with(Deps.CashApp.SQLDelight) {
                     api(coroutinesExtensions)
                     api(primitiveAdapters)
                 }
 
                 // Koin
-                with(app.duss.easyproject.Deps.Koin) {
+                with(Deps.Koin) {
                     api(core)
                     api(test)
                 }
 
                 // KotlinX Serialization Json
-                implementation(app.duss.easyproject.Deps.Org.JetBrains.Kotlinx.kotlinxSerializationJson)
+                implementation(Deps.Org.JetBrains.Kotlinx.kotlinxSerializationJson)
 
                 // Coroutines
-                implementation(app.duss.easyproject.Deps.Org.JetBrains.Kotlinx.coroutinesCore)
+                implementation(Deps.Org.JetBrains.Kotlinx.coroutinesCore)
 
                 // MVIKotlin
-                with(app.duss.easyproject.Deps.ArkIvanov.MVIKotlin) {
+                with(Deps.ArkIvanov.MVIKotlin) {
                     api(mvikotlin)
                     api(mvikotlinMain)
                     api(mvikotlinExtensionsCoroutines)
                 }
 
                 // Decompose
-                with(app.duss.easyproject.Deps.ArkIvanov.Decompose) {
+                with(Deps.ArkIvanov.Decompose) {
                     api(decompose)
                     api(extensionsCompose)
                 }
 
                 // Image Loading
-                api(app.duss.easyproject.Deps.Github.imageLoader)
-                implementation(app.duss.easyproject.Deps.ArkIvanov.Essenty.lifecycle)
+                api(Deps.Github.imageLoader)
+                implementation(Deps.ArkIvanov.Essenty.lifecycle)
             }
         }
         val commonTest by getting {
@@ -110,13 +110,13 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 // Ktor
-                implementation(app.duss.easyproject.Deps.Io.Ktor.ktorClientAndroid)
+                implementation(Deps.Io.Ktor.ktorClientAndroid)
 
                 // SqlDelight
-                implementation(app.duss.easyproject.Deps.CashApp.SQLDelight.androidDriver)
+                implementation(Deps.CashApp.SQLDelight.androidDriver)
 
                 // Koin
-                implementation(app.duss.easyproject.Deps.Koin.android)
+                implementation(Deps.Koin.android)
             }
         }
         val androidUnitTest by getting
@@ -126,10 +126,10 @@ kotlin {
 
             dependencies {
                 // Ktor
-                implementation(app.duss.easyproject.Deps.Io.Ktor.ktorClientJava)
+                implementation(Deps.Io.Ktor.ktorClientJava)
 
                 // SqlDelight
-                implementation(app.duss.easyproject.Deps.CashApp.SQLDelight.sqliteDriver)
+                implementation(Deps.CashApp.SQLDelight.sqliteDriver)
             }
         }
 
@@ -144,13 +144,13 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 // Ktor
-                implementation(app.duss.easyproject.Deps.Io.Ktor.ktorClientDarwin)
+                implementation(Deps.Io.Ktor.ktorClientDarwin)
 
                 // SqlDelight
-                implementation(app.duss.easyproject.Deps.CashApp.SQLDelight.nativeDriver)
+                implementation(Deps.CashApp.SQLDelight.nativeDriver)
 
                 // TouchLab
-                implementation(app.duss.easyproject.Deps.Touchlab.statelyCommon)
+                implementation(Deps.Touchlab.statelyCommon)
             }
         }
 
@@ -174,9 +174,9 @@ kotlin {
 
 android {
     namespace = "app.duss.easyproject"
-    compileSdk = app.duss.easyproject.Configuration.compileSdk
+    compileSdk = Configuration.compileSdk
     defaultConfig {
-        minSdk = app.duss.easyproject.Configuration.minSdk
+        minSdk = Configuration.minSdk
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

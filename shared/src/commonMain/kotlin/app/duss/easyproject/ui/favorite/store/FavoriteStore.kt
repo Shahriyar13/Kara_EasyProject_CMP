@@ -1,7 +1,7 @@
 package app.duss.easyproject.ui.favorite.store
 
 import com.arkivanov.mvikotlin.core.store.Store
-import app.duss.easyproject.core.model.Pokemon
+import app.duss.easyproject.core.model.Project
 
 interface FavoriteStore: Store<FavoriteStore.Intent, FavoriteStore.State, Nothing> {
 
@@ -10,7 +10,7 @@ interface FavoriteStore: Store<FavoriteStore.Intent, FavoriteStore.State, Nothin
     data class State(
         val isLoading: Boolean = false,
         val error: String? = null,
-        val pokemonList: List<Pokemon> = emptyList(),
+        val projectList: List<Project> = emptyList(),
     )
 
 }

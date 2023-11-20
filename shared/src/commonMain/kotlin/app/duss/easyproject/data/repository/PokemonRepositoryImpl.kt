@@ -2,25 +2,26 @@ package app.duss.easyproject.data.repository
 
 import app.duss.easyproject.core.database.dao.PokemonDao
 import app.duss.easyproject.core.database.dao.PokemonInfoDao
-import app.duss.easyproject.core.model.Pokemon
+import app.duss.easyproject.core.model.Project
 import app.duss.easyproject.core.model.PokemonInfo
 import app.duss.easyproject.core.network.client.PokemonClient
 import app.duss.easyproject.data.toPokemon
 import app.duss.easyproject.data.toPokemonEntity
 import app.duss.easyproject.data.toPokemonInfo
 import app.duss.easyproject.data.toPokemonInfoEntity
+import app.duss.easyproject.domain.repository.ProjectRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PokemonRepositoryImpl: PokemonRepository, KoinComponent {
+class PokemonRepositoryImpl: ProjectRepository, KoinComponent {
 
     private val pokemonClient by inject<PokemonClient>()
     private val pokemonDao by inject<PokemonDao>()
     private val pokemonInfoDao by inject<PokemonInfoDao>()
 
-    override suspend fun getPokemonList(page: Long): Result<List<Pokemon>> {
+    override suspend fun getProjectList(page: Long): Result<List<Project>> {
         return try {
             val cachedPokemonList = pokemonDao.selectAllByPage(page)
 
@@ -57,7 +58,7 @@ class PokemonRepositoryImpl: PokemonRepository, KoinComponent {
         }
     }
 
-    override suspend fun getFavoritePokemonListFlow(): Flow<List<Pokemon>> {
+    override suspend fun getFavoritePokemonListFlow(): Flow<List<Project>> {
         return pokemonInfoDao.selectAllFavorite().map { list ->
             list.map { it.toPokemon() }
         }

@@ -1,19 +1,19 @@
 package app.duss.easyproject.data
 
-import app.duss.easyproject.core.model.Pokemon
+import app.duss.easyproject.core.model.Project
 import app.duss.easyproject.core.model.PokemonInfo
 import appdusseasyproject.PokemonEntity
 import appdusseasyproject.PokemonInfoEntity
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-fun Pokemon.toPokemonEntity(page: Long) = PokemonEntity(
+fun Project.toPokemonEntity(page: Long) = PokemonEntity(
     page = page,
     name = name,
     url = url
 )
 
-fun PokemonEntity.toPokemon() = Pokemon(
+fun PokemonEntity.toPokemon() = Project(
     page = page,
     name = name,
     url = url
@@ -41,7 +41,7 @@ fun PokemonInfoEntity.toPokemonInfo() = PokemonInfo(
     isFavorite = isFavorite != 0L
 )
 
-fun PokemonInfoEntity.toPokemon() = Pokemon(
+fun PokemonInfoEntity.toPokemon() = Project(
     name = name,
     url = "$id/"
 )

@@ -2,7 +2,6 @@ package app.duss.easyproject.core.di
 
 import app.duss.easyproject.core.database.di.databaseModule
 import app.duss.easyproject.core.network.di.networkModule
-import app.duss.easyproject.data.di.dataModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
@@ -12,6 +11,7 @@ fun initKoin(enableNetworkLogs: Boolean = false, appDeclaration: KoinAppDeclarat
         modules(
             databaseModule,
             networkModule(enableNetworkLogs),
-            dataModule
+            repositoryModule,
+            useCaseModule,
         )
     }

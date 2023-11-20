@@ -3,7 +3,6 @@ package app.duss.easyproject.ui.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DataArray
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.RequestQuote
 import androidx.compose.material.icons.outlined.Settings
@@ -36,13 +35,51 @@ internal fun MainScreen(component: MainComponent) {
         "Purchase Order" to Icons.Outlined.RequestQuote,
         "Shipping List" to Icons.Outlined.RequestQuote,
         "Invoice" to Icons.Outlined.RequestQuote,
+        "BAFA" to Icons.Outlined.RequestQuote,
+        "Payment" to Icons.Outlined.RequestQuote,
         "Profile & Settings" to Icons.Outlined.Settings,
     )
+
     var selectedItem by remember { mutableStateOf(items[0]) }
 
     LaunchedEffect(selectedItem) {
-        if (selectedItem.first == "Favorite") {
-            component.onOutput(MainComponent.Output.FavoriteClicked)
+        when (selectedItem.first) {
+            "Database" -> {
+                component.onOutput(MainComponent.Output.DatabaseClicked)
+            }
+            "Customer Enquiry" -> {
+                component.onOutput(MainComponent.Output.CEClicked)
+            }
+            "Projects" -> {
+                component.onOutput(MainComponent.Output.ProjectClicked)
+            }
+            "Supplier Enquiry" -> {
+                component.onOutput(MainComponent.Output.SEClicked)
+            }
+            "Supplier Quotation" -> {
+                component.onOutput(MainComponent.Output.SQClicked)
+            }
+            "Proforma Invoice" -> {
+                component.onOutput(MainComponent.Output.PIClicked)
+            }
+            "Purchase Order" -> {
+                component.onOutput(MainComponent.Output.POClicked)
+            }
+            "Shipping List" -> {
+                component.onOutput(MainComponent.Output.ShippingClicked)
+            }
+            "Invoice" -> {
+                component.onOutput(MainComponent.Output.InvoiceClicked)
+            }
+            "BAFA" -> {
+                component.onOutput(MainComponent.Output.BafaClicked)
+            }
+            "Payment" -> {
+                component.onOutput(MainComponent.Output.PaymentClicked)
+            }
+            "Profile & Settings" -> {
+                component.onOutput(MainComponent.Output.ProfileClicked)
+            }
         }
     }
 

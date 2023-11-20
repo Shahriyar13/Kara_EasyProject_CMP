@@ -3,7 +3,7 @@ package app.duss.easyproject.core.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Pokemon(
+data class Project(
   var page: Long = 0,
   val name: String,
   val url: String

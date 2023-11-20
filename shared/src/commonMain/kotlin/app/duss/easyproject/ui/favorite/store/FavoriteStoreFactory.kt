@@ -5,8 +5,8 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import app.duss.easyproject.core.model.Pokemon
-import app.duss.easyproject.data.repository.PokemonRepository
+import app.duss.easyproject.core.model.Project
+import app.duss.easyproject.domain.repository.ProjectRepository
 import app.duss.easyproject.appDispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -18,7 +18,7 @@ class FavoriteStoreFactory(
     private val storeFactory: StoreFactory,
 ): KoinComponent {
 
-    private val pokemonRepository by inject<PokemonRepository>()
+    private val pokemonRepository by inject<ProjectRepository>()
 
     fun create(): FavoriteStore =
         object : FavoriteStore, Store<FavoriteStore.Intent, FavoriteStore.State, Nothing> by storeFactory.create(
@@ -31,7 +31,7 @@ class FavoriteStoreFactory(
 
     private sealed class Msg {
         object PokemonListLoading : Msg()
-        data class PokemonListLoaded(val pokemonList: List<Pokemon>) : Msg()
+        data class PokemonListLoaded(val projectList: List<Project>) : Msg()
         data class PokemonListFailed(val error: String?) : Msg()
     }
 
@@ -61,7 +61,7 @@ class FavoriteStoreFactory(
         override fun FavoriteStore.State.reduce(msg: Msg): FavoriteStore.State =
             when (msg) {
                 is Msg.PokemonListLoading -> copy(isLoading = true)
-                is Msg.PokemonListLoaded -> FavoriteStore.State(pokemonList = msg.pokemonList)
+                is Msg.PokemonListLoaded -> FavoriteStore.State(projectList = msg.projectList)
                 is Msg.PokemonListFailed -> copy(error = msg.error)
             }
     }

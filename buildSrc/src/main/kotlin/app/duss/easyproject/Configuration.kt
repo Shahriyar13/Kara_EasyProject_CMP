@@ -7,6 +7,6 @@ object Configuration {
     const val majorVersion = 1
     const val minorVersion = 0
     const val patchVersion = 0
-    const val versionName = "${app.duss.easyproject.Configuration.majorVersion}.${app.duss.easyproject.Configuration.minorVersion}.${app.duss.easyproject.Configuration.patchVersion}"
+    const val versionName = "${Configuration.majorVersion}.${Configuration.minorVersion}.${Configuration.patchVersion}"
     const val versionCode = 1
 }

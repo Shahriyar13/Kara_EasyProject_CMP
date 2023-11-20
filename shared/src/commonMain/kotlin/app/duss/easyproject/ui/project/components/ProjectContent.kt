@@ -1,4 +1,4 @@
-package app.duss.easyproject.ui.pokedex.components
+package app.duss.easyproject.ui.project.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -10,16 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.ui.helper.LocalSafeArea
-import app.duss.easyproject.ui.pokedex.PokedexComponent
-import app.duss.easyproject.ui.pokedex.store.PokedexStore
+import app.duss.easyproject.ui.project.ProjectComponent
+import app.duss.easyproject.ui.project.store.ProjectStore
 import app.duss.easyproject.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun KCommerceContent(
-    state: PokedexStore.State,
-    onEvent: (PokedexStore.Intent) -> Unit,
-    onOutput: (PokedexComponent.Output) -> Unit,
+internal fun ProjectContent(
+    state: ProjectStore.State,
+    onEvent: (ProjectStore.Intent) -> Unit,
+    onOutput: (ProjectComponent.Output) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -28,7 +28,7 @@ internal fun KCommerceContent(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            onOutput(PokedexComponent.Output.NavigateBack)
+                            onOutput(ProjectComponent.Output.NavigateBack)
                         },
                     ) {
                         Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = null)
@@ -112,15 +112,15 @@ internal fun KCommerceContent(
 
                 PokemonGrid(
                     onPokemonClicked = { name ->
-                        onOutput(PokedexComponent.Output.NavigateToDetails(name = name))
+                        onOutput(ProjectComponent.Output.NavigateToDetails(name = name))
                     },
-                    pokemonList = state.pokemonList,
+                    projectList = state.projectList,
                     isLoading = !state.isLastPageLoaded,
                     loadMoreItems = {
-                        if (state.pokemonList.isEmpty()) return@PokemonGrid
+                        if (state.projectList.isEmpty()) return@PokemonGrid
 
-                        val nextPage = state.pokemonList.last().page + 1
-                        onEvent(PokedexStore.Intent.LoadPokemonListByPage(page = nextPage))
+                        val nextPage = state.projectList.last().page + 1
+                        onEvent(ProjectStore.Intent.LoadProjectListByPage(page = nextPage))
                     }
                 )
             }

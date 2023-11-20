@@ -14,14 +14,16 @@ import app.duss.easyproject.ui.comingsoon.ComingSoonComponent
 import app.duss.easyproject.ui.details.DetailsComponent
 import app.duss.easyproject.ui.favorite.FavoriteComponent
 import app.duss.easyproject.ui.main.MainComponent
-import app.duss.easyproject.ui.pokedex.PokedexComponent
+import app.duss.easyproject.ui.project.ProjectComponent
 
 class RootComponent internal constructor(
     componentContext: ComponentContext,
     private val main: (ComponentContext, (MainComponent.Output) -> Unit) -> MainComponent,
-    private val pokedex: (ComponentContext, searchValue: String, (PokedexComponent.Output) -> Unit) -> PokedexComponent,
-    private val favorite: (ComponentContext, (FavoriteComponent.Output) -> Unit) -> FavoriteComponent,
-    private val details: (ComponentContext, pokemonName: String, (DetailsComponent.Output) -> Unit) -> DetailsComponent,
+    private val database: (ComponentContext, (FavoriteComponent.Output) -> Unit) -> FavoriteComponent,
+    private val project: (ComponentContext, searchValue: String, (ProjectComponent.Output) -> Unit) -> ProjectComponent,
+    private val projectDetails: (ComponentContext, pokemonName: String, (DetailsComponent.Output) -> Unit) -> DetailsComponent,
+    private val ce: (ComponentContext, searchValue: String, (ProjectComponent.Output) -> Unit) -> ProjectComponent,
+    private val ceDetails: (ComponentContext, pokemonName: String, (DetailsComponent.Output) -> Unit) -> DetailsComponent,
     private val comingSoon: (ComponentContext, (ComingSoonComponent.Output) -> Unit) -> ComingSoonComponent,
 ): ComponentContext by componentContext {
 
@@ -37,22 +39,38 @@ class RootComponent internal constructor(
                 output = output
             )
         },
-        pokedex = { childContext, searchValue, output ->
-            PokedexComponent(
-                componentContext = childContext,
-                storeFactory = storeFactory,
-                searchValue = searchValue,
-                output = output
-            )
-        },
-        favorite = { childContext, output ->
+        database = { childContext, output ->
             FavoriteComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
                 output = output
             )
         },
-        details = { childContext, pokemonName, output ->
+        project = { childContext, searchValue, output ->
+            ProjectComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                searchValue = searchValue,
+                output = output
+            )
+        },
+        projectDetails = { childContext, pokemonName, output ->
+            DetailsComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                pokemonName = pokemonName,
+                output = output
+            )
+        },
+        ce = { childContext, searchValue, output ->
+            ProjectComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                searchValue = searchValue,
+                output = output
+            )
+        },
+        ceDetails = { childContext, pokemonName, output ->
             DetailsComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
@@ -83,33 +101,50 @@ class RootComponent internal constructor(
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
         when (configuration) {
             is Configuration.Main -> Child.Main(main(componentContext, ::onMainOutput))
-            is Configuration.Pokedex -> Child.Pokedex(pokedex(componentContext, configuration.searchValue, ::onPokedexOutput))
-            is Configuration.Favorite -> Child.Favorite(favorite(componentContext, ::onFavoriteOutput))
-            is Configuration.Details -> Child.Details(details(componentContext, configuration.pokemonName, ::onDetailsOutput))
+            is Configuration.Database -> Child.Database(database(componentContext, ::onDatabaseOutput))
+            is Configuration.Project -> Child.Project(project(componentContext, configuration.searchValue, ::onProjectOutput))
+            is Configuration.ProjectDetails -> Child.ProjectDetails(projectDetails(componentContext, configuration.projectCode, ::onProjectDetailsOutput))
+            is Configuration.CE -> Child.CE(ce(componentContext, configuration.searchValue, ::onProjectOutput))
+            is Configuration.CEDetails -> Child.CEDetails(ceDetails(componentContext, configuration.ceCode, ::onProjectDetailsOutput))
             is Configuration.ComingSoon -> Child.ComingSoon(comingSoon(componentContext, ::onComingSoonOutput))
         }
 
     private fun onMainOutput(output: MainComponent.Output): Unit =
         when (output) {
-            MainComponent.Output.PokedexClicked -> navigation.push(Configuration.Pokedex())
-            MainComponent.Output.FavoriteClicked -> navigation.push(Configuration.Favorite)
-            MainComponent.Output.ComingSoon -> navigation.push(Configuration.ComingSoon)
-            is MainComponent.Output.PokedexSearchSubmitted -> navigation.push(Configuration.Pokedex(output.searchValue))
+            MainComponent.Output.MainClicked -> navigation.push(Configuration.Main)
+            MainComponent.Output.DatabaseClicked -> navigation.push(Configuration.Database)
+            MainComponent.Output.CEClicked -> navigation.push(Configuration.CE())
+            MainComponent.Output.ProjectClicked -> navigation.push(Configuration.Project())
+            is MainComponent.Output.SearchSubmitted -> navigation.push(Configuration.Project(output.searchValue))
+            MainComponent.Output.SEClicked -> navigation.push(Configuration.ComingSoon)
+            MainComponent.Output.SQClicked -> navigation.push(Configuration.ComingSoon)
+            MainComponent.Output.PIClicked -> navigation.push(Configuration.ComingSoon)
+            MainComponent.Output.POClicked -> navigation.push(Configuration.ComingSoon)
+            MainComponent.Output.ShippingClicked -> navigation.push(Configuration.ComingSoon)
+            MainComponent.Output.InvoiceClicked -> navigation.push(Configuration.ComingSoon)
+            MainComponent.Output.PaymentClicked -> navigation.push(Configuration.ComingSoon)
+            MainComponent.Output.BafaClicked -> navigation.push(Configuration.Database)
+            MainComponent.Output.ProfileClicked -> navigation.push(Configuration.ComingSoon)
         }
 
-    private fun onPokedexOutput(output: PokedexComponent.Output): Unit =
+    private fun onProjectOutput(output: ProjectComponent.Output): Unit =
         when (output) {
-            is PokedexComponent.Output.NavigateBack -> navigation.pop()
-            is PokedexComponent.Output.NavigateToDetails -> navigation.push(Configuration.Details(output.name))
+            is ProjectComponent.Output.NavigateBack -> navigation.pop()
+            is ProjectComponent.Output.NavigateToDetails -> navigation.push(Configuration.ProjectDetails(output.name))
         }
 
-    private fun onFavoriteOutput(output: FavoriteComponent.Output): Unit =
+    private fun onProjectDetailsOutput(output: DetailsComponent.Output): Unit =
+        when (output) {
+            is DetailsComponent.Output.NavigateBack -> navigation.pop()
+        }
+
+    private fun onDatabaseOutput(output: FavoriteComponent.Output): Unit =
         when (output) {
             is FavoriteComponent.Output.NavigateBack -> navigation.pop()
-            is FavoriteComponent.Output.NavigateToDetails -> navigation.push(Configuration.Details(output.name))
+            is FavoriteComponent.Output.NavigateToDetails -> navigation.push(Configuration.ProjectDetails(output.name))
         }
 
-    private fun onDetailsOutput(output: DetailsComponent.Output): Unit =
+    private fun onDatabaseDetailsOutput(output: DetailsComponent.Output): Unit =
         when (output) {
             is DetailsComponent.Output.NavigateBack -> navigation.pop()
         }
@@ -121,23 +156,38 @@ class RootComponent internal constructor(
 
     private sealed class Configuration: Parcelable {
         @Parcelize
-        object Main : Configuration()
+        data object Main : Configuration()
 
         @Parcelize
-        data class Pokedex(val searchValue: String = "") : Configuration()
+        data object Database : Configuration()
+
         @Parcelize
-        object Favorite : Configuration()
+        data class Project(val searchValue: String = "") : Configuration()
+
         @Parcelize
-        data class Details(val pokemonName: String) : Configuration()
+        data class ProjectDetails(val projectCode: String) : Configuration()
+
         @Parcelize
-        object ComingSoon : Configuration()
+        data class CE(val searchValue: String = "") : Configuration()
+
+        @Parcelize
+        data class CEDetails(val ceCode: String) : Configuration()
+
+        @Parcelize
+        data object ComingSoon : Configuration()
     }
 
     sealed class Child {
         data class Main(val component: MainComponent) : Child()
-        data class Pokedex(val component: PokedexComponent) : Child()
-        data class Favorite(val component: FavoriteComponent) : Child()
-        data class Details(val component: DetailsComponent) : Child()
+
+        data class Database(val component: FavoriteComponent) : Child()
+
+        data class Project(val component: ProjectComponent) : Child()
+        data class ProjectDetails(val component: DetailsComponent) : Child()
+
+        data class CE(val component: ProjectComponent) : Child()
+        data class CEDetails(val component: DetailsComponent) : Child()
+
         data class ComingSoon(val component: ComingSoonComponent) : Child()
     }
 

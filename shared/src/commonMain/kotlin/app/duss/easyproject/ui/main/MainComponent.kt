@@ -34,10 +34,20 @@ class MainComponent(
     }
 
     sealed class Output {
-        object PokedexClicked : Output()
-        object FavoriteClicked : Output()
-        object ComingSoon : Output()
-        data class PokedexSearchSubmitted(val searchValue: String) : Output()
+        data class SearchSubmitted(val searchValue: String) : Output()
+        data object MainClicked : Output()
+        data object DatabaseClicked : Output()
+        data object CEClicked : Output()
+        data object ProjectClicked : Output()
+        data object SEClicked : Output()
+        data object SQClicked : Output()
+        data object PIClicked : Output()
+        data object POClicked : Output()
+        data object ShippingClicked : Output()
+        data object InvoiceClicked : Output()
+        data object BafaClicked : Output()
+        data object PaymentClicked : Output()
+        data object ProfileClicked : Output()
     }
 
 }

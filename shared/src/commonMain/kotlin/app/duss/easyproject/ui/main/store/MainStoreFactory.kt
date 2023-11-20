@@ -23,8 +23,7 @@ internal class MainStoreFactory(
         data class PokemonSearchChanged(val search: String) : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<MainStore.Intent, Unit, MainStore.State, Msg, Nothing>(
-        appDispatchers.main) {
+    private inner class ExecutorImpl : CoroutineExecutor<MainStore.Intent, Unit, MainStore.State, Msg, Nothing>(appDispatchers.main) {
 
         override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State): Unit =
             when (intent) {

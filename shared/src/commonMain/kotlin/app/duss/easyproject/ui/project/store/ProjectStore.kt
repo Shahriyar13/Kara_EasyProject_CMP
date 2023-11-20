@@ -1,12 +1,12 @@
-package app.duss.easyproject.ui.pokedex.store
+package app.duss.easyproject.ui.project.store
 
 import com.arkivanov.mvikotlin.core.store.Store
-import app.duss.easyproject.core.model.Pokemon
+import app.duss.easyproject.core.model.Project
 
-interface PokedexStore: Store<PokedexStore.Intent, PokedexStore.State, Nothing> {
+interface ProjectStore: Store<ProjectStore.Intent, ProjectStore.State, Nothing> {
 
     sealed class Intent {
-        data class LoadPokemonListByPage(val page: Long): Intent()
+        data class LoadProjectListByPage(val page: Long): Intent()
         data class UpdateSearchValue(val searchValue: String): Intent()
     }
 
@@ -14,7 +14,7 @@ interface PokedexStore: Store<PokedexStore.Intent, PokedexStore.State, Nothing> 
         val isLoading: Boolean = false,
         val isLastPageLoaded: Boolean = false,
         val error: String? = null,
-        val pokemonList: List<Pokemon> = emptyList(),
+        val projectList: List<Project> = emptyList(),
         val searchValue: String = "",
     )
 }

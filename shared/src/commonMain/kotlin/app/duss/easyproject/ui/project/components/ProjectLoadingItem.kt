@@ -1,6 +1,5 @@
-package app.duss.easyproject.ui.pokedex.components
+package app.duss.easyproject.ui.project.components
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

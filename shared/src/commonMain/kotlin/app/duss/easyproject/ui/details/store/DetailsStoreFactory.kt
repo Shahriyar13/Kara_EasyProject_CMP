@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import app.duss.easyproject.core.model.PokemonInfo
-import app.duss.easyproject.data.repository.PokemonRepository
+import app.duss.easyproject.domain.repository.ProjectRepository
 import app.duss.easyproject.appDispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ internal class DetailsStoreFactory(
     private val storeFactory: StoreFactory,
     private val pokemonName: String
 ): KoinComponent {
-    private val pokemonRepository by inject<PokemonRepository>()
+    private val pokemonRepository by inject<ProjectRepository>()
 
     fun create(): DetailsStore =
         object : DetailsStore, Store<DetailsStore.Intent, DetailsStore.State, Nothing> by storeFactory.create(

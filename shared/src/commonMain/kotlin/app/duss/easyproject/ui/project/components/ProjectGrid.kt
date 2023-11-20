@@ -1,4 +1,4 @@
-package app.duss.easyproject.ui.pokedex.components
+package app.duss.easyproject.ui.project.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Arrangement
@@ -13,12 +13,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.duss.easyproject.core.model.Pokemon
+import app.duss.easyproject.core.model.Project
 
 @Composable
 internal fun PokemonGrid(
     onPokemonClicked: (name: String) -> Unit,
-    pokemonList: List<Pokemon>,
+    projectList: List<Project>,
     isLoading: Boolean,
     loadMoreItems: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -49,10 +49,10 @@ internal fun PokemonGrid(
             contentPadding = PaddingValues(20.dp),
             modifier = modifier,
         ) {
-            items(pokemonList, key = { it.name }) { pokemon ->
+            items(projectList, key = { it.name }) { pokemon ->
                 PokemonItem(
                     onClick = { onPokemonClicked(pokemon.name) },
-                    pokemon = pokemon,
+                    project = pokemon,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

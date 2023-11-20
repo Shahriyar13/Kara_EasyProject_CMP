@@ -1,9 +1,6 @@
 package app.duss.easyproject.ui.main.store
 
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.store.Store
-import app.duss.easyproject.core.model.Pokemon
 
 interface MainStore: Store<MainStore.Intent, MainStore.State, Nothing> {
 

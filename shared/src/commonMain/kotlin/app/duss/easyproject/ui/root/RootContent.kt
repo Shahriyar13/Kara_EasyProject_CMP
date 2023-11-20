@@ -8,7 +8,7 @@ import app.duss.easyproject.ui.comingsoon.ComingSoonScreen
 import app.duss.easyproject.ui.details.DetailsScreen
 import app.duss.easyproject.ui.favorite.FavoriteScreen
 import app.duss.easyproject.ui.main.MainScreen
-import app.duss.easyproject.ui.pokedex.PokedexScreen
+import app.duss.easyproject.ui.project.ProjectScreen
 
 @Composable
 internal fun RootContent(component: RootComponent) {
@@ -18,9 +18,11 @@ internal fun RootContent(component: RootComponent) {
     ) {
         when(val child = it.instance) {
             is RootComponent.Child.Main -> MainScreen(child.component)
-            is RootComponent.Child.Pokedex -> PokedexScreen(child.component)
-            is RootComponent.Child.Favorite -> FavoriteScreen(child.component)
-            is RootComponent.Child.Details -> DetailsScreen(child.component)
+            is RootComponent.Child.Database -> FavoriteScreen(child.component)
+            is RootComponent.Child.Project -> ProjectScreen(child.component)
+            is RootComponent.Child.ProjectDetails -> DetailsScreen(child.component)
+            is RootComponent.Child.CE -> ProjectScreen(child.component)
+            is RootComponent.Child.CEDetails -> DetailsScreen(child.component)
             is RootComponent.Child.ComingSoon -> ComingSoonScreen(child.component)
         }
     }

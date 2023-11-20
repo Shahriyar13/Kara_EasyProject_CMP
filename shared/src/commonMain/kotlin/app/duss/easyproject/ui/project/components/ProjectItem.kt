@@ -1,4 +1,4 @@
-package app.duss.easyproject.ui.pokedex.components
+package app.duss.easyproject.ui.project.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import app.duss.easyproject.core.model.Pokemon
+import app.duss.easyproject.core.model.Project
 import app.duss.easyproject.ui.main.components.AsyncImage
 import app.duss.easyproject.ui.theme.*
 
@@ -21,7 +21,7 @@ import app.duss.easyproject.ui.theme.*
 @Composable
 internal fun PokemonItem(
     onClick: () -> Unit,
-    pokemon: Pokemon,
+    project: Project,
     modifier: Modifier = Modifier,
 ) {
     val brush = remember {
@@ -63,8 +63,8 @@ internal fun PokemonItem(
                 .padding(10.dp)
         ) {
             AsyncImage(
-                url = pokemon.imageUrl,
-                contentDescription = pokemon.name,
+                url = project.imageUrl,
+                contentDescription = project.name,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,7 +75,7 @@ internal fun PokemonItem(
             Spacer(Modifier.height(14.dp))
 
             Text(
-                text = pokemon.name.replaceFirstChar { it.uppercase() },
+                text = project.name.replaceFirstChar { it.uppercase() },
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -85,7 +85,7 @@ internal fun PokemonItem(
             Spacer(Modifier.height(4.dp))
 
             Text(
-                text = pokemon.numberString,
+                text = project.numberString,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.alpha(.4f)
             )

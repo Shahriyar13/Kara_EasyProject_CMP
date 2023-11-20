@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import app.duss.easyproject.ui.favorite.FavoriteComponent
 import app.duss.easyproject.ui.favorite.store.FavoriteStore
 import app.duss.easyproject.ui.helper.LocalSafeArea
-import app.duss.easyproject.ui.pokedex.components.PokemonGrid
+import app.duss.easyproject.ui.project.components.PokemonGrid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +77,7 @@ internal fun FavoriteContent(
                     LinearProgressIndicator(
                         modifier = Modifier.fillMaxWidth()
                     )
-                } else if (state.pokemonList.isEmpty()) {
+                } else if (state.projectList.isEmpty()) {
                     Text(
                         text = "Your favorite list is empty!",
                         color = MaterialTheme.colorScheme.onBackground.copy(.8f),
@@ -89,7 +89,7 @@ internal fun FavoriteContent(
                         onPokemonClicked = { name ->
                             onOutput(FavoriteComponent.Output.NavigateToDetails(name = name))
                         },
-                        pokemonList = state.pokemonList,
+                        projectList = state.projectList,
                         isLoading = state.isLoading,
                     )
                 }
