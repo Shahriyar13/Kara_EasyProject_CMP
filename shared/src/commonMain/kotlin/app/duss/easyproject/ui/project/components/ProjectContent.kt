@@ -25,15 +25,6 @@ internal fun ProjectContent(
         topBar = {
             TopAppBar(
                 title = {},
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onOutput(ProjectComponent.Output.NavigateBack)
-                        },
-                    ) {
-                        Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = null)
-                    }
-                },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -112,7 +103,7 @@ internal fun ProjectContent(
 
                 PokemonGrid(
                     onPokemonClicked = { name ->
-                        onOutput(ProjectComponent.Output.NavigateToDetails(name = name))
+                        onOutput(ProjectComponent.Output.NavigateToDetails(id = null))
                     },
                     projectList = state.projectList,
                     isLoading = !state.isLastPageLoaded,

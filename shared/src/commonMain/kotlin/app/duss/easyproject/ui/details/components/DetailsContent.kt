@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.ui.main.components.AsyncImage
-import app.duss.easyproject.ui.details.DetailsComponent
+import app.duss.easyproject.ui.details.ProjectDetailsComponent
 import app.duss.easyproject.ui.details.store.DetailsStore
 import app.duss.easyproject.ui.helper.LocalSafeArea
 
@@ -31,7 +31,7 @@ import app.duss.easyproject.ui.helper.LocalSafeArea
 internal fun DetailsContent(
     state: DetailsStore.State,
     onEvent: (DetailsStore.Intent) -> Unit,
-    onOutput: (DetailsComponent.Output) -> Unit,
+    onOutput: (ProjectDetailsComponent.Output) -> Unit,
 ) {
     Box(contentAlignment = Alignment.TopCenter) {
         state.pokemonInfo?.let { pokemonInfo ->
@@ -55,7 +55,7 @@ internal fun DetailsContent(
                 TopAppBar(
                     navigationIcon = {
                         IconButton(
-                            onClick = { onOutput(DetailsComponent.Output.NavigateBack) }
+                            onClick = { onOutput(ProjectDetailsComponent.Output.NavigateBack) }
                         ) {
                             Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = null)
                         }

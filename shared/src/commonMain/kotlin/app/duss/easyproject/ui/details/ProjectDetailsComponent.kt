@@ -1,32 +1,34 @@
-package app.duss.easyproject.ui.favorite
+package app.duss.easyproject.ui.details
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import app.duss.easyproject.ui.favorite.store.FavoriteStore
-import app.duss.easyproject.ui.favorite.store.FavoriteStoreFactory
+import app.duss.easyproject.ui.details.store.DetailsStore
+import app.duss.easyproject.ui.details.store.DetailsStoreFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
-class FavoriteComponent(
+class ProjectDetailsComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    id: Long?,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
 
-    private val favoriteStore =
+    private val detailsStore =
         instanceKeeper.getStore {
-            FavoriteStoreFactory(
+            DetailsStoreFactory(
                 storeFactory = storeFactory,
+                pokemonName = id?.toString() ?: ""
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<FavoriteStore.State> = favoriteStore.stateFlow
+    val state: StateFlow<DetailsStore.State> = detailsStore.stateFlow
 
-    fun onEvent(event: FavoriteStore.Intent) {
-        favoriteStore.accept(event)
+    fun onEvent(event: DetailsStore.Intent) {
+        detailsStore.accept(event)
     }
 
     fun onOutput(output: Output) {
@@ -34,8 +36,7 @@ class FavoriteComponent(
     }
 
     sealed class Output {
-        object NavigateBack : Output()
-        data class NavigateToDetails(val name: String) : Output()
+        data object NavigateBack : Output()
     }
 
 }

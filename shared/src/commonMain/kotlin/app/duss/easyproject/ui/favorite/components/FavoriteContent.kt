@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import app.duss.easyproject.ui.favorite.FavoriteComponent
+import app.duss.easyproject.ui.favorite.DatabaseComponent
 import app.duss.easyproject.ui.favorite.store.FavoriteStore
 import app.duss.easyproject.ui.helper.LocalSafeArea
 import app.duss.easyproject.ui.project.components.PokemonGrid
@@ -19,21 +19,12 @@ import app.duss.easyproject.ui.project.components.PokemonGrid
 internal fun FavoriteContent(
     state: FavoriteStore.State,
     onEvent: (FavoriteStore.Intent) -> Unit,
-    onOutput: (FavoriteComponent.Output) -> Unit,
+    onOutput: (DatabaseComponent.Output) -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onOutput(FavoriteComponent.Output.NavigateBack)
-                        },
-                    ) {
-                        Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = null)
-                    }
-                },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -87,7 +78,7 @@ internal fun FavoriteContent(
                 } else {
                     PokemonGrid(
                         onPokemonClicked = { name ->
-                            onOutput(FavoriteComponent.Output.NavigateToDetails(name = name))
+                            onOutput(DatabaseComponent.Output.NavigateToCustomerDetails(id = null))
                         },
                         projectList = state.projectList,
                         isLoading = state.isLoading,

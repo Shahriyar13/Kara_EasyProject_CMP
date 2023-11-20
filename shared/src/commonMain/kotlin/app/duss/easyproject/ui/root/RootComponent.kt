@@ -11,19 +11,20 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import app.duss.easyproject.ui.comingsoon.ComingSoonComponent
-import app.duss.easyproject.ui.details.DetailsComponent
-import app.duss.easyproject.ui.favorite.FavoriteComponent
-import app.duss.easyproject.ui.main.MainComponent
+import app.duss.easyproject.ui.details.ProjectDetailsComponent
+import app.duss.easyproject.ui.favorite.DatabaseComponent
+import app.duss.easyproject.ui.main.DashboardComponent
 import app.duss.easyproject.ui.project.ProjectComponent
+import com.arkivanov.decompose.router.stack.bringToFront
 
 class RootComponent internal constructor(
     componentContext: ComponentContext,
-    private val main: (ComponentContext, (MainComponent.Output) -> Unit) -> MainComponent,
-    private val database: (ComponentContext, (FavoriteComponent.Output) -> Unit) -> FavoriteComponent,
+    private val dashboard: (ComponentContext, (DashboardComponent.Output) -> Unit) -> DashboardComponent,
+    private val database: (ComponentContext, (DatabaseComponent.Output) -> Unit) -> DatabaseComponent,
     private val project: (ComponentContext, searchValue: String, (ProjectComponent.Output) -> Unit) -> ProjectComponent,
-    private val projectDetails: (ComponentContext, pokemonName: String, (DetailsComponent.Output) -> Unit) -> DetailsComponent,
-    private val ce: (ComponentContext, searchValue: String, (ProjectComponent.Output) -> Unit) -> ProjectComponent,
-    private val ceDetails: (ComponentContext, pokemonName: String, (DetailsComponent.Output) -> Unit) -> DetailsComponent,
+    private val projectDetails: (ComponentContext, id: Long?, (ProjectDetailsComponent.Output) -> Unit) -> ProjectDetailsComponent,
+//    private val ce: (ComponentContext, searchValue: String, (ProjectComponent.Output) -> Unit) -> ProjectComponent,
+//    private val ceDetails: (ComponentContext, pokemonName: String, (ProjectDetailsComponent.Output) -> Unit) -> ProjectDetailsComponent,
     private val comingSoon: (ComponentContext, (ComingSoonComponent.Output) -> Unit) -> ComingSoonComponent,
 ): ComponentContext by componentContext {
 
@@ -32,15 +33,15 @@ class RootComponent internal constructor(
         storeFactory: StoreFactory,
     ) : this(
         componentContext = componentContext,
-        main = { childContext, output ->
-            MainComponent(
+        dashboard = { childContext, output ->
+            DashboardComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
                 output = output
             )
         },
         database = { childContext, output ->
-            FavoriteComponent(
+            DatabaseComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
                 output = output
@@ -54,27 +55,11 @@ class RootComponent internal constructor(
                 output = output
             )
         },
-        projectDetails = { childContext, pokemonName, output ->
-            DetailsComponent(
+        projectDetails = { childContext, id, output ->
+            ProjectDetailsComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
-                pokemonName = pokemonName,
-                output = output
-            )
-        },
-        ce = { childContext, searchValue, output ->
-            ProjectComponent(
-                componentContext = childContext,
-                storeFactory = storeFactory,
-                searchValue = searchValue,
-                output = output
-            )
-        },
-        ceDetails = { childContext, pokemonName, output ->
-            DetailsComponent(
-                componentContext = childContext,
-                storeFactory = storeFactory,
-                pokemonName = pokemonName,
+                id = id,
                 output = output
             )
         },
@@ -98,55 +83,75 @@ class RootComponent internal constructor(
 
     val childStack: Value<ChildStack<*, Child>> = stack
 
+
+     fun onDashboardTabClicked() {
+        navigation.bringToFront(Configuration.Main)
+    }
+
+     fun onDatabaseTabClicked() {
+        navigation.bringToFront(Configuration.Database)
+    }
+
+    fun onCETabClicked() {
+        navigation.bringToFront(Configuration.CE())
+    }
+
+     fun onProjectTabClicked() {
+        navigation.bringToFront(Configuration.Project())
+    }
+
+
+     fun onSETabClicked() {
+        navigation.bringToFront(Configuration.SE())
+    }
+
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
         when (configuration) {
-            is Configuration.Main -> Child.Main(main(componentContext, ::onMainOutput))
+            is Configuration.Main -> Child.Dashboard(dashboard(componentContext, ::onMainOutput))
             is Configuration.Database -> Child.Database(database(componentContext, ::onDatabaseOutput))
+            is Configuration.CE -> Child.ComingSoon(comingSoon(componentContext, ::onComingSoonOutput))
             is Configuration.Project -> Child.Project(project(componentContext, configuration.searchValue, ::onProjectOutput))
-            is Configuration.ProjectDetails -> Child.ProjectDetails(projectDetails(componentContext, configuration.projectCode, ::onProjectDetailsOutput))
-            is Configuration.CE -> Child.CE(ce(componentContext, configuration.searchValue, ::onProjectOutput))
-            is Configuration.CEDetails -> Child.CEDetails(ceDetails(componentContext, configuration.ceCode, ::onProjectDetailsOutput))
+//            is Configuration.ProjectDetails -> Child.ProjectDetails(projectDetails(componentContext, configuration.id, ::onProjectDetailsOutput))
+            is Configuration.SE -> Child.ComingSoon(comingSoon(componentContext, ::onComingSoonOutput))
             is Configuration.ComingSoon -> Child.ComingSoon(comingSoon(componentContext, ::onComingSoonOutput))
         }
 
-    private fun onMainOutput(output: MainComponent.Output): Unit =
+    private fun onMainOutput(output: DashboardComponent.Output): Unit =
         when (output) {
-            MainComponent.Output.MainClicked -> navigation.push(Configuration.Main)
-            MainComponent.Output.DatabaseClicked -> navigation.push(Configuration.Database)
-            MainComponent.Output.CEClicked -> navigation.push(Configuration.CE())
-            MainComponent.Output.ProjectClicked -> navigation.push(Configuration.Project())
-            is MainComponent.Output.SearchSubmitted -> navigation.push(Configuration.Project(output.searchValue))
-            MainComponent.Output.SEClicked -> navigation.push(Configuration.ComingSoon)
-            MainComponent.Output.SQClicked -> navigation.push(Configuration.ComingSoon)
-            MainComponent.Output.PIClicked -> navigation.push(Configuration.ComingSoon)
-            MainComponent.Output.POClicked -> navigation.push(Configuration.ComingSoon)
-            MainComponent.Output.ShippingClicked -> navigation.push(Configuration.ComingSoon)
-            MainComponent.Output.InvoiceClicked -> navigation.push(Configuration.ComingSoon)
-            MainComponent.Output.PaymentClicked -> navigation.push(Configuration.ComingSoon)
-            MainComponent.Output.BafaClicked -> navigation.push(Configuration.Database)
-            MainComponent.Output.ProfileClicked -> navigation.push(Configuration.ComingSoon)
+            DashboardComponent.Output.DatabaseClicked -> navigation.bringToFront(Configuration.Database)
+//            DashboardComponent.Output.CEClicked -> navigation.push(Configuration.CE())
+            DashboardComponent.Output.ProjectClicked -> navigation.bringToFront(Configuration.Project())
+            is DashboardComponent.Output.SearchSubmitted -> navigation.bringToFront(Configuration.Project(output.searchValue))
+//            DashboardComponent.Output.SEClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.SQClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.PIClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.POClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.ShippingClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.InvoiceClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.PaymentClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.BafaClicked -> navigation.push(Configuration.Database)
+//            DashboardComponent.Output.ProfileClicked -> navigation.push(Configuration.ComingSoon)
+//            DashboardComponent.Output.ProfileClicked -> navigation.push(Configuration.ComingSoon)
+            DashboardComponent.Output.ComingSoonClicked -> navigation.bringToFront(Configuration.ComingSoon)
         }
 
-    private fun onProjectOutput(output: ProjectComponent.Output): Unit =
+    private fun onProjectOutput(output: ProjectComponent.Output): Unit {}
+//        when (output) {
+////            is ProjectComponent.Output.NavigateBack -> navigation.pop()
+//            is ProjectComponent.Output.NavigateToDetails -> navigation.push(Configuration.ProjectDetails(output.id))
+//        }
+
+    private fun onProjectDetailsOutput(output: ProjectDetailsComponent.Output): Unit =
         when (output) {
-            is ProjectComponent.Output.NavigateBack -> navigation.pop()
-            is ProjectComponent.Output.NavigateToDetails -> navigation.push(Configuration.ProjectDetails(output.name))
+            is ProjectDetailsComponent.Output.NavigateBack -> navigation.pop()
         }
 
-    private fun onProjectDetailsOutput(output: DetailsComponent.Output): Unit =
-        when (output) {
-            is DetailsComponent.Output.NavigateBack -> navigation.pop()
-        }
+    private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit =
+        navigation.push(Configuration.ComingSoon)
 
-    private fun onDatabaseOutput(output: FavoriteComponent.Output): Unit =
+    private fun onDatabaseDetailsOutput(output: ProjectDetailsComponent.Output): Unit =
         when (output) {
-            is FavoriteComponent.Output.NavigateBack -> navigation.pop()
-            is FavoriteComponent.Output.NavigateToDetails -> navigation.push(Configuration.ProjectDetails(output.name))
-        }
-
-    private fun onDatabaseDetailsOutput(output: DetailsComponent.Output): Unit =
-        when (output) {
-            is DetailsComponent.Output.NavigateBack -> navigation.pop()
+            is ProjectDetailsComponent.Output.NavigateBack -> navigation.pop()
         }
 
     private fun onComingSoonOutput(output: ComingSoonComponent.Output): Unit =
@@ -162,31 +167,52 @@ class RootComponent internal constructor(
         data object Database : Configuration()
 
         @Parcelize
-        data class Project(val searchValue: String = "") : Configuration()
-
-        @Parcelize
-        data class ProjectDetails(val projectCode: String) : Configuration()
-
-        @Parcelize
         data class CE(val searchValue: String = "") : Configuration()
 
         @Parcelize
-        data class CEDetails(val ceCode: String) : Configuration()
+        data class Project(val searchValue: String = "") : Configuration()
+
+//        @Parcelize
+//        data class ProjectDetails(val id: Long?) : Configuration()
+
+        @Parcelize
+        data class SE(val searchValue: String = "") : Configuration()
+//
+//        @Parcelize
+//        data class CEDetails(val ceCode: String) : Configuration()
 
         @Parcelize
         data object ComingSoon : Configuration()
     }
 
     sealed class Child {
-        data class Main(val component: MainComponent) : Child()
+        data class Dashboard(val component: DashboardComponent) : Child()
 
-        data class Database(val component: FavoriteComponent) : Child()
+        data class Database(val component: DatabaseComponent) : Child()
+
+        data class CE(val component: ComingSoonComponent) : Child()
+
+//        data class CEDetails(val component: ComingSoonComponent) : Child()
 
         data class Project(val component: ProjectComponent) : Child()
-        data class ProjectDetails(val component: DetailsComponent) : Child()
 
-        data class CE(val component: ProjectComponent) : Child()
-        data class CEDetails(val component: DetailsComponent) : Child()
+//        data class ProjectDetails(val component: ProjectDetailsComponent) : Child()
+
+        data class SE(val component: ComingSoonComponent) : Child()
+
+//        data class SEDetails(val component: ComingSoonComponent) : Child()
+
+//        data class SQ(val component: ComingSoonComponent) : Child()
+
+//        data class SEDetails(val component: ComingSoonComponent) : Child()
+
+//        data class PI(val component: ComingSoonComponent) : Child()
+
+//        data class SEDetails(val component: ComingSoonComponent) : Child()
+
+//        data class PO(val component: ComingSoonComponent) : Child()
+
+//        data class SEDetails(val component: ComingSoonComponent) : Child()
 
         data class ComingSoon(val component: ComingSoonComponent) : Child()
     }

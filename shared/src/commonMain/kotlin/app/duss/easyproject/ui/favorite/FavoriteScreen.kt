@@ -6,12 +6,12 @@ import androidx.compose.runtime.getValue
 import app.duss.easyproject.ui.favorite.components.FavoriteContent
 
 @Composable
-internal fun FavoriteScreen(favoriteComponent: FavoriteComponent) {
-    val state by favoriteComponent.state.collectAsState()
+internal fun FavoriteScreen(databaseComponent: DatabaseComponent) {
+    val state by databaseComponent.state.collectAsState()
 
     FavoriteContent(
         state = state,
-        onEvent = favoriteComponent::onEvent,
-        onOutput = favoriteComponent::onOutput
+        onEvent = databaseComponent::onEvent,
+        onOutput = databaseComponent::onOutput
     )
 }

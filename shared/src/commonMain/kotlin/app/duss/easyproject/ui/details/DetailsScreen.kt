@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import app.duss.easyproject.ui.details.components.DetailsContent
 
 @Composable
-internal fun DetailsScreen(component: DetailsComponent) {
+internal fun DetailsScreen(component: ProjectDetailsComponent) {
 
     val state by component.state.collectAsState()
 
