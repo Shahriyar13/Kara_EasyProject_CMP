@@ -1,14 +1,10 @@
 package app.duss.easyproject.ui.project.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import app.duss.easyproject.ui.helper.LocalSafeArea
 import app.duss.easyproject.ui.project.ProjectComponent
 import app.duss.easyproject.ui.project.store.ProjectStore
@@ -24,7 +20,7 @@ internal fun ProjectContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {},
+                title = { Text(text = "Projects") },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -35,36 +31,6 @@ internal fun ProjectContent(
         Box(
             modifier = Modifier.padding(paddingValue)
         ) {
-
-//            TextField(
-//                value = state.search,
-//                onValueChange = { newSearch ->
-//                    onEvent(MainStore.Intent.InputPokemonSearch(newSearch))
-//                },
-//                placeholder = {
-//                    Text(text = "Search Pokemon")
-//                },
-//                leadingIcon = {
-//                    IconButton(
-//                        onClick = {}
-//                    ) {
-//                        Icon(Icons.Rounded.Search, contentDescription = "Search Pokemon")
-//                    }
-//                },
-//                colors = TextFieldDefaults.textFieldColors(
-//                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .2f),
-//                    placeholderColor = MaterialTheme.colorScheme.surface,
-//                    focusedLeadingIconColor = MaterialTheme.colorScheme.surface,
-//                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.surface,
-//                    unfocusedIndicatorColor = Color.Transparent,
-//                    focusedIndicatorColor = Color.Transparent,
-//                ),
-//                shape = MaterialTheme.shapes.extraLarge,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 20.dp, vertical = 20.dp)
-//            )
-
             state.error?.let { error ->
                 Box(
                     contentAlignment = Alignment.Center,
@@ -75,23 +41,14 @@ internal fun ProjectContent(
             }
 
             Column {
-                Text(
-                    text = "KCommerce",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .padding(top = 20.dp, bottom = 6.dp)
-                )
 
-                Divider(
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
-                )
+
+//                Divider(
+//                    color = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 20.dp)
+//                )
 
                 if (state.isLoading) {
                     LinearProgressIndicator(
