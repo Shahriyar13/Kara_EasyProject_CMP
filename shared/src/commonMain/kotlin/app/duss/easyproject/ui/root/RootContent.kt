@@ -1,26 +1,17 @@
 package app.duss.easyproject.ui.root
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
-import androidx.compose.material.NavigationRail
-import androidx.compose.material.NavigationRailItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DataArray
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RequestQuote
-import androidx.compose.material.icons.filled.SwipeUp
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +20,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.ui.comingsoon.ComingSoonScreen
 import app.duss.easyproject.ui.favorite.FavoriteScreen
-import app.duss.easyproject.ui.helper.LocalSafeArea
 import app.duss.easyproject.ui.main.DashboardScreen
 import app.duss.easyproject.ui.project.ProjectScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
@@ -40,30 +30,30 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 @Composable
 internal fun RootContent(component: RootComponent) {
 
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(LocalSafeArea.current)
-    ) {
+//    Row(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(LocalSafeArea.current)
+//    ) {
         Menu(
             component = component,
-            modifier = Modifier.fillMaxHeight().requiredWidth(150.dp).padding(all = 8.dp)
+            modifier = Modifier.fillMaxSize()
         )
 
-        Children(
-            stack = component.childStack,
-            animation = stackAnimation(fade()),
-        ) {
-            when (val child = it.instance) {
-                is RootComponent.Child.Dashboard -> DashboardScreen(child.component)
-                is RootComponent.Child.Database -> FavoriteScreen(child.component)
-                is RootComponent.Child.CE -> ComingSoonScreen(child.component)
-                is RootComponent.Child.Project -> ProjectScreen(child.component)
-                is RootComponent.Child.SE -> ComingSoonScreen(child.component)
-                is RootComponent.Child.ComingSoon -> ComingSoonScreen(child.component)
-            }
-        }
-    }
+//        Children(
+//            stack = component.childStack,
+//            animation = stackAnimation(fade()),
+//        ) {
+//            when (val child = it.instance) {
+//                is RootComponent.Child.Dashboard -> DashboardScreen(child.component)
+//                is RootComponent.Child.Database -> FavoriteScreen(child.component)
+//                is RootComponent.Child.CE -> ComingSoonScreen(child.component)
+//                is RootComponent.Child.Project -> ProjectScreen(child.component)
+//                is RootComponent.Child.SE -> ComingSoonScreen(child.component)
+//                is RootComponent.Child.ComingSoon -> ComingSoonScreen(child.component)
+//            }
+//        }
+//    }
 
 
 }
@@ -113,24 +103,58 @@ private fun Menu(component: RootComponent, modifier: Modifier = Modifier) {
         ),
     )
 
-    PermanentNavigationDrawer(
-        drawerContent = {
-            menuItems.forEach {
-                NavigationDrawerItem(
-                    label = { Text(it.title) },
-                    selected = it.isSelected,
-                    icon = {
-                        Icon(
-                            imageVector = it.icon,
-                            contentDescription = it.title,
-                        )
-                    },
-                    onClick = it.onClick,
-                )
-            }
-        },
-        modifier = modifier
-    ) {
+    val containerColor = MaterialTheme.colorScheme.background
+    val selectedColor = MaterialTheme.colorScheme.primary
+    val unselectedColor = MaterialTheme.colorScheme.onBackground
 
-    }
+    PermanentNavigationDrawer(
+        modifier = modifier,
+        drawerContent = {
+            PermanentDrawerSheet(
+                modifier = Modifier.width(200.dp),
+                drawerContainerColor = containerColor,
+            ) {
+                menuItems.map {
+                    NavigationDrawerItem(
+                        label = { Text(it.title, softWrap = false, color = if (it.isSelected) selectedColor else unselectedColor)},
+                        selected = it.isSelected,
+                        icon = {
+                            Icon(
+                                imageVector = it.icon,
+                                contentDescription = it.title,
+                                tint = if (it.isSelected) selectedColor else unselectedColor
+                            )
+                        },
+                        onClick = it.onClick,
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = containerColor,
+                            unselectedContainerColor = containerColor,
+                            selectedIconColor = selectedColor,
+                            unselectedIconColor = unselectedColor,
+                            selectedTextColor = selectedColor,
+                            unselectedTextColor = unselectedColor,
+                            selectedBadgeColor = selectedColor,
+                            unselectedBadgeColor = unselectedColor,
+                        )
+                    )
+                }
+            }
+
+        },
+        content = {
+            Children(
+                stack = component.childStack,
+                animation = stackAnimation(fade()),
+            ) {
+                when (val child = it.instance) {
+                    is RootComponent.Child.Dashboard -> DashboardScreen(child.component)
+                    is RootComponent.Child.Database -> FavoriteScreen(child.component)
+                    is RootComponent.Child.CE -> ComingSoonScreen(child.component)
+                    is RootComponent.Child.Project -> ProjectScreen(child.component)
+                    is RootComponent.Child.SE -> ComingSoonScreen(child.component)
+                    is RootComponent.Child.ComingSoon -> ComingSoonScreen(child.component)
+                }
+            }
+        }
+    )
 }
