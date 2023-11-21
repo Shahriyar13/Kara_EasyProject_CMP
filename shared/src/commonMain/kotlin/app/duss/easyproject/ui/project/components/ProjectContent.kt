@@ -5,6 +5,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import app.duss.easyproject.core.model.Project
+import app.duss.easyproject.presentation.component.PagingVerticalGrid
 import app.duss.easyproject.ui.helper.LocalSafeArea
 import app.duss.easyproject.ui.project.ProjectComponent
 import app.duss.easyproject.ui.project.store.ProjectStore
@@ -42,13 +44,32 @@ internal fun ProjectContent(
 
             Column {
 
+                if (state.isLoading && state.projectList.isEmpty()) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = .6f),
+                        trackColor = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
+                    )
+                }
 
-//                Divider(
-//                    color = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 20.dp)
-//                )
+                PagingVerticalGrid(
+                    content = { item: Project -> ProjectItem(
+                        project = item,
+                        onClick = {
+                            onOutput(ProjectComponent.Output.NavigateToDetails(id = null))
+                        },
+                        )
+                    },
+                    itemList = state.projectList,
+                    isLoading = !state.isLastPageLoaded,
+                    loadSize = 5,
+                    loadMoreItems = {
+                        if (state.projectList.isEmpty()) return@PagingVerticalGrid
+
+                        val nextPage = state.projectList.last().page + 1
+                        onEvent(ProjectStore.Intent.LoadProjectListByPage(page = nextPage))
+                    }
+                )
 
                 if (state.isLoading) {
                     LinearProgressIndicator(
@@ -57,23 +78,7 @@ internal fun ProjectContent(
                         trackColor = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
                     )
                 }
-
-                PokemonGrid(
-                    onPokemonClicked = { name ->
-                        onOutput(ProjectComponent.Output.NavigateToDetails(id = null))
-                    },
-                    projectList = state.projectList,
-                    isLoading = !state.isLastPageLoaded,
-                    loadMoreItems = {
-                        if (state.projectList.isEmpty()) return@PokemonGrid
-
-                        val nextPage = state.projectList.last().page + 1
-                        onEvent(ProjectStore.Intent.LoadProjectListByPage(page = nextPage))
-                    }
-                )
             }
-
-
         }
     }
 }

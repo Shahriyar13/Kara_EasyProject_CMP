@@ -1,7 +1,7 @@
 package app.duss.easyproject.ui.project.store
 
+import app.duss.easyproject.domain.entity.Project
 import com.arkivanov.mvikotlin.core.store.Store
-import app.duss.easyproject.core.model.Project
 
 interface ProjectStore: Store<ProjectStore.Intent, ProjectStore.State, Nothing> {
 

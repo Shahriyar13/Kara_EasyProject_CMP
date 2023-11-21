@@ -4,7 +4,7 @@ import app.duss.easyproject.core.database.dao.PokemonDao
 import app.duss.easyproject.core.database.dao.PokemonInfoDao
 import app.duss.easyproject.core.model.Project
 import app.duss.easyproject.core.model.PokemonInfo
-import app.duss.easyproject.core.network.client.PokemonClient
+import app.duss.easyproject.core.network.client.ProjectClient
 import app.duss.easyproject.data.toPokemon
 import app.duss.easyproject.data.toPokemonEntity
 import app.duss.easyproject.data.toPokemonInfo
@@ -17,7 +17,7 @@ import org.koin.core.component.inject
 
 class PokemonRepositoryImpl: ProjectRepository, KoinComponent {
 
-    private val pokemonClient by inject<PokemonClient>()
+    private val projectClient by inject<ProjectClient>()
     private val pokemonDao by inject<PokemonDao>()
     private val pokemonInfoDao by inject<PokemonInfoDao>()
 
@@ -26,7 +26,7 @@ class PokemonRepositoryImpl: ProjectRepository, KoinComponent {
             val cachedPokemonList = pokemonDao.selectAllByPage(page)
 
             if (cachedPokemonList.isEmpty()) {
-                val response = pokemonClient.getPokemonList(page = page)
+                val response = projectClient.getProjectList(page = page)
                 response.results.forEach { pokemon ->
                     pokemonDao.insert(pokemon.toPokemonEntity(page))
                 }
@@ -46,7 +46,7 @@ class PokemonRepositoryImpl: ProjectRepository, KoinComponent {
             val cachedPokemon = pokemonInfoDao.selectOneByName(name = name)
 
             if (cachedPokemon == null) {
-                val response = pokemonClient.getPokemonByName(name = name)
+                val response = projectClient.getPokemonByName(name = name)
                 pokemonInfoDao.insert(response.toPokemonInfoEntity())
 
                 Result.success(response)

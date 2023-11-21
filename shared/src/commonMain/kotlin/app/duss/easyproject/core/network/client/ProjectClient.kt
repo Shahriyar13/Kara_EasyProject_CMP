@@ -9,15 +9,15 @@ import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-class PokemonClient(
+class ProjectClient(
     private val httpClient: HttpClient
 ) {
 
-    suspend fun getPokemonList(
+    suspend fun getProjectList(
         page: Long,
     ): PokemonResponse {
         return handleErrors {
-            httpClient.get(NetworkConstants.Pokemon.route) {
+            httpClient.get(NetworkConstants.Project.getAll) {
                 url {
                     parameters.append("limit", PageSize.toString())
                     parameters.append("offset", (page * PageSize).toString())
@@ -31,7 +31,8 @@ class PokemonClient(
         name: String,
     ): PokemonInfo {
         return handleErrors {
-            httpClient.get(NetworkConstants.Pokemon.byName(name)) {
+            httpClient.get(NetworkConstants.Project.getById) {
+
                 contentType(ContentType.Application.Json)
             }
         }

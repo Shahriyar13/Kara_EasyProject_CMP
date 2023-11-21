@@ -1,7 +1,7 @@
 package app.duss.easyproject.domain.repository
 
-import app.duss.easyproject.core.model.Project
 import app.duss.easyproject.core.model.PokemonInfo
+import app.duss.easyproject.domain.entity.Project
 import kotlinx.coroutines.flow.Flow
 
 interface ProjectRepository {

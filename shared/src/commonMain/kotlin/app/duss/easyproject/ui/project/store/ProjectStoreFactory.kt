@@ -1,13 +1,13 @@
 package app.duss.easyproject.ui.project.store
 
+import app.duss.easyproject.appDispatchers
+import app.duss.easyproject.domain.entity.Project
+import app.duss.easyproject.domain.repository.ProjectRepository
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import app.duss.easyproject.core.model.Project
-import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.appDispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -22,7 +22,7 @@ internal class ProjectStoreFactory(
 
     fun create(): ProjectStore =
         object : ProjectStore, Store<ProjectStore.Intent, ProjectStore.State, Nothing> by storeFactory.create(
-            name = "KCommerceStore",
+            name = "ProjectStore",
             initialState = ProjectStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,

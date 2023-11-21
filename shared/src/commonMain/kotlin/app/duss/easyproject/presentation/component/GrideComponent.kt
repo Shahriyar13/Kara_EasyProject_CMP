@@ -1,10 +1,14 @@
-package app.duss.easyproject.ui.project.components
+package app.duss.easyproject.presentation.component
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -13,15 +17,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.duss.easyproject.core.model.Project
+import app.duss.easyproject.ui.project.components.PokemonLoadingItem
 
 @Composable
-internal fun PokemonGrid(
-    onPokemonClicked: (name: String) -> Unit,
-    projectList: List<Project>,
+internal fun <T> PagingVerticalGrid(
+    itemList: List<T>,
     isLoading: Boolean,
     loadMoreItems: () -> Unit = {},
+    loadSize: Int = 5,
     modifier: Modifier = Modifier,
+    columns: GridCells = GridCells.Fixed(1),
+    content: @Composable (T) -> Unit,
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val alpha by infiniteTransition.animateFloat(
@@ -34,31 +40,19 @@ internal fun PokemonGrid(
     )
 
     BoxWithConstraints {
-        val columns = when(maxWidth) {
-            in 0.dp..349.dp -> 1
-            in 350.dp..599.dp -> 2
-            in 600.dp..899.dp -> 3
-            in 900.dp..1199.dp -> 4
-            else -> 5
-        }
-
         LazyVerticalGrid(
-            columns = GridCells.Fixed(columns),
+            columns = columns,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(20.dp),
             modifier = modifier,
         ) {
-            items(projectList, key = { it.name }) { pokemon ->
-                ProjectItem(
-                    onClick = { onPokemonClicked(pokemon.name) },
-                    project = pokemon,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            items(itemList, ) { item ->
+                content(item)
             }
 
             if (isLoading) {
-                items(5) { index ->
+                items(loadSize) { index ->
                     LaunchedEffect(Unit) {
                         if (index == 0) loadMoreItems()
                     }

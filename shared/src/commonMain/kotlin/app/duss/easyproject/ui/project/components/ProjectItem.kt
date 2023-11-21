@@ -10,16 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.core.model.Project
-import app.duss.easyproject.ui.main.components.AsyncImage
 import app.duss.easyproject.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun PokemonItem(
+internal fun ProjectItem(
     onClick: () -> Unit,
     project: Project,
     modifier: Modifier = Modifier,
@@ -57,22 +55,23 @@ internal fun PokemonItem(
         modifier = modifier
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .background(brush = brush, alpha = .4f)
+                .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            AsyncImage(
-                url = project.imageUrl,
-                contentDescription = project.name,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.2f)
-                    .fillMaxHeight()
-            )
+//            AsyncImage(
+//                url = project.imageUrl,
+//                contentDescription = project.name,
+//                contentScale = ContentScale.Fit,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .aspectRatio(1.2f)
+//                    .fillMaxHeight()
+//            )
 
-            Spacer(Modifier.height(14.dp))
+//            Spacer(Modifier.height(14.dp))
 
             Text(
                 text = project.name.replaceFirstChar { it.uppercase() },
