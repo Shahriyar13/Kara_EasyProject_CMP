@@ -16,7 +16,7 @@ import app.duss.easyproject.core.di.initKoin
 import app.duss.easyproject.ui.ContentView
 import app.duss.easyproject.ui.helper.LocalSafeArea
 import app.duss.easyproject.ui.root.RootComponent
-import app.duss.easyproject.ui.theme.KCommerceTheme
+import app.duss.easyproject.ui.theme.AppTheme
 import platform.UIKit.*
 
 @Suppress("unused", "FunctionName")
@@ -42,7 +42,7 @@ fun MainViewController(
 
         // Bind safe area as the value for LocalSafeArea
         CompositionLocalProvider(LocalSafeArea provides safeArea) {
-            KCommerceTheme {
+            AppTheme {
                 Surface(
                     color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxSize()

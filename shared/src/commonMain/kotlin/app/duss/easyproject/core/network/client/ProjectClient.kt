@@ -3,7 +3,8 @@ package app.duss.easyproject.core.network.client
 import app.duss.easyproject.core.model.PokemonInfo
 import app.duss.easyproject.core.network.NetworkConstants
 import app.duss.easyproject.core.network.helper.handleErrors
-import app.duss.easyproject.core.network.model.PokemonResponse
+import app.duss.easyproject.core.network.model.ServerResponse
+import app.duss.easyproject.domain.entity.Project
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.http.ContentType
@@ -15,12 +16,13 @@ class ProjectClient(
 
     suspend fun getProjectList(
         page: Long,
-    ): PokemonResponse {
+    ): ServerResponse<List<Project>> {
         return handleErrors {
             httpClient.get(NetworkConstants.Project.getAll) {
                 url {
-                    parameters.append("limit", PageSize.toString())
-                    parameters.append("offset", (page * PageSize).toString())
+                    parameters.append("page", page.toString())
+//                    parameters.append("limit", PageSize.toString())
+//                    parameters.append("offset", (page * PageSize).toString())
                 }
                 contentType(ContentType.Application.Json)
             }
@@ -37,9 +39,4 @@ class ProjectClient(
             }
         }
     }
-
-    companion object {
-        private const val PageSize = 20
-    }
-
 }

@@ -1,7 +1,7 @@
 package app.duss.easyproject.core.network.helper
 
-import app.duss.easyproject.core.network.errors.KCommerceError
-import app.duss.easyproject.core.network.errors.KCommerceException
+import app.duss.easyproject.core.network.errors.ServerError
+import app.duss.easyproject.core.network.errors.ServerException
 import app.duss.easyproject.appDispatchers
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
@@ -15,20 +15,20 @@ suspend inline fun <reified T> handleErrors(
     val result = try {
         response()
     } catch(e: IOException) {
-        throw KCommerceException(KCommerceError.ServiceUnavailable)
+        throw ServerException(ServerError.ServiceUnavailable)
     }
 
     when(result.status.value) {
         in 200..299 -> Unit
-        in 400..499 -> throw KCommerceException(KCommerceError.ClientError)
-        500 -> throw KCommerceException(KCommerceError.ServerError)
-        else -> throw KCommerceException(KCommerceError.UnknownError)
+        in 400..499 -> throw ServerException(ServerError.ClientError)
+        500 -> throw ServerException(ServerError.ServerError)
+        else -> throw ServerException(ServerError.UnknownError)
     }
 
     return@withContext try {
         result.body()
     } catch(e: Exception) {
-        throw KCommerceException(KCommerceError.ServerError)
+        throw ServerException(ServerError.ServerError)
     }
 
 }

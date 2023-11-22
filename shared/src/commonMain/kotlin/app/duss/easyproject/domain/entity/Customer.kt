@@ -1,7 +1,9 @@
 package app.duss.easyproject.domain.entity
 
-import app.duss.easyproject.domain.base.BaseEntity
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 data class Customer(
     val code: String,
     val company: Company,
@@ -12,13 +14,4 @@ data class Customer(
     override val modifiedBy: String?,
     override val creatorId: Long?,
     override val modifierId: Long?
-
-): BaseEntity(
-    id = id,
-    creationTime = creationTime,
-    modificationTime = modificationTime,
-    createdBy = createdBy,
-    modifiedBy = modifiedBy,
-    creatorId = creatorId,
-    modifierId = modifierId
-)
+): BaseEntity()

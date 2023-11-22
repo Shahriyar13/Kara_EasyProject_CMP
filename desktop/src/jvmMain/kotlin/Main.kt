@@ -1,19 +1,30 @@
+
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import app.duss.easyproject.core.di.initKoin
+import app.duss.easyproject.presentation.ui.root.RootComponent
+import app.duss.easyproject.ui.ContentView
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.mvikotlin.core.utils.setMainThreadId
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import app.duss.easyproject.core.di.initKoin
-import app.duss.easyproject.ui.ContentView
-import app.duss.easyproject.ui.root.RootComponent
 import javax.swing.SwingUtilities
 
 fun main() {
     initKoin(enableNetworkLogs = false)
 
     val rootComponent = invokeOnAwtSync {
+
+//        //TODO: Test on different machine and after find formula then use thread.getThreadID()
+//
+//        System.getProperty("java.version") //21.0.1
+//        ManagementFactory.getRuntimeMXBean().vmVersion //21.0.1+12-29
+//
+//        //TEST Result on 21.0.1 machine
+//        System.getProperty("java.version").split(".").first //21
+//        ManagementFactory.getRuntimeMXBean().vmVersion.split(".").first //21
+
         setMainThreadId(Thread.currentThread().id)
 
         val lifecycle = LifecycleRegistry()
@@ -30,7 +41,7 @@ fun main() {
 
     application {
         Window(
-            title = "KCommerce",
+            title = "Easy Project",
             onCloseRequest = ::exitApplication
         ) {
             ContentView(

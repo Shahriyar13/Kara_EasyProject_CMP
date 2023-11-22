@@ -5,13 +5,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import app.duss.easyproject.ui.root.RootComponent
-import app.duss.easyproject.ui.root.RootContent
-import app.duss.easyproject.ui.theme.KCommerceTheme
+import app.duss.easyproject.presentation.theme.AppTheme
+import app.duss.easyproject.presentation.ui.root.RootComponent
+import app.duss.easyproject.presentation.ui.root.RootContent
 
 @Composable
 fun ContentView(component: RootComponent) {
-    KCommerceTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

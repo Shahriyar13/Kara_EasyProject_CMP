@@ -1,6 +1,6 @@
 package app.duss.easyproject.domain.usecase
 
-import app.duss.easyproject.core.model.Project
+import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
 
 class FetchProjectsUseCase(

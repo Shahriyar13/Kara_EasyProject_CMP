@@ -58,6 +58,7 @@ kotlin {
                 // Ktor
                 with(Deps.Io.Ktor) {
                     api(ktorClientCore)
+                    api(ktorClientResources)
                     api(ktorSerializationKotlinxJson)
                     api(ktorClientContentNegotiation)
                     api(ktorClientLogging)

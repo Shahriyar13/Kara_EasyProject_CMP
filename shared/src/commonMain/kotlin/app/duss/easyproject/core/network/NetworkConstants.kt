@@ -1,7 +1,9 @@
 package app.duss.easyproject.core.network
 
 object NetworkConstants {
-    const val baseUrl = "https://easy-api.metpool.de"
+    const val PageSize = 10
+
+    const val baseUrl = "http://127.0.0.1:8080"
     private const val baseApiUrl = "$baseUrl/api"
 
     object Project {

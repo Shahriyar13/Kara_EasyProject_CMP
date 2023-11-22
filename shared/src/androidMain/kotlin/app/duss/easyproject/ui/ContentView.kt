@@ -7,11 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.duss.easyproject.ui.root.RootComponent
 import app.duss.easyproject.ui.root.RootContent
-import app.duss.easyproject.ui.theme.KCommerceTheme
+import app.duss.easyproject.ui.theme.AppTheme
 
 @Composable
 fun ContentView(component: RootComponent) {
-    KCommerceTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

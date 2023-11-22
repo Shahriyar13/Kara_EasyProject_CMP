@@ -27,6 +27,7 @@ object Deps {
             const val ktorClientCore = "io.ktor:ktor-client-core:${Versions.ktor}"
             const val ktorSerializationKotlinxJson = "io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor}"
             const val ktorClientContentNegotiation = "io.ktor:ktor-client-content-negotiation:${Versions.ktor}"
+            const val ktorClientResources = "io.ktor:ktor-client-resources:${Versions.ktor}"
             const val ktorClientLogging = "io.ktor:ktor-client-logging:${Versions.ktor}"
 
             // Engines

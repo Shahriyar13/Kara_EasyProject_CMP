@@ -1,12 +1,12 @@
 package app.duss.easyproject.core.network.errors
 
-enum class KCommerceError {
+enum class ServerError {
     ServiceUnavailable,
     ClientError,
     ServerError,
     UnknownError
 }
 
-class KCommerceException(error: KCommerceError): Exception(
+class ServerException(error: ServerError): Exception(
     "Something goes wrong: $error"
 )
