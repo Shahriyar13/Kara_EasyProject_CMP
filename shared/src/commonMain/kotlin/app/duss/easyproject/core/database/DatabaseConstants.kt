@@ -1,5 +1,5 @@
 package app.duss.easyproject.core.database
 
 object DatabaseConstants {
-    const val name = "pokemonDatabase"
+    const val name = "appDatabase"
 }
