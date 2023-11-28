@@ -2,8 +2,8 @@
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import app.duss.easyproject.core.di.initKoin
+import app.duss.easyproject.presentation.ui.ContentView
 import app.duss.easyproject.presentation.ui.root.RootComponent
-import app.duss.easyproject.ui.ContentView
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
