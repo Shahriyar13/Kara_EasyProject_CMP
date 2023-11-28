@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import app.duss.easyproject.ui.ContentView
+import app.duss.easyproject.presentation.ui.ContentView
 import app.duss.easyproject.core.di.initKoin
 import app.duss.easyproject.ui.root.RootComponent
 import org.koin.android.ext.koin.androidContext
