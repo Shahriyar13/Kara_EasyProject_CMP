@@ -2,7 +2,7 @@ package app.duss.easyproject.core.network.helper
 
 import app.duss.easyproject.core.network.errors.ServerError
 import app.duss.easyproject.core.network.errors.ServerException
-import app.duss.easyproject.appDispatchers
+import app.duss.easyproject.utils.appDispatchers
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.utils.io.errors.IOException

@@ -1,7 +1,7 @@
 package app.duss.easyproject.presentation.ui.dashboard
 
-import app.duss.easyproject.presentation.ui.dashboard.store.MainStore
-import app.duss.easyproject.presentation.ui.dashboard.store.MainStoreFactory
+import app.duss.easyproject.presentation.ui.dashboard.store.DashboardStore
+import app.duss.easyproject.presentation.ui.dashboard.store.DashboardStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -17,15 +17,15 @@ class DashboardComponent(
 
     private val mainStore =
         instanceKeeper.getStore {
-            MainStoreFactory(
+            DashboardStoreFactory(
                 storeFactory = storeFactory,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<MainStore.State> = mainStore.stateFlow
+    val state: StateFlow<DashboardStore.State> = mainStore.stateFlow
 
-    fun onEvent(event: MainStore.Intent) {
+    fun onEvent(event: DashboardStore.Intent) {
         mainStore.accept(event)
     }
 
@@ -34,6 +34,7 @@ class DashboardComponent(
     }
 
     sealed class Output {
+        data object Unauthorized : Output()
         data class SearchSubmitted(val searchValue: String) : Output()
 //        data object MainClicked : Output()
         data object DatabaseClicked : Output()

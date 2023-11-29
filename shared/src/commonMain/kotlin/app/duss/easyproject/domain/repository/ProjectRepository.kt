@@ -1,17 +1,21 @@
 package app.duss.easyproject.domain.repository
 
-import app.duss.easyproject.core.model.PokemonInfo
 import app.duss.easyproject.domain.entity.Project
-import kotlinx.coroutines.flow.Flow
+import app.duss.easyproject.domain.params.ProjectCreateRequest
+import app.duss.easyproject.domain.params.ProjectUpdateRequest
 
 interface ProjectRepository {
 
     suspend fun getProjectList(page: Long): Result<List<Project>>
 
-    suspend fun getPokemonFlowByName(name: String): Result<PokemonInfo>
+    suspend fun getProjectById(id: Long?): Result<Project>
 
-    suspend fun getFavoritePokemonListFlow(): Flow<List<Project>>
+    suspend fun isProjectCodeAvailable(code: String): Result<Boolean>
 
-    suspend fun updatePokemonFavoriteState(name: String, isFavorite: Boolean)
+    suspend fun createProject(param: ProjectCreateRequest): Result<Project?>
+
+    suspend fun updateProject(param: ProjectUpdateRequest): Result<Project?>
+
+    suspend fun deleteProject(id: Long): Result<Boolean>
 
 }

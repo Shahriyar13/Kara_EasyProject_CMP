@@ -10,8 +10,8 @@ version = "1.0.0-SNAPSHOT"
 
 kotlin {
     jvm {
-        jvmToolchain(11)
-        withJava()
+//        jvmToolchain(17)
+//        withJava()
     }
     sourceSets {
         val jvmMain by getting {

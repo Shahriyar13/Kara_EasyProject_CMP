@@ -1,6 +1,4 @@
 import app.duss.easyproject.Configuration
-import app.duss.easyproject.Deps
-import app.duss.easyproject.Versions
 
 plugins {
     id("com.android.application")
@@ -12,10 +10,10 @@ android {
     compileSdk = app.duss.easyproject.Configuration.compileSdk
     defaultConfig {
         applicationId = "app.duss.easyproject.android"
-        minSdk = app.duss.easyproject.Configuration.minSdk
-        targetSdk = app.duss.easyproject.Configuration.targetSdk
-        versionCode = app.duss.easyproject.Configuration.versionCode
-        versionName = app.duss.easyproject.Configuration.versionName
+        minSdk = Configuration.minSdk
+        targetSdk = Configuration.targetSdk
+        versionCode = Configuration.versionCode
+        versionName = Configuration.versionName
     }
     buildFeatures {
         compose = true
@@ -49,11 +47,11 @@ android {
 
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
