@@ -7,7 +7,7 @@ class FetchProjectsUseCase(
     private val projectRepository: ProjectRepository,
 ): BaseCoroutinesUseCase<Long, List<Project>>() {
 
-    override suspend fun execute(page: Long): Result<List<Project>> =
-        projectRepository.getProjectList(page)
+    override suspend fun execute(param: Long): Result<List<Project>> =
+        projectRepository.getProjectList(param)
 
 }

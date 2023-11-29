@@ -21,12 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.dashboard.state.CategoryState
-import app.duss.easyproject.presentation.ui.dashboard.store.MainStore
+import app.duss.easyproject.presentation.ui.dashboard.store.DashboardStore
 
 @Composable
 internal fun MainContent(
-    state: MainStore.State,
-    onEvent: (MainStore.Intent) -> Unit,
+    state: DashboardStore.State,
+    onEvent: (DashboardStore.Intent) -> Unit,
     onOutput: (DashboardComponent.Output) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -64,7 +64,7 @@ internal fun MainContent(
             val containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .2f)
             TextField(
                 value = state.search,
-                onValueChange = { onEvent(MainStore.Intent.InputPokemonSearch(it)) },
+                onValueChange = { onEvent(DashboardStore.Intent.InputPokemonSearch(it)) },
                 placeholder = {
                     Text(text = "Search Pokemon")
                 },

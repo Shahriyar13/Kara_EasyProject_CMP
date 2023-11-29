@@ -6,5 +6,5 @@ import org.koin.core.scope.Scope
 
 
 actual fun Scope.sqlDriverFactory(): SqlDriver {
-    return NativeSqliteDriver(app.duss.easyproject.core.database.PokemonDatabase.Schema, "${DatabaseConstants.name}.db")
+    return NativeSqliteDriver(app.duss.easyproject.core.database.AppDatabase.Schema, "${DatabaseConstants.name}.db")
 }

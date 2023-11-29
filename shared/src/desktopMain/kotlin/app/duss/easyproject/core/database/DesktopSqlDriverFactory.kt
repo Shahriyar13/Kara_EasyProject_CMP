@@ -9,6 +9,6 @@ import java.io.File
 actual fun Scope.sqlDriverFactory(): SqlDriver {
     val databasePath = File(System.getProperty("java.io.tmpdir"), "${DatabaseConstants.name}.db")
     val driver = JdbcSqliteDriver(url = "jdbc:sqlite:${databasePath.path}")
-    app.duss.easyproject.core.database.PokemonDatabase.Schema.create(driver)
+    app.duss.easyproject.core.database.AppDatabase.Schema.create(driver)
     return driver
 }
