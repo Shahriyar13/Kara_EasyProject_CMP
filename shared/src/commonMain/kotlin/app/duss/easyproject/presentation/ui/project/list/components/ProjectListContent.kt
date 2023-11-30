@@ -11,15 +11,16 @@ import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.presentation.component.PagingVerticalGrid
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.theme.*
-import app.duss.easyproject.presentation.ui.project.list.ProjectComponent
-import app.duss.easyproject.presentation.ui.project.list.store.ProjectStore
+import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ProjectContent(
-    state: ProjectStore.State,
-    onEvent: (ProjectStore.Intent) -> Unit,
-    onOutput: (ProjectComponent.Output) -> Unit,
+internal fun ProjectListContent(
+    state: ProjectListStore.State,
+    onEvent: (ProjectListStore.Intent) -> Unit,
+    onOutput: (ProjectListComponent.Output) -> Unit,
+    modifier: Modifier,
 ) {
     Scaffold(
         topBar = {
@@ -30,7 +31,7 @@ internal fun ProjectContent(
                 ),
                 actions = {
                     IconButton(onClick = {
-                        onOutput(ProjectComponent.Output.NavigateToDetails(id = null))
+                        onEvent(ProjectListStore.Intent.AddNew)
                     }) {
                         Icon(Icons.Default.Add, "Add New one")
                     }
@@ -56,7 +57,7 @@ internal fun ProjectContent(
                     ProjectItem(
                         project = item,
                         onClick = {
-                            onOutput(ProjectComponent.Output.NavigateToDetails(id = null))
+                            onEvent(ProjectListStore.Intent.Details(item))
                         },
                     )
                 },
@@ -65,7 +66,7 @@ internal fun ProjectContent(
                 loadMoreItems = {
                     if (state.projectList.isEmpty()) return@PagingVerticalGrid
                     val nextPage = state.page + 1
-                    onEvent(ProjectStore.Intent.LoadProjectListByPage(page = nextPage))
+                    onEvent(ProjectListStore.Intent.LoadProjectListByPage(page = nextPage))
                 },
                 loadContent = {
                     ProjectLoadingItem(alpha = it)

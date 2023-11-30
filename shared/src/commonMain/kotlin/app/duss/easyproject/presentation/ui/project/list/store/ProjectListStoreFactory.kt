@@ -13,17 +13,17 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class ProjectStoreFactory(
+internal class ProjectListStoreFactory(
     private val storeFactory: StoreFactory,
     private val searchValue: String,
 ): KoinComponent {
 
     private val projectRepository by inject<ProjectRepository>()
 
-    fun create(): ProjectStore =
-        object : ProjectStore, Store<ProjectStore.Intent, ProjectStore.State, Nothing> by storeFactory.create(
+    fun create(): ProjectListStore =
+        object : ProjectListStore, Store<ProjectListStore.Intent, ProjectListStore.State, Nothing> by storeFactory.create(
             name = "ProjectStore",
-            initialState = ProjectStore.State(),
+            initialState = ProjectListStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
@@ -37,16 +37,18 @@ internal class ProjectStoreFactory(
         data object LastPageLoaded : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<ProjectStore.Intent, Unit, ProjectStore.State, Msg, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<ProjectListStore.Intent, Unit, ProjectListStore.State, Msg, Nothing>(
         appDispatchers.main) {
-        override fun executeAction(action: Unit, getState: () -> ProjectStore.State) {
+        override fun executeAction(action: Unit, getState: () -> ProjectListStore.State) {
             loadProjectListByPage(page = 0)
         }
 
-        override fun executeIntent(intent: ProjectStore.Intent, getState: () -> ProjectStore.State): Unit =
+        override fun executeIntent(intent: ProjectListStore.Intent, getState: () -> ProjectListStore.State): Unit =
             when (intent) {
-                is ProjectStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
-                is ProjectStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                is ProjectListStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
+                is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                ProjectListStore.Intent.AddNew -> TODO()
+                is ProjectListStore.Intent.Details -> TODO()
             }
 
         private var loadProjectListByPageJob: Job? = null
@@ -76,11 +78,11 @@ internal class ProjectStoreFactory(
         }
     }
 
-    private object ReducerImpl: Reducer<ProjectStore.State, Msg> {
-        override fun ProjectStore.State.reduce(msg: Msg): ProjectStore.State =
+    private object ReducerImpl: Reducer<ProjectListStore.State, Msg> {
+        override fun ProjectListStore.State.reduce(msg: Msg): ProjectListStore.State =
             when (msg) {
                 is Msg.ProjectListLoading -> copy(isLoading = true)
-                is Msg.ProjectListLoaded -> ProjectStore.State(projectList = projectList + msg.projectList)
+                is Msg.ProjectListLoaded -> ProjectListStore.State(projectList = projectList + msg.projectList)
                 is Msg.ProjectListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true)

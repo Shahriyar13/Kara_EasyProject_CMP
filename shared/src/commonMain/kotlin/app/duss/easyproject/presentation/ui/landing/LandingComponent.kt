@@ -1,7 +1,8 @@
-package app.duss.easyproject.presentation.ui.project.list
+package app.duss.easyproject.presentation.ui.landing
 
-import app.duss.easyproject.presentation.ui.project.list.store.ProjectStore
-import app.duss.easyproject.presentation.ui.project.list.store.ProjectStoreFactory
+import app.duss.easyproject.domain.entity.User
+import app.duss.easyproject.presentation.ui.landing.store.LandingStore
+import app.duss.easyproject.presentation.ui.landing.store.LandingStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -9,26 +10,24 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
-class ProjectComponent(
+class LandingComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    searchValue: String,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
 
-    private val projectStore =
+    private val favoriteStore =
         instanceKeeper.getStore {
-            ProjectStoreFactory(
+            LandingStoreFactory(
                 storeFactory = storeFactory,
-                searchValue = searchValue,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<ProjectStore.State> = projectStore.stateFlow
+    val state: StateFlow<LandingStore.State> = favoriteStore.stateFlow
 
-    fun onEvent(event: ProjectStore.Intent) {
-        projectStore.accept(event)
+    fun onEvent(event: LandingStore.Intent) {
+        favoriteStore.accept(event)
     }
 
     fun onOutput(output: Output) {
@@ -36,8 +35,9 @@ class ProjectComponent(
     }
 
     sealed class Output {
-//        object NavigateBack : Output()
-        data class NavigateToDetails(val id: Long?) : Output()
+        data class Authorized(val user: User?) : Output()
+        data object Unauthorized : Output()
+
     }
 
 }

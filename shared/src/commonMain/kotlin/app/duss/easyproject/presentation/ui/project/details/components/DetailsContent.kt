@@ -23,6 +23,7 @@ internal fun DetailsContent(
     state: ProjectDetailsStore.State,
     onEvent: (ProjectDetailsStore.Intent) -> Unit,
     onOutput: (ProjectDetailsComponent.Output) -> Unit,
+    modifier: Modifier,
 ) {
     Box(contentAlignment = Alignment.TopCenter) {
         state.projectInfo?.let { pokemonInfo ->

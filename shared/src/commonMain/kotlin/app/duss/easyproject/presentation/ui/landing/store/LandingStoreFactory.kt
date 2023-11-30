@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.login.store
+package app.duss.easyproject.presentation.ui.landing.store
 
 import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.domain.params.UserLoginRequest
@@ -14,16 +14,16 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class LoginStoreFactory(
+class LandingStoreFactory(
     private val storeFactory: StoreFactory,
 ): KoinComponent {
 
     private val userLoginUseCase by inject<UserLoginUseCase>()
 
-    fun create(): LoginStore =
-        object : LoginStore, Store<LoginStore.Intent, LoginStore.State, Nothing> by storeFactory.create(
-            name = LoginStore::class.simpleName,
-            initialState = LoginStore.State(),
+    fun create(): LandingStore =
+        object : LandingStore, Store<LandingStore.Intent, LandingStore.State, Nothing> by storeFactory.create(
+            name = LandingStore::class.simpleName,
+            initialState = LandingStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
@@ -37,16 +37,16 @@ class LoginStoreFactory(
         data class Failed(val error: String?) : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<LoginStore.Intent, Unit, LoginStore.State, Msg, Nothing>(appDispatchers.main) {
-        override fun executeAction(action: Unit, getState: () -> LoginStore.State) {
+    private inner class ExecutorImpl : CoroutineExecutor<LandingStore.Intent, Unit, LandingStore.State, Msg, Nothing>(appDispatchers.main) {
+        override fun executeAction(action: Unit, getState: () -> LandingStore.State) {
 
         }
 
-        override fun executeIntent(intent: LoginStore.Intent, getState: () -> LoginStore.State): Unit =
+        override fun executeIntent(intent: LandingStore.Intent, getState: () -> LandingStore.State): Unit =
             when (intent) {
-                LoginStore.Intent.LoginButtonPressed -> loginUser(getState().username, getState().password)
-                is LoginStore.Intent.UpdateUsernameValue -> dispatch(Msg.UsernameValueUpdated(intent.username))
-                is LoginStore.Intent.UpdatePasswordValue -> dispatch(Msg.PasswordValueUpdated(intent.password))
+                LandingStore.Intent.LoginButtonPressed -> loginUser(getState().username, getState().password)
+                is LandingStore.Intent.UpdateUsernameValue -> dispatch(Msg.UsernameValueUpdated(intent.username))
+                is LandingStore.Intent.UpdatePasswordValue -> dispatch(Msg.PasswordValueUpdated(intent.password))
             }
 
         private var job: Job? = null
@@ -72,13 +72,13 @@ class LoginStoreFactory(
         }
     }
 
-    private object ReducerImpl: Reducer<LoginStore.State, Msg> {
-        override fun LoginStore.State.reduce(msg: Msg): LoginStore.State =
+    private object ReducerImpl: Reducer<LandingStore.State, Msg> {
+        override fun LandingStore.State.reduce(msg: Msg): LandingStore.State =
             when (msg) {
                 is Msg.UsernameValueUpdated -> copy(username = msg.username)
                 is Msg.PasswordValueUpdated -> copy(password = msg.password)
                 is Msg.Loading -> copy(isLoading = true)
-                is Msg.Loaded -> LoginStore.State(user = msg.user)
+                is Msg.Loaded -> LandingStore.State(user = msg.user)
                 is Msg.Failed -> copy(error = msg.error)
             }
     }
