@@ -1,5 +1,6 @@
 package app.duss.easyproject.presentation.ui.login
 
+import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.presentation.ui.login.store.LoginStore
 import app.duss.easyproject.presentation.ui.login.store.LoginStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -34,7 +35,7 @@ class LoginComponent(
     }
 
     sealed class Output {
-        data object NavigateToDashboard : Output()
+        data class NavigateToDashboard(val user: User?) : Output()
 
     }
 

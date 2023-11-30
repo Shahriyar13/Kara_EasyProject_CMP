@@ -13,7 +13,7 @@ data class CustomerEnquiry(
     override val time: Long,
     override val sendTime: Long?,
     override val annualId: Int,
-    override val id: Long,
+    override val id: Long?,
     override val creationTime: Long,
     override val modificationTime: Long?,
     override val createdBy: String,

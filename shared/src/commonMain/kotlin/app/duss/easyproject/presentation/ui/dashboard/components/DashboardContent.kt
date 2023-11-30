@@ -24,7 +24,7 @@ import app.duss.easyproject.presentation.ui.dashboard.state.CategoryState
 import app.duss.easyproject.presentation.ui.dashboard.store.DashboardStore
 
 @Composable
-internal fun MainContent(
+internal fun DashboardContent(
     state: DashboardStore.State,
     onEvent: (DashboardStore.Intent) -> Unit,
     onOutput: (DashboardComponent.Output) -> Unit,

@@ -16,7 +16,7 @@ data class User (
     val telephone: String? = null,
     val mobile: String? = null,
     var role: Role = Role.NOT_ACTIVE,
-    override val id: Long,
+    override val id: Long?,
     override val creationTime: Long = -1,
     override val modificationTime: Long? = null,
     override val createdBy: String = "Unknown",

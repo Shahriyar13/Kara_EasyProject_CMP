@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FileAttachment(
         val url: String,
-        override val id: Long,
+        override val id: Long?,
         override val creationTime: Long,
         override val modificationTime: Long?,
         override val createdBy: String,

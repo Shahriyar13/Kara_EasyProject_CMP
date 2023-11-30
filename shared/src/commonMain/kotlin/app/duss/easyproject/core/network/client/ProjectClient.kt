@@ -58,7 +58,7 @@ class ProjectClient(
 
     suspend fun getProjectNewProject(): ServerResponse<Project> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getById) {
+            httpClient.get(NetworkConstants.Project.getNew) {
                 contentType(ContentType.Application.Json)
             }
         }

@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class BaseEntity {
-    abstract val id: Long
+    abstract val id: Long?
     abstract val creationTime: Long
     abstract val modificationTime: Long?
     abstract val createdBy: String

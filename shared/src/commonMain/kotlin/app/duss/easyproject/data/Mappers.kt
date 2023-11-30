@@ -7,7 +7,7 @@ import app.duss.easyproject.domain.enums.Title
 import appdusseasyproject.UserEntity
 
 fun User.mapToDatabaseEntity(token: String) = UserEntity(
-    id = id,
+    id = id ?: -1,
     username = username,
     token = token,
     title = title?.name,

@@ -46,7 +46,7 @@ internal fun LoginContent(
         ) {
 
             if (state.user != null) {
-               onOutput(LoginComponent.Output.NavigateToDashboard)
+               onOutput(LoginComponent.Output.NavigateToDashboard(state.user))
             }
 
             state.error?.let { error ->

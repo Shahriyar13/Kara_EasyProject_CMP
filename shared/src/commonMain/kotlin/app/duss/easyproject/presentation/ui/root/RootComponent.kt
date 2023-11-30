@@ -9,20 +9,22 @@ import app.duss.easyproject.presentation.ui.project.list.ProjectComponent
 import app.duss.easyproject.presentation.ui.root.store.RootStore
 import app.duss.easyproject.presentation.ui.root.store.RootStoreFactory
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 
 class RootComponent(
     componentContext: ComponentContext,
@@ -179,31 +181,31 @@ class RootComponent(
 
 
     sealed class Configuration : Parcelable {
-        @Parcelize
+        @Serializable
         data object Dashboard : Configuration()
 
-        @Parcelize
+        @Serializable
         data object Login : Configuration()
 
-        @Parcelize
+        @Serializable
         data object Database : Configuration()
 
-        @Parcelize
+        @Serializable
         data class CE(val searchValue: String = "") : Configuration()
 
-        @Parcelize
+        @Serializable
         data class Project(val searchValue: String = "") : Configuration()
 
-        @Parcelize
+        @Serializable
         data class ProjectDetails(val id: Long?) : Configuration()
 
-        @Parcelize
+        @Serializable
         data class SE(val searchValue: String = "") : Configuration()
 //
 //        @Parcelize
 //        data class CEDetails(val ceCode: String) : Configuration()
 
-        @Parcelize
+        @Serializable
         data object ComingSoon : Configuration()
     }
 
@@ -235,18 +237,23 @@ class RootComponent(
         }
 
     private fun onLoginOutput(output: LoginComponent.Output): Unit =
-        if (state.value.user == null)
-            navigation.bringToFront(Configuration.Login)
-        else when (output) {
-            LoginComponent.Output.NavigateToDashboard -> navigation.pop()
+        when (output) {
+            is LoginComponent.Output.NavigateToDashboard -> {
+                output.let {
+                    if (it.user != null) {
+                        navigation.bringToFront(Configuration.Dashboard)
+                    }
+                }
+            }
         }
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun onProjectOutput(output: ProjectComponent.Output): Unit =
         if (state.value.user == null)
             navigation.bringToFront(Configuration.Login)
         else when (output) {
 //            is ProjectComponent.Output.NavigateBack -> navigation.pop()
-            is ProjectComponent.Output.NavigateToDetails -> navigation.push(
+            is ProjectComponent.Output.NavigateToDetails -> navigation.pushNew(
                 Configuration.ProjectDetails(
                     output.id
                 )

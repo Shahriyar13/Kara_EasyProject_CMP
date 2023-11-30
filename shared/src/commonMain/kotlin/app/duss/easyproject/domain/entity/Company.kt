@@ -19,7 +19,7 @@ data class Company(
     val managingDirectorPerson: Person?,
     val banks: List<Bank>?,
     override val name: String,
-    override val id: Long,
+    override val id: Long?,
     override val creationTime: Long,
     override val modificationTime: Long?,
     override val createdBy: String,
