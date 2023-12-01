@@ -11,16 +11,13 @@ import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.presentation.component.PagingVerticalGrid
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.theme.*
-import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
-import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
+import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ProjectListContent(
     state: ProjectListStore.State,
     onEvent: (ProjectListStore.Intent) -> Unit,
-    onOutput: (ProjectListComponent.Output) -> Unit,
-    modifier: Modifier,
 ) {
     Scaffold(
         topBar = {
@@ -54,7 +51,7 @@ internal fun ProjectListContent(
 
             PagingVerticalGrid(
                 content = { item: Project ->
-                    ProjectItem(
+                    app.duss.easyproject.presentation.ui.project.components.ProjectItem(
                         project = item,
                         onClick = {
                             onEvent(ProjectListStore.Intent.Details(item))
@@ -69,7 +66,7 @@ internal fun ProjectListContent(
                     onEvent(ProjectListStore.Intent.LoadProjectListByPage(page = nextPage))
                 },
                 loadContent = {
-                    ProjectLoadingItem(alpha = it)
+                    app.duss.easyproject.presentation.ui.project.components.ProjectLoadingItem(alpha = it)
                 }
             )
         }

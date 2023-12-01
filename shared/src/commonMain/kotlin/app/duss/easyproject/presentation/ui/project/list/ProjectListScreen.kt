@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import app.duss.easyproject.presentation.ui.project.list.components.ProjectListContent
 
 @Composable
-internal fun ProjectListScreen(component: ProjectListComponent, modifier: Modifier) {
+internal fun ProjectListScreen(component: ProjectListComponent) {
 
     val state by component.state.collectAsState()
 
@@ -15,7 +15,6 @@ internal fun ProjectListScreen(component: ProjectListComponent, modifier: Modifi
         state = state,
         onEvent = component::onEvent,
         onOutput = component::onOutput,
-        modifier = modifier,
     )
 
 }

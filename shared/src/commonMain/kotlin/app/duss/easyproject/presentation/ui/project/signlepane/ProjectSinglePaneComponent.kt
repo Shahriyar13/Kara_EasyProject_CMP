@@ -1,26 +1,28 @@
-package app.duss.easyproject.presentation.ui.project.pane
+package app.duss.easyproject.presentation.ui.project.signlepane
 
 import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
 import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
-import app.duss.easyproject.presentation.ui.project.pane.store.ProjectStore
-import app.duss.easyproject.presentation.ui.project.pane.store.ProjectStoreFactory
+import app.duss.easyproject.presentation.ui.project.signlepane.store.ProjectListStore
+import app.duss.easyproject.presentation.ui.project.signlepane.store.ProjectListStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 
-class ProjectComponentImpl(
+class ProjectSinglePaneComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val output: (ProjectComponent.Output) -> Unit,
-
-    private val projectList: (ComponentContext, searchValue: String, (ProjectListComponent.Output) -> Unit) -> ProjectListComponent = { childContext, searchValue, output ->
+    searchValue: String,
+    private val output: (Output) -> Unit,
+    private val projectList: (ComponentContext, searchValue: String?, (ProjectListComponent.Output) -> Unit) -> ProjectListComponent = { childContext, searchValue, output ->
         ProjectListComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
@@ -36,47 +38,42 @@ class ProjectComponentImpl(
             output = output
         )
     },
-) : ProjectComponent, ComponentContext by componentContext {
+): ComponentContext by componentContext {
 
-    override val store =
+    private val projectStore =
         instanceKeeper.getStore {
-            ProjectStoreFactory(
+            ProjectListStoreFactory(
                 storeFactory = storeFactory,
+                searchValue = searchValue,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override val state: StateFlow<ProjectStore.State> = store.stateFlow
+    val state: StateFlow<ProjectListStore.State> = projectStore.stateFlow
 
-    override fun onOutput(output: ProjectComponent.Output) {
-        output(output)
-    }
-
-    private val navigation = StackNavigation<ProjectComponent.Config>()
+    private val navigation = StackNavigation<Config>()
 
     private val stack =
         childStack(
             source = navigation,
-            initialConfiguration = ProjectComponent.Config.List(),
+            initialConfiguration = Config.List(""),
             handleBackButton = false,
             childFactory = ::createChild
         )
 
-    override val childStack: Value<ChildStack<*, ProjectComponent.Children>> = stack
-
     private fun createChild(
-        configuration: ProjectComponent.Config,
+        configuration: Config,
         componentContext: ComponentContext
-    ): ProjectComponent.Children =
+    ): Children =
         when (configuration) {
-            is ProjectComponent.Config.Details -> ProjectComponent.Children.Details(
+            is Config.Details -> Children.Details(
                 projectDetails(
                     componentContext,
                     configuration.id,
                     ::onDetailsOutput
                 )
             )
-            is ProjectComponent.Config.List -> ProjectComponent.Children.List(
+            is Config.List -> Children.List(
                 projectList(
                     componentContext,
                     configuration.searchValue,
@@ -85,13 +82,41 @@ class ProjectComponentImpl(
             )
         }
 
-    private fun onDetailsOutput(output: ProjectDetailsComponent.Output) {
+    val childStack: Value<ChildStack<*, Children>> = stack
 
+    fun onEvent(event: ProjectListStore.Intent) {
+        projectStore.accept(event)
+    }
+
+    fun onOutput(output: Output) {
+        output(output)
+    }
+    sealed class Output {
+//        object NavigateBack : Output()
+//        data class NavigateToDetails(val id: Long?) : Output()
     }
 
     private fun onListOutput(output: ProjectListComponent.Output) {
 
+    }
+
+    private fun onDetailsOutput(output: ProjectDetailsComponent.Output) {
 
     }
+
+    sealed class Config : Parcelable {
+        @Serializable
+        data class List(val searchValue: String) : Config()
+
+        @Serializable
+        data class Details(val id: Long?) : Config()
+    }
+
+    sealed class Children {
+        data class List(val component: ProjectListComponent) : Children()
+        data class Details(val component: ProjectDetailsComponent) : Children()
+
+    }
+
 
 }

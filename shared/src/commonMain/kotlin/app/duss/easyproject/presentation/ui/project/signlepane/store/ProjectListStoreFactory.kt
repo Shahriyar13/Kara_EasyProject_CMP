@@ -1,8 +1,7 @@
-package app.duss.easyproject.presentation.ui.project.list.store
+package app.duss.easyproject.presentation.ui.project.signlepane.store
 
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
 import app.duss.easyproject.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -47,7 +46,11 @@ internal class ProjectListStoreFactory(
         override fun executeIntent(intent: ProjectListStore.Intent, getState: () -> ProjectListStore.State): Unit =
             when (intent) {
                 is ProjectListStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
-                is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                is ProjectListStore.Intent.UpdateSearchValue -> dispatch(
+                    Msg.SearchValueUpdated(
+                        intent.searchValue
+                    )
+                )
                 ProjectListStore.Intent.AddNew -> TODO()
                 is ProjectListStore.Intent.Details -> TODO()
             }

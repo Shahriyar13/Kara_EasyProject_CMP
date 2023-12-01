@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.project.list.components
+package app.duss.easyproject.presentation.ui.project.components
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

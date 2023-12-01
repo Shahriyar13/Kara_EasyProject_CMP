@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.project.list.components
+package app.duss.easyproject.presentation.ui.project.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,14 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.presentation.theme.Blue300
-import app.duss.easyproject.presentation.theme.Blue500
-import app.duss.easyproject.presentation.theme.Green300
-import app.duss.easyproject.presentation.theme.Green500
-import app.duss.easyproject.presentation.theme.Red300
-import app.duss.easyproject.presentation.theme.Red500
-import app.duss.easyproject.presentation.theme.Yellow300
-import app.duss.easyproject.presentation.theme.Yellow500
 import app.duss.easyproject.presentation.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,21 +1,20 @@
-package app.duss.easyproject.presentation.ui.project.pane
+package app.duss.easyproject.presentation.ui._genericPane
 
-import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
-import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
-import app.duss.easyproject.presentation.ui.project.pane.store.ProjectStore
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.mvikotlin.core.store.Store
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
 
-interface ProjectComponent {
+interface PaneComponent<STORE: Store<Intent, State, Label>, Intent: Any, State: Any, Label: Any> {
 
-    val store: ProjectStore
+    val store: STORE
 
-    val state: StateFlow<ProjectStore.State>
+    val state: StateFlow<State>
 
-    fun onEvent(event: ProjectStore.Intent) {
+    fun onEvent(event: Intent) {
         store.accept(event)
     }
 
@@ -27,9 +26,9 @@ interface ProjectComponent {
     fun setMultiPane(isMultiPane: Boolean)
 
     sealed class Children {
-        data class List(val component: ProjectListComponent) : Children()
+        data class List(val component: ComponentContext) : Children()
 
-        data class Details(val component: ProjectDetailsComponent) : Children()
+        data class Details(val component: ComponentContext) : Children()
 
     }
 

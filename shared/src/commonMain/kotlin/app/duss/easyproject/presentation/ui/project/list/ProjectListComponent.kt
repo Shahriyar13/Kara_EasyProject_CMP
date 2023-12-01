@@ -1,7 +1,7 @@
 package app.duss.easyproject.presentation.ui.project.list
 
-import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
-import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStoreFactory
+import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
+import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 class ProjectListComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    searchValue: String,
+    searchValue: String?,
     private val output: (Output) -> Unit,
 ): ComponentContext by componentContext {
 

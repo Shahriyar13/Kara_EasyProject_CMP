@@ -1,7 +1,6 @@
-package app.duss.easyproject.presentation.ui.project.list.store
+package app.duss.easyproject.presentation.ui.project.multipane.store
 
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface ProjectListStore: Store<ProjectListStore.Intent, ProjectListStore.State, Nothing> {
