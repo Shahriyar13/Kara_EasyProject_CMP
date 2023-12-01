@@ -1,8 +1,16 @@
 package app.duss.easyproject.presentation.ui.project.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -13,7 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.presentation.theme.*
+import app.duss.easyproject.presentation.theme.Blue300
+import app.duss.easyproject.presentation.theme.Blue500
+import app.duss.easyproject.presentation.theme.Green300
+import app.duss.easyproject.presentation.theme.Green500
+import app.duss.easyproject.presentation.theme.Red300
+import app.duss.easyproject.presentation.theme.Red500
+import app.duss.easyproject.presentation.theme.Yellow300
+import app.duss.easyproject.presentation.theme.Yellow500
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +61,7 @@ internal fun ProjectItem(
     }
 
     Card(
-        onClick = onClick,
+        onClick = { onClick() },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,

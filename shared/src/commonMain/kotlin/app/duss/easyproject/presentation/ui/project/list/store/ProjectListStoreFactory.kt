@@ -2,7 +2,6 @@ package app.duss.easyproject.presentation.ui.project.list.store
 
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
 import app.duss.easyproject.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -16,14 +15,14 @@ import org.koin.core.component.inject
 
 internal class ProjectListStoreFactory(
     private val storeFactory: StoreFactory,
-    private val searchValue: String,
+    private val searchValue: String?,
 ): KoinComponent {
 
     private val projectRepository by inject<ProjectRepository>()
 
     fun create(): ProjectListStore =
         object : ProjectListStore, Store<ProjectListStore.Intent, ProjectListStore.State, Nothing> by storeFactory.create(
-            name = "ProjectStore",
+            name = ProjectListStore::class.simpleName,
             initialState = ProjectListStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,
@@ -31,6 +30,9 @@ internal class ProjectListStoreFactory(
         ) {}
 
     private sealed class Msg {
+        data object AddNewProject : Msg()
+        data class NavigateToProjectDetails(val id: Long) : Msg()
+        data object ProjectDetailsDone : Msg()
         data object ProjectListLoading : Msg()
         data class ProjectListLoaded(val projectList: List<Project>) : Msg()
         data class ProjectListFailed(val error: String?) : Msg()
@@ -48,8 +50,8 @@ internal class ProjectListStoreFactory(
             when (intent) {
                 is ProjectListStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
                 is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
-                ProjectListStore.Intent.AddNew -> TODO()
-                is ProjectListStore.Intent.Details -> TODO()
+                ProjectListStore.Intent.AddNew -> dispatch(Msg.AddNewProject)
+                is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.item.id!!))
             }
 
         private var loadProjectListByPageJob: Job? = null
@@ -87,6 +89,9 @@ internal class ProjectListStoreFactory(
                 is Msg.ProjectListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
+                Msg.AddNewProject -> copy(projectId = -1)
+                is Msg.NavigateToProjectDetails -> copy(projectId = msg.id)
+                is Msg.ProjectDetailsDone -> copy(projectId = null)
             }
     }
 }

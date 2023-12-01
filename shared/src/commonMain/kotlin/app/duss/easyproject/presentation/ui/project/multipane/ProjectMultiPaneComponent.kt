@@ -19,7 +19,7 @@ import kotlinx.serialization.Serializable
 class ProjectMultiPaneComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    searchValue: String,
+    searchValue: String?,
     private val output: (Output) -> Unit,
     private val projectDetails: (ComponentContext, id: Long?, (ProjectDetailsComponent.Output) -> Unit) -> ProjectDetailsComponent = { childContext, id, output ->
         ProjectDetailsComponent(

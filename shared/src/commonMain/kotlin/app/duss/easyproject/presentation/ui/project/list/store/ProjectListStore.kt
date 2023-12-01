@@ -1,7 +1,6 @@
 package app.duss.easyproject.presentation.ui.project.list.store
 
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
 import com.arkivanov.mvikotlin.core.store.Store
 
 interface ProjectListStore: Store<ProjectListStore.Intent, ProjectListStore.State, Nothing> {
@@ -15,6 +14,7 @@ interface ProjectListStore: Store<ProjectListStore.Intent, ProjectListStore.Stat
 
     data class State(
         var page: Long = 0,
+        var projectId: Long? = null,
         val isLoading: Boolean = false,
         val isLastPageLoaded: Boolean = false,
         val error: String? = null,

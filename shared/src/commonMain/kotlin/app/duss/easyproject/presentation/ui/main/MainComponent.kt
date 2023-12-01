@@ -5,6 +5,7 @@ import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
 import app.duss.easyproject.presentation.ui.main.store.MainStore
 import app.duss.easyproject.presentation.ui.main.store.MainStoreFactory
+import app.duss.easyproject.presentation.ui.project.ProjectComponent
 import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -41,8 +42,8 @@ class MainComponent(
             output = output
         )
     },
-    private val project: (ComponentContext, searchValue: String, (ProjectSinglePaneComponent.Output) -> Unit) -> ProjectSinglePaneComponent= { childContext, searchValue, output ->
-        ProjectSinglePaneComponent(
+    private val project: (ComponentContext, searchValue: String, (ProjectComponent.Output) -> Unit) -> ProjectComponent= { childContext, searchValue, output ->
+        ProjectComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             searchValue = searchValue,
@@ -159,7 +160,7 @@ class MainComponent(
 
 //        data class CEDetails(val component: ComingSoonComponent) : Child()
 
-        data class Project(val component: ProjectSinglePaneComponent) : Child()
+        data class Project(val component: ProjectComponent) : Child()
 
 //        data class ProjectDetails(val component: ProjectDetailsComponent) : Child()
 
@@ -235,7 +236,7 @@ class MainComponent(
         }
 
 
-    private fun onProjectOutput(output: ProjectSinglePaneComponent.Output): Unit {}
+    private fun onProjectOutput(output: ProjectComponent.Output): Unit {}
 //        when (output) {
 //            is ProjectComponent.Output.NavigateBack -> navigation.pop()
 //            is ProjectComponent.Output.NavigateToDetails -> navigation.pushNew(

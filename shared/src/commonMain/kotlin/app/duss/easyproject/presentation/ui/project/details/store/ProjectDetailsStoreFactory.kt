@@ -21,7 +21,7 @@ internal class ProjectDetailsStoreFactory(
 
     fun create(): ProjectDetailsStore =
         object : ProjectDetailsStore, Store<ProjectDetailsStore.Intent, ProjectDetailsStore.State, Nothing> by storeFactory.create(
-            name = "DetailsStore",
+            name = ProjectDetailsStore::class.simpleName,
             initialState = ProjectDetailsStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,

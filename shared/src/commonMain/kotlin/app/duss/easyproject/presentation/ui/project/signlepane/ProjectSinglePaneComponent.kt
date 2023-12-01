@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
 class ProjectSinglePaneComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    searchValue: String,
+    searchValue: String?,
     private val output: (Output) -> Unit,
     private val projectList: (ComponentContext, searchValue: String?, (ProjectListComponent.Output) -> Unit) -> ProjectListComponent = { childContext, searchValue, output ->
         ProjectListComponent(

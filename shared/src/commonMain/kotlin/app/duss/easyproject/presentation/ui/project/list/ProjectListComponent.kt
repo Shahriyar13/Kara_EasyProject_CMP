@@ -1,7 +1,7 @@
 package app.duss.easyproject.presentation.ui.project.list
 
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStoreFactory
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -16,7 +16,7 @@ class ProjectListComponent(
     private val output: (Output) -> Unit,
 ): ComponentContext by componentContext {
 
-    private val projectStore =
+    private val projectListStore =
         instanceKeeper.getStore {
             ProjectListStoreFactory(
                 storeFactory = storeFactory,
@@ -25,10 +25,10 @@ class ProjectListComponent(
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<ProjectListStore.State> = projectStore.stateFlow
+    val state: StateFlow<ProjectListStore.State> = projectListStore.stateFlow
 
     fun onEvent(event: ProjectListStore.Intent) {
-        projectStore.accept(event)
+        projectListStore.accept(event)
     }
 
     fun onOutput(output: Output) {
