@@ -1,8 +1,8 @@
 package app.duss.easyproject.presentation.ui.project.multipane
 
 import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStoreFactory
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation

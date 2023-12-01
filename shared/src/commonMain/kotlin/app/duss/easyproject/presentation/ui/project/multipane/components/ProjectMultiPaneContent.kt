@@ -14,8 +14,8 @@ import app.duss.easyproject.presentation.component.PagingVerticalGrid
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.theme.*
 import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsScreen
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
 import app.duss.easyproject.presentation.ui.project.multipane.ProjectMultiPaneComponent
-import app.duss.easyproject.presentation.ui.project.multipane.store.ProjectListStore
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation

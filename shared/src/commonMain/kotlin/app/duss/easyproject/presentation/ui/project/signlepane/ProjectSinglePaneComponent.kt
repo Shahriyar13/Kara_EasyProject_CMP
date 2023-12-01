@@ -2,8 +2,8 @@ package app.duss.easyproject.presentation.ui.project.signlepane
 
 import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
 import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
-import app.duss.easyproject.presentation.ui.project.signlepane.store.ProjectListStore
-import app.duss.easyproject.presentation.ui.project.signlepane.store.ProjectListStoreFactory
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
+import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
