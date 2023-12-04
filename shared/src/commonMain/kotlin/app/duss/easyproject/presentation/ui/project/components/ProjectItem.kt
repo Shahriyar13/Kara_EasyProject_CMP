@@ -61,7 +61,9 @@ internal fun ProjectItem(
     }
 
     Card(
-        onClick = { onClick() },
+        onClick = {
+            onClick.invoke()
+        },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
