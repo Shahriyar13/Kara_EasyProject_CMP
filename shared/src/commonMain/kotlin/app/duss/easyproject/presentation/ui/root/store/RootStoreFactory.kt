@@ -9,8 +9,6 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -38,7 +36,6 @@ internal class RootStoreFactory(
     private inner class ExecutorImpl : CoroutineExecutor<MainStore.Intent, Unit, MainStore.State, Msg, Nothing>(
         appDispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> MainStore.State) {
-            getLoggedInUser()
         }
 
         override fun executeIntent(intent: MainStore.Intent, getState: () -> MainStore.State): Unit =
@@ -47,24 +44,6 @@ internal class RootStoreFactory(
                 is MainStore.Intent.LoggedInUserLoaded -> dispatch(Msg.LoggedInUserLoaded(intent.user))
                 MainStore.Intent.LoggedInUserLoading -> dispatch(Msg.LoggedInUserLoading)
             }
-
-        private var job: Job? = null
-        private fun getLoggedInUser() {
-            if (job?.isActive == true) return
-
-            job = scope.launch {
-                dispatch(Msg.LoggedInUserLoading)
-
-                loggedInUserUseCase
-                    .execute(null)
-                    .onSuccess { user ->
-                        dispatch(Msg.LoggedInUserLoaded(user))
-                    }
-                    .onFailure { e ->
-                        dispatch(Msg.LoggedInUserFailed(e.message))
-                    }
-            }
-        }
     }
 
     internal object ReducerImpl: Reducer<MainStore.State, Msg> {

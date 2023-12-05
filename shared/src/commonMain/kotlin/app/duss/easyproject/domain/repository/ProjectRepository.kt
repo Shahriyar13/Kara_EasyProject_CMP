@@ -6,7 +6,7 @@ import app.duss.easyproject.domain.params.ProjectUpdateRequest
 
 interface ProjectRepository {
 
-    suspend fun getProjectList(page: Long): Result<List<Project>>
+    suspend fun getProjectList(page: Int): Result<List<Project>>
 
     suspend fun getProjectById(id: Long?): Result<Project>
 

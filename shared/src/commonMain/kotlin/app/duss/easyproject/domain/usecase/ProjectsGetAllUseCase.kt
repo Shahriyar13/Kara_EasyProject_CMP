@@ -5,9 +5,9 @@ import app.duss.easyproject.domain.repository.ProjectRepository
 
 class ProjectsGetAllUseCase(
     private val projectRepository: ProjectRepository,
-): BaseCoroutinesUseCase<Long, List<Project>>() {
+): BaseCoroutinesUseCase<Int, List<Project>>() {
 
-    override suspend fun execute(param: Long): Result<List<Project>> =
+    override suspend fun execute(param: Int): Result<List<Project>> =
         projectRepository.getProjectList(param)
 
 }

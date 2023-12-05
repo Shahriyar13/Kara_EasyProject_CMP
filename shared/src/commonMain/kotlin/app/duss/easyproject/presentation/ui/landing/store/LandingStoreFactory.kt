@@ -1,8 +1,7 @@
 package app.duss.easyproject.presentation.ui.landing.store
 
 import app.duss.easyproject.domain.entity.User
-import app.duss.easyproject.domain.params.UserLoginRequest
-import app.duss.easyproject.domain.usecase.UserLoginUseCase
+import app.duss.easyproject.domain.usecase.UserLoggedInUseCase
 import app.duss.easyproject.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -16,67 +15,67 @@ import org.koin.core.component.inject
 
 class LandingStoreFactory(
     private val storeFactory: StoreFactory,
-): KoinComponent {
+) : KoinComponent {
 
-    private val userLoginUseCase by inject<UserLoginUseCase>()
+    private val loggedInUserUseCase by inject<UserLoggedInUseCase>()
 
     fun create(): LandingStore =
-        object : LandingStore, Store<LandingStore.Intent, LandingStore.State, Nothing> by storeFactory.create(
-            name = LandingStore::class.simpleName,
-            initialState = LandingStore.State(),
-            bootstrapper = SimpleBootstrapper(Unit),
-            executorFactory = ::ExecutorImpl,
-            reducer = ReducerImpl
-        ) {}
+        object : LandingStore,
+            Store<LandingStore.Intent, LandingStore.State, Nothing> by storeFactory.create(
+                name = LandingStore::class.simpleName,
+                initialState = LandingStore.State(),
+                bootstrapper = SimpleBootstrapper(Unit),
+                executorFactory = ::ExecutorImpl,
+                reducer = ReducerImpl
+            ) {}
 
     private sealed class Msg {
-        data class UsernameValueUpdated(val username: String?) : Msg()
-        data class PasswordValueUpdated(val password: String?) : Msg()
         data object Loading : Msg()
         data class Loaded(val user: User) : Msg()
         data class Failed(val error: String?) : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<LandingStore.Intent, Unit, LandingStore.State, Msg, Nothing>(appDispatchers.main) {
+    private inner class ExecutorImpl :
+        CoroutineExecutor<LandingStore.Intent, Unit, LandingStore.State, Msg, Nothing>(
+            appDispatchers.main
+        ) {
         override fun executeAction(action: Unit, getState: () -> LandingStore.State) {
-
+            getLoggedInUser()
         }
 
-        override fun executeIntent(intent: LandingStore.Intent, getState: () -> LandingStore.State): Unit =
+        override fun executeIntent(
+            intent: LandingStore.Intent,
+            getState: () -> LandingStore.State
+        ) {
             when (intent) {
-                LandingStore.Intent.LoginButtonPressed -> loginUser(getState().username, getState().password)
-                is LandingStore.Intent.UpdateUsernameValue -> dispatch(Msg.UsernameValueUpdated(intent.username))
-                is LandingStore.Intent.UpdatePasswordValue -> dispatch(Msg.PasswordValueUpdated(intent.password))
+                LandingStore.Intent.LoggedInUserFailed -> dispatch(Msg.Failed("Not Logged in"))
+                is LandingStore.Intent.LoggedInUserLoaded -> dispatch(Msg.Loaded(intent.user))
+                LandingStore.Intent.LoggedInUserLoading -> dispatch(Msg.Loading)
             }
+        }
 
         private var job: Job? = null
-        private fun loginUser(username: String?, password: String?) {
+        private fun getLoggedInUser() {
             if (job?.isActive == true) return
-
-            if (username.isNullOrEmpty()) return dispatch(Msg.Failed("Enter Your Username"))
-            if (password.isNullOrEmpty()) return dispatch(Msg.Failed("Enter Your Password"))
 
             job = scope.launch {
                 dispatch(Msg.Loading)
 
-                userLoginUseCase
-                    .execute(UserLoginRequest(username, password))
-                    .onSuccess {
-                        it?.let {
-                            dispatch(Msg.Loaded(it))
-                        } ?: dispatch(Msg.Failed("Unknown error"))
-                    }.onFailure {
-                        dispatch(Msg.Failed(it.message))
+                loggedInUserUseCase
+                    .execute(null)
+                    .onSuccess { user ->
+                        dispatch(Msg.Loaded(user))
+                    }
+                    .onFailure { e ->
+                        dispatch(Msg.Failed(e.message))
                     }
             }
         }
     }
 
-    private object ReducerImpl: Reducer<LandingStore.State, Msg> {
+    private object ReducerImpl : Reducer<LandingStore.State, Msg> {
         override fun LandingStore.State.reduce(msg: Msg): LandingStore.State =
             when (msg) {
-                is Msg.UsernameValueUpdated -> copy(username = msg.username)
-                is Msg.PasswordValueUpdated -> copy(password = msg.password)
                 is Msg.Loading -> copy(isLoading = true)
                 is Msg.Loaded -> LandingStore.State(user = msg.user)
                 is Msg.Failed -> copy(error = msg.error)

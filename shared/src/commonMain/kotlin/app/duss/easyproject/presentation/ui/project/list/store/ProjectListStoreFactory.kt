@@ -56,7 +56,7 @@ internal class ProjectListStoreFactory(
 
         private var loadProjectListByPageJob: Job? = null
         private fun loadProjectListByPage(
-            page: Long,
+            page: Int,
             isLastPageLoaded: Boolean = false
         ) {
             if (loadProjectListByPageJob?.isActive == true) return
