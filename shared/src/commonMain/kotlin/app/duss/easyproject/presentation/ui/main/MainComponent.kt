@@ -27,37 +27,50 @@ class MainComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit,
+): ComponentContext by componentContext {
 
-    private val dashboard: (ComponentContext, (DashboardComponent.Output) -> Unit) -> DashboardComponent= { childContext, output ->
+
+    private val dashboard: (
+        ComponentContext,
+        (DashboardComponent.Output) -> Unit,
+    ) -> DashboardComponent= { childContext, output ->
         DashboardComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             output = output
         )
-    },
-    private val database: (ComponentContext, (DatabaseComponent.Output) -> Unit) -> DatabaseComponent= { childContext, output ->
+    }
+    private val database: (
+        ComponentContext,
+        (DatabaseComponent.Output) -> Unit,
+    ) -> DatabaseComponent= { childContext, output ->
         DatabaseComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             output = output
         )
-    },
-    private val project: (ComponentContext, searchValue: String, (ProjectComponent.Output) -> Unit) -> ProjectComponent= { childContext, searchValue, output ->
+    }
+    private val project: (
+        ComponentContext,
+        searchValue: String,
+        (ProjectComponent.Output) -> Unit,
+    ) -> ProjectComponent= { childContext, searchValue, output ->
         ProjectComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             searchValue = searchValue,
             output = output
         )
-    },
-    private val comingSoon: (ComponentContext, (ComingSoonComponent.Output) -> Unit) -> ComingSoonComponent = { childContext, output ->
+    }
+    private val comingSoon: (
+        ComponentContext,
+        (ComingSoonComponent.Output) -> Unit,
+    ) -> ComingSoonComponent = { childContext, output ->
         ComingSoonComponent(
             componentContext = childContext,
             output = output
         )
-    },
-): ComponentContext by componentContext {
-
+    }
     private val rootStore =
         instanceKeeper.getStore {
             MainStoreFactory(

@@ -25,7 +25,11 @@ class ProjectSinglePaneComponent(
     private val output: (Output) -> Unit,
 ): ComponentContext by componentContext {
 
-    private val projectList: (ComponentContext, searchValue: String?, (ProjectListComponent.Output) -> Unit) -> ProjectListComponent = { childContext, searchValue, output ->
+    private val projectList: (
+        ComponentContext,
+        searchValue: String?,
+        (ProjectListComponent.Output) -> Unit,
+    ) -> ProjectListComponent = { childContext, searchValue, output ->
         ProjectListComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
@@ -34,7 +38,10 @@ class ProjectSinglePaneComponent(
         )
     }
 
-    private val projectDetails: (ComponentContext, id: Long?, (ProjectDetailsComponent.Output) -> Unit) -> ProjectDetailsComponent = { childContext, id, output ->
+    private val projectDetails: (
+        ComponentContext, id: Long?,
+        (ProjectDetailsComponent.Output) -> Unit,
+    ) -> ProjectDetailsComponent = { childContext, id, output ->
         ProjectDetailsComponent(
             componentContext = childContext,
             storeFactory = storeFactory,

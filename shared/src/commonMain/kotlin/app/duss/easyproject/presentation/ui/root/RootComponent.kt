@@ -22,28 +22,40 @@ import kotlinx.serialization.Serializable
 class RootComponent(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
-    private val login: (ComponentContext, (LoginComponent.Output) -> Unit) -> LoginComponent = { childContext, output ->
+): ComponentContext by componentContext {
+
+    private val login: (
+        ComponentContext,
+        (LoginComponent.Output) -> Unit,
+    ) -> LoginComponent = { childContext, output ->
         LoginComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             output = output
         )
-    },
-    private val main: (ComponentContext, (MainComponent.Output) -> Unit) -> MainComponent = { childContext, output ->
+    }
+
+    private val main: (
+        ComponentContext,
+        (MainComponent.Output) -> Unit,
+    ) -> MainComponent = { childContext, output ->
         MainComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             output = output
         )
-    },
-    private val landing: (ComponentContext, (LandingComponent.Output) -> Unit) -> LandingComponent= { childContext, output ->
+    }
+
+    private val landing: (
+        ComponentContext,
+        (LandingComponent.Output) -> Unit,
+    ) -> LandingComponent= { childContext, output ->
         LandingComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             output = output
         )
-    },
-): ComponentContext by componentContext {
+    }
 
     private val rootStore =
         instanceKeeper.getStore {

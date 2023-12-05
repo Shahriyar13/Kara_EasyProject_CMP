@@ -24,7 +24,10 @@ class ProjectMultiPaneComponent(
     private val output: (Output) -> Unit,
 ): ComponentContext by componentContext {
 
-    private val projectDetails: (ComponentContext, id: Long?, (ProjectDetailsComponent.Output) -> Unit) -> ProjectDetailsComponent = { childContext, id, output ->
+    private val projectDetails: (
+        ComponentContext, id: Long?,
+        (ProjectDetailsComponent.Output) -> Unit,
+    ) -> ProjectDetailsComponent = { childContext, id, output ->
         ProjectDetailsComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
