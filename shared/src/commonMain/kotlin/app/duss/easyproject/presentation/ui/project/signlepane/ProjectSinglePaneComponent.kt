@@ -7,6 +7,7 @@ import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStoreF
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -22,6 +23,8 @@ class ProjectSinglePaneComponent(
     storeFactory: StoreFactory,
     searchValue: String?,
     private val output: (Output) -> Unit,
+): ComponentContext by componentContext {
+
     private val projectList: (ComponentContext, searchValue: String?, (ProjectListComponent.Output) -> Unit) -> ProjectListComponent = { childContext, searchValue, output ->
         ProjectListComponent(
             componentContext = childContext,
@@ -29,7 +32,8 @@ class ProjectSinglePaneComponent(
             searchValue = searchValue,
             output = output
         )
-    },
+    }
+
     private val projectDetails: (ComponentContext, id: Long?, (ProjectDetailsComponent.Output) -> Unit) -> ProjectDetailsComponent = { childContext, id, output ->
         ProjectDetailsComponent(
             componentContext = childContext,
@@ -37,8 +41,7 @@ class ProjectSinglePaneComponent(
             id = id,
             output = output
         )
-    },
-): ComponentContext by componentContext {
+    }
 
     private val projectStore =
         instanceKeeper.getStore {
@@ -93,11 +96,12 @@ class ProjectSinglePaneComponent(
     }
     sealed class Output {
 //        object NavigateBack : Output()
-//        data class NavigateToDetails(val id: Long?) : Output()
     }
 
     private fun onListOutput(output: ProjectListComponent.Output) {
-
+        when(output) {
+            is ProjectListComponent.Output.NavigateToDetails -> navigation.bringToFront(Config.Details(output.id))
+        }
     }
 
     private fun onDetailsOutput(output: ProjectDetailsComponent.Output) {

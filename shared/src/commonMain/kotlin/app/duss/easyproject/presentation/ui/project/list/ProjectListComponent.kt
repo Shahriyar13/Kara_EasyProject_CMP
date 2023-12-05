@@ -35,8 +35,7 @@ class ProjectListComponent(
         output(output)
     }
     sealed class Output {
-//        object NavigateBack : Output()
-//        data class NavigateToDetails(val id: Long?) : Output()
+        data class NavigateToDetails(val id: Long?) : Output()
     }
 
 

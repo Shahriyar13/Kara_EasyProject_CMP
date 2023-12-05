@@ -33,7 +33,7 @@ internal fun ProjectSinglePaneContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Projects") },
+                title = { Text(text = "Projects s") },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
@@ -49,14 +49,16 @@ internal fun ProjectSinglePaneContent(
         modifier = Modifier.padding(LocalSafeArea.current)
     ) { paddingValue ->
 
-        Children(
-            stack = component.childStack,
-            animation = stackAnimation(fade()),
-        ) {
-            when (val child = it.instance) {
-                is ProjectSinglePaneComponent.Children.Details -> ProjectDetailsScreen(child.component)
-                is ProjectSinglePaneComponent.Children.List -> ProjectListScreen(child.component)
+       Children(
+                modifier = Modifier.padding(paddingValue),
+                stack = component.childStack,
+                animation = stackAnimation(fade()),
+            ) {
+                when (val child = it.instance) {
+                    is ProjectSinglePaneComponent.Children.Details -> ProjectDetailsScreen(child.component)
+                    is ProjectSinglePaneComponent.Children.List -> ProjectListScreen(child.component)
+                }
             }
         }
-    }
+
 }

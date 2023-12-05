@@ -51,7 +51,7 @@ internal class ProjectListStoreFactory(
                 is ProjectListStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
                 is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
                 ProjectListStore.Intent.AddNew -> dispatch(Msg.AddNewProject)
-                is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.item.id!!))
+                is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.id))
             }
 
         private var loadProjectListByPageJob: Job? = null

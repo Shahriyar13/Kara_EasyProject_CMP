@@ -9,7 +9,7 @@ interface ProjectListStore: Store<ProjectListStore.Intent, ProjectListStore.Stat
         data class LoadProjectListByPage(val page: Long): Intent()
         data class UpdateSearchValue(val searchValue: String): Intent()
         data object AddNew: Intent()
-        data class Details(val item: Project): Intent()
+        data class Details(val id: Long): Intent()
     }
 
     data class State(

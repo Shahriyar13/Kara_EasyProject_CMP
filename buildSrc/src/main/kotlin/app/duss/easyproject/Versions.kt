@@ -1,12 +1,10 @@
 package app.duss.easyproject
 
 object Versions {
-    const val gradlePlugin = "8.1.4"
-    const val kotlin = "1.9.20"
-    const val kotlinIo = "0.3.0"
+    const val kotlin = "1.9.21"
     const val activityCompose = "1.8.0"
-    const val compose = "1.5.10"
-    const val composeCompiler = "1.5.4"
+    const val compose = "1.5.11"
+    const val composeCompiler = "1.5.5"
     const val coroutines = "1.7.3"
     const val serialization = "1.6.0"
     const val mviKotlin = "3.3.0"

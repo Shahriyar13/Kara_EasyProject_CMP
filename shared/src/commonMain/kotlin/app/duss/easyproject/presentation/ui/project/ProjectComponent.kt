@@ -19,6 +19,8 @@ class ProjectComponent(
     storeFactory: StoreFactory,
     searchValue: String,
     private val output: (Output) -> Unit,
+): ComponentContext by componentContext {
+
     private val projectSinglePane: (ComponentContext, searchValue: String?, (ProjectSinglePaneComponent.Output) -> Unit) -> ProjectSinglePaneComponent = { childContext, searchValue,  output ->
         ProjectSinglePaneComponent(
             componentContext = childContext,
@@ -26,7 +28,8 @@ class ProjectComponent(
             searchValue = searchValue,
             output = output
         )
-    },
+    }
+
     private val projectMultiPane: (ComponentContext, searchValue: String?, (ProjectMultiPaneComponent.Output) -> Unit) -> ProjectMultiPaneComponent = { childContext, searchValue, output ->
         ProjectMultiPaneComponent(
             componentContext = childContext,
@@ -34,9 +37,7 @@ class ProjectComponent(
             searchValue = searchValue,
             output = output
         )
-    },
-): ComponentContext by componentContext {
-
+    }
 
     private val projectStore =
         instanceKeeper.getStore {
@@ -90,10 +91,7 @@ class ProjectComponent(
     fun onOutput(output: Output) {
         output(output)
     }
-    sealed class Output {
-//        object NavigateBack : Output()
-//        data class NavigateToDetails(val id: Long?) : Output()
-    }
+    sealed class Output
 
     fun onEvent(event: ProjectStore.Intent) {
         projectStore.accept(event)
@@ -112,6 +110,4 @@ class ProjectComponent(
         data class MultiPane(val component: ProjectMultiPaneComponent) : Children()
 
     }
-
-
 }

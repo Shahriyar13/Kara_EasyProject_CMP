@@ -10,6 +10,6 @@ interface ProjectStore: Store<ProjectStore.Intent, ProjectStore.State, Nothing> 
     }
 
     data class State(
-        var isMultiPane: Boolean = false,
+        var isMultiPane: Boolean = true,
     )
 }

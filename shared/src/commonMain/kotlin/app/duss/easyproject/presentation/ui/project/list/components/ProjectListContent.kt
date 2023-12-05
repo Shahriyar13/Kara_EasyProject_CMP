@@ -19,7 +19,7 @@ internal fun ProjectListContent(
             ProjectItem(
                 project = item,
                 onClick = {
-                    onEvent(ProjectListStore.Intent.Details(item))
+                    onEvent(ProjectListStore.Intent.Details(item.id!!))
                 },
             )
         },

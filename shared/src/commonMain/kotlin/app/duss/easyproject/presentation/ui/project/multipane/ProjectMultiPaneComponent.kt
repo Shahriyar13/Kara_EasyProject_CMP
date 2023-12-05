@@ -7,6 +7,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -21,6 +22,8 @@ class ProjectMultiPaneComponent(
     storeFactory: StoreFactory,
     searchValue: String?,
     private val output: (Output) -> Unit,
+): ComponentContext by componentContext {
+
     private val projectDetails: (ComponentContext, id: Long?, (ProjectDetailsComponent.Output) -> Unit) -> ProjectDetailsComponent = { childContext, id, output ->
         ProjectDetailsComponent(
             componentContext = childContext,
@@ -28,8 +31,7 @@ class ProjectMultiPaneComponent(
             id = id,
             output = output
         )
-    },
-): ComponentContext by componentContext {
+    }
 
     private val projectStore =
         instanceKeeper.getStore {
@@ -77,9 +79,16 @@ class ProjectMultiPaneComponent(
         output(output)
     }
 
+    fun onNewItemClicked() {
+        navigation.push(Config.Details(null))
+    }
+
+    fun onItemClicked(id: Long) {
+        navigation.push(Config.Details(id))
+    }
+
     sealed class Output {
-//        object NavigateBack : Output()
-//        data class NavigateToDetails(val id: Long?) : Output()
+
     }
 
 

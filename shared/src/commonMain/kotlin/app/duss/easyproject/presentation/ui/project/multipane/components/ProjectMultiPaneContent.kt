@@ -2,6 +2,7 @@ package app.duss.easyproject.presentation.ui.project.multipane.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -28,8 +29,6 @@ import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsScreen
 import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
 import app.duss.easyproject.presentation.ui.project.multipane.ProjectMultiPaneComponent
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,13 +43,13 @@ internal fun ProjectMultiPaneContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Projects") },
+                title = { Text(text = "m Projects") },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
                 actions = {
                     IconButton(onClick = {
-                        onEvent(ProjectListStore.Intent.AddNew)
+                        component.onNewItemClicked()
                     }) {
                         Icon(Icons.Default.Add, "Add New one")
                     }
@@ -77,7 +76,7 @@ internal fun ProjectMultiPaneContent(
                         ProjectItem(
                             project = item,
                             onClick = {
-                                onEvent(ProjectListStore.Intent.Details(item))
+                                component.onItemClicked(item.id!!)
                             },
                         )
                     },
@@ -92,14 +91,14 @@ internal fun ProjectMultiPaneContent(
                         ProjectLoadingItem(
                             alpha = it
                         )
-                    }
+                    },
+                    modifier = Modifier.fillMaxHeight().weight(1F)
                 )
 
                 Children(
-                    stack = component.childStack,
-                    animation = stackAnimation(fade()),
+                    component.childStack
                 ) {
-                    when (val child = it.instance) {
+                    when (val child = it.configuration) {
                         is ProjectMultiPaneComponent.Children.Details -> ProjectDetailsScreen(child.component)
                         ProjectMultiPaneComponent.Children.None -> Unit
                     }
