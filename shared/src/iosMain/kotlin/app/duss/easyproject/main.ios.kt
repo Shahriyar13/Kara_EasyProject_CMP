@@ -13,10 +13,10 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import app.duss.easyproject.core.di.initKoin
-import app.duss.easyproject.ui.ContentView
-import app.duss.easyproject.ui.helper.LocalSafeArea
-import app.duss.easyproject.ui.root.RootComponent
-import app.duss.easyproject.ui.theme.AppTheme
+import app.duss.easyproject.presentation.ui.ContentView
+import app.duss.easyproject.presentation.ui.root.RootComponent
+import app.duss.easyproject.presentation.helper.LocalSafeArea
+import app.duss.easyproject.presentation.theme.AppTheme
 import platform.UIKit.*
 
 @Suppress("unused", "FunctionName")

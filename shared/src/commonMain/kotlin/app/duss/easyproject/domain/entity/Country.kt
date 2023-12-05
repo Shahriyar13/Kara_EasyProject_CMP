@@ -7,7 +7,7 @@ data class Country(
     val countryStates: List<CountryState>,
     val countryCustomPorts: List<CountryCustomPort>,
     override val name: String,
-    override val id: Long,
+    override val id: Long?,
     override val creationTime: Long,
     override val modificationTime: Long?,
     override val createdBy: String,

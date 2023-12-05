@@ -29,6 +29,7 @@ object Deps {
             const val ktorClientContentNegotiation = "io.ktor:ktor-client-content-negotiation:${Versions.ktor}"
             const val ktorClientResources = "io.ktor:ktor-client-resources:${Versions.ktor}"
             const val ktorClientLogging = "io.ktor:ktor-client-logging:${Versions.ktor}"
+            const val ktorClientAuth = "io.ktor:ktor-client-auth:${Versions.ktor}"
 
             // Engines
             const val ktorClientAndroid = "io.ktor:ktor-client-android:${Versions.ktor}"
@@ -80,6 +81,8 @@ object Deps {
 
     object Github {
         const val imageLoader = "io.github.qdsfdhvh:image-loader:${Versions.imageLoader}"
+        const val filePicker = "com.darkrockstudios:mpfilepicker:${Versions.filePicker}"
+//        const val filePicker = "com.github.Shahriyar13:compose-multiplatform-file-picker:${Versions.filePicker}"
     }
 
     object Touchlab {

@@ -1,45 +1,53 @@
 package app.duss.easyproject.data
 
-import app.duss.easyproject.core.model.PokemonInfo
-import appdusseasyproject.PokemonInfoEntity
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import app.duss.easyproject.core.network.model.UserLoginDto
+import app.duss.easyproject.domain.entity.User
+import app.duss.easyproject.domain.enums.Role
+import app.duss.easyproject.domain.enums.Title
+import appdusseasyproject.UserEntity
 
-//fun Project.toPokemonEntity(page: Long) = PokemonEntity(
-//    page = page,
-//    name = name,
-//    url = url
-//)
-
-//fun PokemonEntity.toPokemon() = Project(
-//    page = page,
-//    name = name,
-//    url = url
-//)
-
-fun PokemonInfo.toPokemonInfoEntity() = PokemonInfoEntity(
-    id = id,
-    name = name,
-    height = height,
-    weight = weight,
-    experience = experience,
-    types = Json.encodeToString(types),
-    stats = Json.encodeToString(stats),
-    isFavorite = if (isFavorite) 1 else 0
+fun User.mapToDatabaseEntity(token: String) = UserEntity(
+    id = id ?: -1,
+    username = username,
+    token = token,
+    title = title?.name,
+    firstName = firstName,
+    lastName = lastName,
+    jobTitle = jobTitle,
+    email = email,
+    telephone = telephone,
+    mobile = mobile,
+    role = role.name,
+    creationTime = creationTime,
+    modificationTime = modificationTime,
+    createdBy = createdBy,
+    modifiedBy = modifiedBy,
+    creatorId = creatorId,
+    modifierId = modifierId,
 )
 
-fun PokemonInfoEntity.toPokemonInfo() = PokemonInfo(
-    id = id,
-    name = name,
-    height = height,
-    weight = weight,
-    experience = experience,
-    types = Json.decodeFromString(types),
-    stats = Json.decodeFromString(stats),
-    isFavorite = isFavorite != 0L
+fun UserLoginDto.mapToDatabaseEntity() = user.mapToDatabaseEntity(token)
+
+fun UserEntity.mapToDatabaseEntity() = UserLoginDto(
+    user = this.mapToDomainEntity(),
+    token = this.token
 )
 
-//fun PokemonInfoEntity.toPokemon() = Project(
-//    name = name,
-//    url = "$id/"
-//)
+fun UserEntity.mapToDomainEntity() = User(
+    id = id,
+    username = username,
+    title = Title.valueOf(title ?: Title.Unknown.name),
+    firstName = firstName,
+    lastName = lastName,
+    jobTitle = jobTitle,
+    email = email,
+    telephone = telephone,
+    mobile = mobile,
+    role = Role.valueOf(role),
+    creationTime = creationTime,
+    modificationTime = modificationTime,
+    createdBy = createdBy,
+    modifiedBy = modifiedBy,
+    creatorId = creatorId,
+    modifierId = modifierId,
+)

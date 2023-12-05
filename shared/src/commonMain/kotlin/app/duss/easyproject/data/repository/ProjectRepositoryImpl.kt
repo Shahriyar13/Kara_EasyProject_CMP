@@ -1,21 +1,17 @@
 package app.duss.easyproject.data.repository
 
-import app.duss.easyproject.core.database.dao.PokemonInfoDao
-import app.duss.easyproject.core.model.PokemonInfo
 import app.duss.easyproject.core.network.client.ProjectClient
-import app.duss.easyproject.data.toPokemonInfo
-import app.duss.easyproject.data.toPokemonInfoEntity
 import app.duss.easyproject.domain.entity.Project
+import app.duss.easyproject.domain.params.ProjectCreateRequest
+import app.duss.easyproject.domain.params.ProjectUpdateRequest
 import app.duss.easyproject.domain.repository.ProjectRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class ProjectRepositoryImpl: ProjectRepository, KoinComponent {
 
     private val projectClient by inject<ProjectClient>()
-    private val pokemonInfoDao by inject<PokemonInfoDao>()
+//    private val pokemonInfoDao by inject<PokemonInfoDao>()
 
     override suspend fun getProjectList(page: Long): Result<List<Project>> {
         return try {
@@ -26,33 +22,74 @@ class ProjectRepositoryImpl: ProjectRepository, KoinComponent {
             Result.failure(e)
         }
     }
-
-    override suspend fun getPokemonFlowByName(name: String): Result<PokemonInfo> {
+    override suspend fun isProjectCodeAvailable(code: String): Result<Boolean> {
         return try {
-            val cachedPokemon = pokemonInfoDao.selectOneByName(name = name)
+            val response = projectClient.isProjectCodeAvailable(code = code)
+            Result.success(response.data ?: false)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
 
-            if (cachedPokemon == null) {
-                val response = projectClient.getPokemonByName(name = name)
-                pokemonInfoDao.insert(response.toPokemonInfoEntity())
-
-                Result.success(response)
+    override suspend fun getProjectById(id: Long?): Result<Project> {
+        return try {
+            if (id != null) {
+                val response = projectClient.getProjectById(id = id)
+                if (response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception("Not found"))
+                }
             } else {
-                Result.success(cachedPokemon.toPokemonInfo())
+                val response = projectClient.getProjectNewProject()
+                if (response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception("Not found"))
+                }
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun getFavoritePokemonListFlow(): Flow<List<Project>> {
-        return flowOf(listOf())
+    override suspend fun createProject(param: ProjectCreateRequest): Result<Project?> {
+        return try {
+            val response = projectClient.createProject(params = param)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun updatePokemonFavoriteState(name: String, isFavorite: Boolean) {
-        pokemonInfoDao.updateIsFavorite(
-            name = name,
-            isFavorite = isFavorite,
-        )
+    override suspend fun updateProject(param: ProjectUpdateRequest): Result<Project?> {
+        return try {
+            val response = projectClient.updateProject(params = param)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
+
+    override suspend fun deleteProject(id: Long): Result<Boolean> {
+        return try {
+            val response = projectClient.deleteProject(id = id)
+            Result.success(response.data ?: false)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+//    override suspend fun getFavoritePokemonListFlow(): Flow<List<Project>> {
+//        return flowOf(listOf())
+//    }
+//
+//    override suspend fun updatePokemonFavoriteState(name: String, isFavorite: Boolean) {
+//        pokemonInfoDao.updateIsFavorite(
+//            name = name,
+//            isFavorite = isFavorite,
+//        )
+//    }
 
 }

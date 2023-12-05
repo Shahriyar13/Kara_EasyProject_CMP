@@ -1,0 +1,50 @@
+CREATE TABLE IF NOT EXISTS UserEntity (
+  id INTEGER NOT NULL PRIMARY KEY,
+  username TEXT NOT NULL,
+  token TEXT NOT NULL,
+  title TEXT,
+  firstName TEXT,
+  lastName TEXT,
+  jobTitle TEXT,
+  email TEXT,
+  telephone TEXT,
+  mobile TEXT,
+  role TEXT NOT NULL,
+  creationTime INTEGER NOT NULL,
+  modificationTime INTEGER,
+  createdBy TEXT NOT NULL,
+  modifiedBy TEXT,
+  creatorId INTEGER,
+  modifierId INTEGER
+);
+
+get:
+SELECT *
+FROM UserEntity
+ORDER BY id
+LIMIT 1;
+
+delete:
+DELETE FROM UserEntity;
+
+insert:
+INSERT OR REPLACE INTO UserEntity(
+    id,
+    username,
+    token,
+    title,
+    firstName,
+    lastName,
+    jobTitle,
+    email,
+    telephone,
+    mobile,
+    role,
+    creationTime,
+    modificationTime,
+    createdBy,
+    modifiedBy,
+    creatorId,
+    modifierId
+  )
+  VALUES ?;

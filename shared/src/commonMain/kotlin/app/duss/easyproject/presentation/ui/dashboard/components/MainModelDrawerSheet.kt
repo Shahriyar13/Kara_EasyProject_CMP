@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MainModalDrawerSheet(
     items: List<Pair<String, ImageVector>>,

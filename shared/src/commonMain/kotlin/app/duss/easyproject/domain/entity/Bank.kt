@@ -8,7 +8,7 @@ data class Bank (
     var iban: String,
     var bic: String,
     override val name: String,
-    override val id: Long,
+    override val id: Long?,
     override val creationTime: Long,
     override val modificationTime: Long?,
     override val createdBy: String,

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class CountryState(
     val cities: List<City>,
     override val name: String,
-    override val id: Long,
+    override val id: Long?,
     override val creationTime: Long,
     override val modificationTime: Long?,
     override val createdBy: String,
