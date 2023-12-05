@@ -1,8 +1,7 @@
-package app.duss.easyproject.presentation.ui.root.store
+package app.duss.easyproject.presentation.ui.main.store
 
 import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.domain.usecase.UserLoggedInUseCase
-import app.duss.easyproject.presentation.ui.main.store.MainStore
 import app.duss.easyproject.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -14,7 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class RootStoreFactory(
+internal class MainStoreFactory(
     private val storeFactory: StoreFactory,
 ): KoinComponent {
 
@@ -22,7 +21,7 @@ internal class RootStoreFactory(
 
     fun create(): MainStore =
         object : MainStore, Store<MainStore.Intent, MainStore.State, Nothing> by storeFactory.create(
-            name = "RootStore",
+            name = MainStore::class.simpleName,
             initialState = MainStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,

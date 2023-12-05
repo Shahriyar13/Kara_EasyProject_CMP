@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface ProjectDetailsStore: Store<ProjectDetailsStore.Intent, ProjectDetailsStore.State, Nothing> {
 
     sealed class Intent {
-        data class UpdatePokemonFavoriteState(val isFavorite: Boolean): Intent()
+        data class UpdateFavoriteState(val isFavorite: Boolean): Intent()
     }
 
     data class State(

@@ -1,8 +1,8 @@
-package app.duss.easyproject.presentation.ui.login
+package app.duss.easyproject.presentation.ui.landing
 
 import app.duss.easyproject.domain.entity.User
-import app.duss.easyproject.presentation.ui.login.store.LoginStore
-import app.duss.easyproject.presentation.ui.login.store.LoginStoreFactory
+import app.duss.easyproject.presentation.ui.landing.store.LandingStore
+import app.duss.easyproject.presentation.ui.landing.store.LandingStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -10,7 +10,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
-class LoginComponent(
+class LandingComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit
@@ -18,15 +18,15 @@ class LoginComponent(
 
     private val favoriteStore =
         instanceKeeper.getStore {
-            LoginStoreFactory(
+            LandingStoreFactory(
                 storeFactory = storeFactory,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<LoginStore.State> = favoriteStore.stateFlow
+    val state: StateFlow<LandingStore.State> = favoriteStore.stateFlow
 
-    fun onEvent(event: LoginStore.Intent) {
+    fun onEvent(event: LandingStore.Intent) {
         favoriteStore.accept(event)
     }
 
@@ -36,6 +36,7 @@ class LoginComponent(
 
     sealed class Output {
         data class Authorized(val user: User?) : Output()
+        data object Unauthorized : Output()
 
     }
 

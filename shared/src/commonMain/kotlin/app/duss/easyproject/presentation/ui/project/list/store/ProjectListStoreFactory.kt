@@ -13,23 +13,26 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class ProjectStoreFactory(
+internal class ProjectListStoreFactory(
     private val storeFactory: StoreFactory,
-    private val searchValue: String,
+    private val searchValue: String?,
 ): KoinComponent {
 
     private val projectRepository by inject<ProjectRepository>()
 
-    fun create(): ProjectStore =
-        object : ProjectStore, Store<ProjectStore.Intent, ProjectStore.State, Nothing> by storeFactory.create(
-            name = "ProjectStore",
-            initialState = ProjectStore.State(),
+    fun create(): ProjectListStore =
+        object : ProjectListStore, Store<ProjectListStore.Intent, ProjectListStore.State, Nothing> by storeFactory.create(
+            name = ProjectListStore::class.simpleName,
+            initialState = ProjectListStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 
     private sealed class Msg {
+        data object AddNewProject : Msg()
+        data class NavigateToProjectDetails(val id: Long) : Msg()
+        data object ProjectDetailsDone : Msg()
         data object ProjectListLoading : Msg()
         data class ProjectListLoaded(val projectList: List<Project>) : Msg()
         data class ProjectListFailed(val error: String?) : Msg()
@@ -37,16 +40,18 @@ internal class ProjectStoreFactory(
         data object LastPageLoaded : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<ProjectStore.Intent, Unit, ProjectStore.State, Msg, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<ProjectListStore.Intent, Unit, ProjectListStore.State, Msg, Nothing>(
         appDispatchers.main) {
-        override fun executeAction(action: Unit, getState: () -> ProjectStore.State) {
+        override fun executeAction(action: Unit, getState: () -> ProjectListStore.State) {
             loadProjectListByPage(page = 0)
         }
 
-        override fun executeIntent(intent: ProjectStore.Intent, getState: () -> ProjectStore.State): Unit =
+        override fun executeIntent(intent: ProjectListStore.Intent, getState: () -> ProjectListStore.State): Unit =
             when (intent) {
-                is ProjectStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
-                is ProjectStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                is ProjectListStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
+                is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                ProjectListStore.Intent.AddNew -> dispatch(Msg.AddNewProject)
+                is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.id))
             }
 
         private var loadProjectListByPageJob: Job? = null
@@ -76,14 +81,17 @@ internal class ProjectStoreFactory(
         }
     }
 
-    private object ReducerImpl: Reducer<ProjectStore.State, Msg> {
-        override fun ProjectStore.State.reduce(msg: Msg): ProjectStore.State =
+    private object ReducerImpl: Reducer<ProjectListStore.State, Msg> {
+        override fun ProjectListStore.State.reduce(msg: Msg): ProjectListStore.State =
             when (msg) {
                 is Msg.ProjectListLoading -> copy(isLoading = true)
-                is Msg.ProjectListLoaded -> ProjectStore.State(projectList = projectList + msg.projectList)
+                is Msg.ProjectListLoaded -> ProjectListStore.State(projectList = projectList + msg.projectList)
                 is Msg.ProjectListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
+                Msg.AddNewProject -> copy(projectId = -1)
+                is Msg.NavigateToProjectDetails -> copy(projectId = msg.id)
+                is Msg.ProjectDetailsDone -> copy(projectId = null)
             }
     }
 }

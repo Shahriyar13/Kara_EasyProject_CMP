@@ -1,11 +1,23 @@
 package app.duss.easyproject.presentation.ui.project.details.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,22 +35,11 @@ internal fun DetailsContent(
     state: ProjectDetailsStore.State,
     onEvent: (ProjectDetailsStore.Intent) -> Unit,
     onOutput: (ProjectDetailsComponent.Output) -> Unit,
+    modifier: Modifier,
 ) {
     Box(contentAlignment = Alignment.TopCenter) {
-        state.projectInfo?.let { pokemonInfo ->
-//            AsyncImage(
-//                url = pokemonInfo.imageUrl,
-//                contentDescription = pokemonInfo.name,
-//                contentScale = ContentScale.FillWidth,
-//                colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
-//                modifier = Modifier
-//                    .widthIn(max = 800.dp)
-//                    .fillMaxWidth(.9f)
-//                    .wrapContentHeight(Alignment.Top, true)
-//                    .scale(1f, 1.8f)
-//                    .blur(70.dp, BlurredEdgeTreatment.Unbounded)
-//                    .alpha(.5f)
-//            )
+        state.projectInfo?.let { item ->
+
         }
 
         Scaffold(

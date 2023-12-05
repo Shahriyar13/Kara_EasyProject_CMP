@@ -1,16 +1,25 @@
 package app.duss.easyproject.presentation.ui.database.components
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
 import app.duss.easyproject.presentation.ui.database.store.DatabaseStore
-import app.duss.easyproject.presentation.ui.project.list.components.PokemonGrid
+import app.duss.easyproject.presentation.ui.project.components.PokemonGrid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,9 +29,10 @@ internal fun DatabaseContent(
     onOutput: (DatabaseComponent.Output) -> Unit,
 ) {
     Scaffold(
+
         topBar = {
             TopAppBar(
-                title = {},
+                title = { Text(text = "Database")},
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -44,23 +54,6 @@ internal fun DatabaseContent(
             }
 
             Column {
-                Text(
-                    text = "Database",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .padding(top = 20.dp, bottom = 6.dp)
-                )
-
-                Divider(
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
-                )
 
                 if (state.isLoading) {
                     LinearProgressIndicator(

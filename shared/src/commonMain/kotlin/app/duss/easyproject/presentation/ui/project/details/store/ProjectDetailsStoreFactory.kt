@@ -17,11 +17,11 @@ internal class ProjectDetailsStoreFactory(
     private val storeFactory: StoreFactory,
     private val projectId: Long?
 ): KoinComponent {
-    private val pokemonRepository by inject<ProjectRepository>()
+    private val projectRepository by inject<ProjectRepository>()
 
     fun create(): ProjectDetailsStore =
         object : ProjectDetailsStore, Store<ProjectDetailsStore.Intent, ProjectDetailsStore.State, Nothing> by storeFactory.create(
-            name = "DetailsStore",
+            name = ProjectDetailsStore::class.simpleName,
             initialState = ProjectDetailsStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,
@@ -32,7 +32,7 @@ internal class ProjectDetailsStoreFactory(
         data object InfoLoading : Msg()
         data class InfoLoaded(val project: Project) : Msg()
         data class InfoFailed(val error: String?) : Msg()
-        data class PokemonInfoFavoriteStateUpdated(val isFavorite: Boolean) : Msg()
+        data class FavoriteStateUpdated(val isFavorite: Boolean) : Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<ProjectDetailsStore.Intent, Unit, ProjectDetailsStore.State, Msg, Nothing>(appDispatchers.main) {
@@ -42,17 +42,17 @@ internal class ProjectDetailsStoreFactory(
 
         override fun executeIntent(intent: ProjectDetailsStore.Intent, getState: () -> ProjectDetailsStore.State): Unit =
             when (intent) {
-                is ProjectDetailsStore.Intent.UpdatePokemonFavoriteState -> togglePokemonFavorite(projectId, intent.isFavorite)
+                is ProjectDetailsStore.Intent.UpdateFavoriteState -> toggleFavorite(projectId, intent.isFavorite)
             }
 
-        private var loadPokemonInfoByNameJob: Job? = null
+        private var loadProjectByIdJob: Job? = null
         private fun loadProjectById(id: Long?) {
-            if (loadPokemonInfoByNameJob?.isActive == true) return
+            if (loadProjectByIdJob?.isActive == true) return
 
-            loadPokemonInfoByNameJob = scope.launch {
+            loadProjectByIdJob = scope.launch {
                 dispatch(Msg.InfoLoading)
 
-                pokemonRepository
+                projectRepository
                     .getProjectById(id)
                     .onSuccess { project ->
                         dispatch(Msg.InfoLoaded(project))
@@ -63,17 +63,17 @@ internal class ProjectDetailsStoreFactory(
             }
         }
 
-        private var togglePokemonFavoriteJob: Job? = null
-        private fun togglePokemonFavorite(id: Long?, isFavorite: Boolean) {
-            if (togglePokemonFavoriteJob?.isActive == true) return
+        private var toggleFavoriteJob: Job? = null
+        private fun toggleFavorite(id: Long?, isFavorite: Boolean) {
+            if (toggleFavoriteJob?.isActive == true) return
 
-            togglePokemonFavoriteJob = scope.launch {
+            toggleFavoriteJob = scope.launch {
 //                pokemonRepository.updatePokemonFavoriteState(
 //                    name = name,
 //                    isFavorite = isFavorite,
 //                )
 
-                dispatch(Msg.PokemonInfoFavoriteStateUpdated(isFavorite))
+                dispatch(Msg.FavoriteStateUpdated(isFavorite))
             }
         }
     }
@@ -84,7 +84,7 @@ internal class ProjectDetailsStoreFactory(
                 is Msg.InfoLoading -> ProjectDetailsStore.State(isLoading = true)
                 is Msg.InfoLoaded -> ProjectDetailsStore.State(projectInfo = msg.project)
                 is Msg.InfoFailed -> ProjectDetailsStore.State(error = msg.error)
-                is Msg.PokemonInfoFavoriteStateUpdated -> copy(projectInfo = projectInfo?.copy())
+                is Msg.FavoriteStateUpdated -> copy(projectInfo = projectInfo?.copy())
             }
     }
 
