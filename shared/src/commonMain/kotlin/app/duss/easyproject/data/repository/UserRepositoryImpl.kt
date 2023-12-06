@@ -3,6 +3,7 @@ package app.duss.easyproject.data.repository
 import app.duss.easyproject.core.database.dao.UserDao
 import app.duss.easyproject.core.network.client.UserClient
 import app.duss.easyproject.data.mapToDatabaseEntity
+import app.duss.easyproject.data.mapToDomainEntity
 import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.domain.params.UserLoginRequest
 import app.duss.easyproject.domain.params.UserRegisterRequest
@@ -30,17 +31,16 @@ class UserRepositoryImpl: UserRepository, KoinComponent {
     }
 
     override suspend fun getUser(): Result<User> {
-        return Result.success(User(id = 1, username = "admin"))
-//        return try {
-//           val user = userDao.get()
-//           if (user != null) {
-//               Result.success(user.mapToDomainEntity())
-//           } else {
-//               Result.failure(Exception("Not found"))
-//           }
-//        } catch (e: Exception) {
-//            Result.failure(e)
-//        }
+        return try {
+           val user = userDao.get()
+           if (user != null) {
+               Result.success(user.mapToDomainEntity())
+           } else {
+               Result.failure(Exception("Not found"))
+           }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getToken(): String? {

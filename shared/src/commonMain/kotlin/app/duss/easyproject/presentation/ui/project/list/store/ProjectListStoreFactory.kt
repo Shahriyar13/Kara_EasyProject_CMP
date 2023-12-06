@@ -1,5 +1,6 @@
 package app.duss.easyproject.presentation.ui.project.list.store
 
+import app.duss.easyproject.core.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
 import app.duss.easyproject.utils.appDispatchers
@@ -52,6 +53,7 @@ internal class ProjectListStoreFactory(
                 is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
                 ProjectListStore.Intent.AddNew -> dispatch(Msg.AddNewProject)
                 is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.id))
+                ProjectListStore.Intent.DetailsDone -> dispatch(Msg.ProjectDetailsDone)
             }
 
         private var loadProjectListByPageJob: Job? = null
@@ -68,10 +70,11 @@ internal class ProjectListStoreFactory(
                 projectRepository
                     .getProjectList(page)
                     .onSuccess { list ->
-                        if (list.isEmpty()) {
-                            dispatch(Msg.LastPageLoaded)
-                        } else {
+                        if (list.isNotEmpty()) {
                             dispatch(Msg.ProjectListLoaded(list))
+                        }
+                        if (list.size < NetworkConstants.PageSize) {
+                            dispatch(Msg.LastPageLoaded)
                         }
                     }
                     .onFailure { e ->

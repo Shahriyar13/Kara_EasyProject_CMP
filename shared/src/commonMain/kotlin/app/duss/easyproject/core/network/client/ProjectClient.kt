@@ -20,7 +20,7 @@ class ProjectClient(
 ) {
 
     suspend fun getProjectList(
-        page: Long,
+        page: Int,
     ): ServerResponse<List<Project>> {
         return handleErrors {
             httpClient.get(NetworkConstants.Project.getAll) {
