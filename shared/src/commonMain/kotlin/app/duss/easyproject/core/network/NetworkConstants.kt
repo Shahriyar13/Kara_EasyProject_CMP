@@ -18,6 +18,11 @@ object NetworkConstants {
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
+    object Attachment {
+        private const val route = "$baseApiUrl/file_attachment"
+        const val upload: String = "$route/v1/upload"
+        const val deleteById: String = "$route/v1/deleteById"
+    }
     object User {
         private const val route = "$baseApiUrl/auth"
         const val login: String = "$route/v1/login"

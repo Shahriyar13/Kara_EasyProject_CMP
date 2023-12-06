@@ -8,6 +8,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -19,8 +20,8 @@ import kotlinx.serialization.Serializable
 
 class ProjectListComponent(
     componentContext: ComponentContext,
-    storeFactory: StoreFactory,
-    searchValue: String?,
+    val storeFactory: StoreFactory,
+    val searchValue: String?,
     private val output: (Output) -> Unit,
 ) : ComponentContext by componentContext {
 
@@ -32,18 +33,15 @@ class ProjectListComponent(
             ).create()
         }
 
-    private var projectDetails: (
-        ComponentContext,
+    private fun projectDetails(
+        componentContext: ComponentContext,
         id: Long?,
-        (ProjectDetailsComponent.Output) -> Unit,
-    ) -> ProjectDetailsComponent = { childContext, id, output ->
-        ProjectDetailsComponent(
-            componentContext = childContext,
+    ) = ProjectDetailsComponent(
+            componentContext = componentContext,
             storeFactory = storeFactory,
             id = id,
-            output = output
+            output = ::onDetailsOutput
         )
-    }
 
 
     private val navigation = StackNavigation<Configuration>()
@@ -67,7 +65,6 @@ class ProjectListComponent(
                 projectDetails(
                     componentContext,
                     configuration.id,
-                    ::onDetailsOutput
                 )
             )
 
@@ -80,6 +77,11 @@ class ProjectListComponent(
 
     fun onEvent(event: ProjectListStore.Intent) {
         projectListStore.accept(event)
+        if (event is ProjectListStore.Intent.Details) {
+            navigation.push(Configuration.Details(event.id))
+        } else if (event is ProjectListStore.Intent.AddNew) {
+            navigation.push(Configuration.Details(null))
+        }
     }
 
     fun onOutput(output: Output) {

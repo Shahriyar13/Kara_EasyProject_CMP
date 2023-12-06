@@ -54,19 +54,19 @@ class ProjectRepositoryImpl: ProjectRepository, KoinComponent {
         }
     }
 
-    override suspend fun createProject(param: ProjectCreateRequest): Result<Project?> {
+    override suspend fun createProject(param: ProjectCreateRequest): Result<Project> {
         return try {
             val response = projectClient.createProject(params = param)
-            Result.success(response.data)
+            response.data?.let { Result.success(it) } ?: Result.failure(Exception("Error in Creating"))
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun updateProject(param: ProjectUpdateRequest): Result<Project?> {
+    override suspend fun updateProject(param: ProjectUpdateRequest): Result<Project> {
         return try {
             val response = projectClient.updateProject(params = param)
-            Result.success(response.data)
+            response.data?.let { Result.success(it) } ?: Result.failure(Exception("Error in Updating"))
         } catch (e: Exception) {
             Result.failure(e)
         }

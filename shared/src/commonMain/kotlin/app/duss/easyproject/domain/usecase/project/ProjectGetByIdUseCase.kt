@@ -1,7 +1,8 @@
-package app.duss.easyproject.domain.usecase
+package app.duss.easyproject.domain.usecase.project
 
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
+import app.duss.easyproject.domain.usecase.BaseCoroutinesUseCase
 
 class ProjectGetByIdUseCase(
     private val projectRepository: ProjectRepository,

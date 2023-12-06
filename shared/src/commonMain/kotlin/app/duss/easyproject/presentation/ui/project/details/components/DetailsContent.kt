@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,6 +39,11 @@ internal fun DetailsContent(
     modifier: Modifier,
 ) {
     Box(contentAlignment = Alignment.TopCenter) {
+
+        if (state.isDeleted) {
+            onOutput(ProjectDetailsComponent.Output.NavigateBack)
+        }
+
         state.projectInfo?.let { item ->
 
         }
@@ -66,22 +72,32 @@ internal fun DetailsContent(
                         }
                     },
                     actions = {
-                        IconButton(
-                            onClick = {
-                                state.projectInfo?.let { pokemonInfo ->
-//                                    onEvent(
-//                                        DetailsStore.Intent.UpdatePokemonFavoriteState(
-////                                            isFavorite = !pokemonInfo.isFavorite
-//                                        )
-//                                    )
+                        if (state.projectInfo != null) {
+                            if (state.inEditeMode) {
+                                IconButton(
+                                    onClick = {
+                                        if (!state.isLoading)
+                                            onEvent(ProjectDetailsStore.Intent.EditState)
+                                    }
+                                ) {
+                                    Icon(
+                                        Icons.Rounded.Save,
+                                        contentDescription = "Save",
+                                        tint = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+
+                            } else {
+                                IconButton(
+                                    onClick = { onEvent(ProjectDetailsStore.Intent.EditState) }
+                                ) {
+                                    Icon(
+                                        Icons.Rounded.Edit,
+                                        contentDescription = "Edit",
+                                        tint = MaterialTheme.colorScheme.onBackground
+                                    )
                                 }
                             }
-                        ) {
-                            Icon(
-                                Icons.Rounded.FavoriteBorder,
-                                contentDescription = "Favorite",
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
                         }
                     },
                     colors = TopAppBarDefaults.largeTopAppBarColors(
@@ -91,7 +107,7 @@ internal fun DetailsContent(
             },
             containerColor = Color.Transparent,
             modifier = Modifier.padding(LocalSafeArea.current)
-        ) {  paddingValue ->
+        ) { paddingValue ->
             Box(
                 modifier = Modifier
                     .padding(paddingValue)

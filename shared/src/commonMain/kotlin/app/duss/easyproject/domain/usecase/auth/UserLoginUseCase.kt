@@ -1,8 +1,9 @@
-package app.duss.easyproject.domain.usecase
+package app.duss.easyproject.domain.usecase.auth
 
 import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.domain.params.UserLoginRequest
 import app.duss.easyproject.domain.repository.UserRepository
+import app.duss.easyproject.domain.usecase.BaseCoroutinesUseCase
 
 class UserLoginUseCase(
     private val repository: UserRepository,

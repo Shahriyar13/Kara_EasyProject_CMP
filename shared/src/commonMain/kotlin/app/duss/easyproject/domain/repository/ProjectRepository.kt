@@ -12,9 +12,9 @@ interface ProjectRepository {
 
     suspend fun isProjectCodeAvailable(code: String): Result<Boolean>
 
-    suspend fun createProject(param: ProjectCreateRequest): Result<Project?>
+    suspend fun createProject(param: ProjectCreateRequest): Result<Project>
 
-    suspend fun updateProject(param: ProjectUpdateRequest): Result<Project?>
+    suspend fun updateProject(param: ProjectUpdateRequest): Result<Project>
 
     suspend fun deleteProject(id: Long): Result<Boolean>
 
