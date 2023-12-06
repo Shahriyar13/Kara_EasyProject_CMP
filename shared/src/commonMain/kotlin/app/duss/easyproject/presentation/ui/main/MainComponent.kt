@@ -5,7 +5,7 @@ import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
 import app.duss.easyproject.presentation.ui.main.store.MainStore
 import app.duss.easyproject.presentation.ui.main.store.MainStoreFactory
-import app.duss.easyproject.presentation.ui.project.ProjectComponent
+import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -52,9 +52,9 @@ class MainComponent(
     private val project: (
         ComponentContext,
         searchValue: String?,
-        (ProjectComponent.Output) -> Unit,
-    ) -> ProjectComponent= { childContext, searchValue, output ->
-        ProjectComponent(
+        (ProjectListComponent.Output) -> Unit,
+    ) -> ProjectListComponent= { childContext, searchValue, output ->
+        ProjectListComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             searchValue = searchValue ?: "",
@@ -250,7 +250,7 @@ class MainComponent(
 
         data class CE(val component: ComingSoonComponent) : Child()
 
-        data class Project(val component: ProjectComponent) : Child()
+        data class Project(val component: ProjectListComponent) : Child()
 
         data class SE(val component: ComingSoonComponent) : Child()
 
@@ -339,7 +339,7 @@ class MainComponent(
         }
 
 
-    private fun onProjectOutput(output: ProjectComponent.Output) {}
+    private fun onProjectOutput(output: ProjectListComponent.Output) {}
 
     private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit =
        when (output) {

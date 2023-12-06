@@ -25,7 +25,7 @@ import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonScreen
 import app.duss.easyproject.presentation.ui.dashboard.DashboardScreen
 import app.duss.easyproject.presentation.ui.database.DatabaseScreen
 import app.duss.easyproject.presentation.ui.main.MainComponent
-import app.duss.easyproject.presentation.ui.project.ProjectScreen
+import app.duss.easyproject.presentation.ui.project.list.ProjectListScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -178,7 +178,7 @@ fun MainContent(component: MainComponent) {
                     is MainComponent.Child.Dashboard -> DashboardScreen(child.component)
                     is MainComponent.Child.Database -> DatabaseScreen(child.component)
                     is MainComponent.Child.CE -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.Project -> ProjectScreen(child.component)
+                    is MainComponent.Child.Project -> ProjectListScreen(child.component)
                     is MainComponent.Child.SE -> ComingSoonScreen(child.component)
                     is MainComponent.Child.ComingSoon -> ComingSoonScreen(child.component)
                     is MainComponent.Child.BAFA -> ComingSoonScreen(child.component)
