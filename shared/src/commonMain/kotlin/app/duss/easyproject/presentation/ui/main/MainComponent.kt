@@ -5,6 +5,7 @@ import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
 import app.duss.easyproject.presentation.ui.main.store.MainStore
 import app.duss.easyproject.presentation.ui.main.store.MainStoreFactory
+import app.duss.easyproject.presentation.ui.mproject.mProjectComponent
 import app.duss.easyproject.presentation.ui.project.ProjectComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -70,6 +71,20 @@ class MainComponent(
             output = output
         )
     }
+
+    private val multipane: (
+        ComponentContext,
+        searchValue: String?,
+        (mProjectComponent.Output) -> Unit,
+        ) -> mProjectComponent = { childContext, searchValue, output->
+        mProjectComponent(
+            componentContext = childContext,
+            output = output,
+            searchValue = searchValue,
+            storeFactory = storeFactory,
+        )
+    }
+
     private val rootStore =
         instanceKeeper.getStore {
             MainStoreFactory(
@@ -153,7 +168,10 @@ class MainComponent(
          navigation.bringToFront(Configuration.Profile)
     }
 
-    private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
+    private fun createChild(
+        configuration: Configuration,
+        componentContext: ComponentContext,
+    ): Child =
         when (configuration) {
             is Configuration.Dashboard -> Child.Dashboard(
                 dashboard(
@@ -180,10 +198,11 @@ class MainComponent(
                     ::onProjectOutput
                 )
             )
-            is Configuration.SE -> Child.ComingSoon(
-                comingSoon(
+            is Configuration.SE -> Child.mProject(
+                multipane(
                     componentContext,
-                    ::onComingSoonOutput
+                    configuration.searchValue,
+                    ::onMProjectOutput
                 )
             )
             is Configuration.ComingSoon -> Child.ComingSoon(
@@ -271,6 +290,8 @@ class MainComponent(
         data class Profile(val component: ComingSoonComponent) : Child()
 
         data class ComingSoon(val component: ComingSoonComponent) : Child()
+
+        data class mProject(val component: mProjectComponent) : Child()
     }
 
 
@@ -340,6 +361,7 @@ class MainComponent(
 
 
     private fun onProjectOutput(output: ProjectComponent.Output) {}
+    private fun onMProjectOutput(output: mProjectComponent.Output) {}
 
     private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit =
        when (output) {

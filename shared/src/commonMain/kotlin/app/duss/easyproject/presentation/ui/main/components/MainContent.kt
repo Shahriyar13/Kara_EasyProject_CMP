@@ -25,6 +25,8 @@ import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonScreen
 import app.duss.easyproject.presentation.ui.dashboard.DashboardScreen
 import app.duss.easyproject.presentation.ui.database.DatabaseScreen
 import app.duss.easyproject.presentation.ui.main.MainComponent
+import app.duss.easyproject.presentation.ui.mproject.mProjectScreen
+import app.duss.easyproject.presentation.ui.multipane.MultiPaneContent
 import app.duss.easyproject.presentation.ui.project.ProjectScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
@@ -189,6 +191,7 @@ fun MainContent(component: MainComponent) {
                     is MainComponent.Child.Profile -> ComingSoonScreen(child.component)
                     is MainComponent.Child.SQ -> ComingSoonScreen(child.component)
                     is MainComponent.Child.Shipping -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.mProject -> mProjectScreen(child.component)
                 }
             }
         }
