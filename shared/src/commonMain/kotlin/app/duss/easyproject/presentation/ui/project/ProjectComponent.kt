@@ -12,6 +12,9 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
 
 class ProjectComponent(
@@ -62,6 +65,9 @@ class ProjectComponent(
             handleBackButton = false,
             childFactory = ::createChild
         )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val state: StateFlow<ProjectStore.State> = projectStore.stateFlow
 
     private fun createChild(
         configuration: Config,

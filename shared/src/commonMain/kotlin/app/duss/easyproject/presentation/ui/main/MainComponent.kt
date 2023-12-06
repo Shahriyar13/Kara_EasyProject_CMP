@@ -6,7 +6,6 @@ import app.duss.easyproject.presentation.ui.database.DatabaseComponent
 import app.duss.easyproject.presentation.ui.main.store.MainStore
 import app.duss.easyproject.presentation.ui.main.store.MainStoreFactory
 import app.duss.easyproject.presentation.ui.project.ProjectComponent
-import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -52,13 +51,13 @@ class MainComponent(
     }
     private val project: (
         ComponentContext,
-        searchValue: String,
+        searchValue: String?,
         (ProjectComponent.Output) -> Unit,
     ) -> ProjectComponent= { childContext, searchValue, output ->
         ProjectComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
-            searchValue = searchValue,
+            searchValue = searchValue ?: "",
             output = output
         )
     }
@@ -110,17 +109,48 @@ class MainComponent(
          navigation.bringToFront(Configuration.Database)
     }
 
-    fun onCETabClicked() {
-        navigation.bringToFront(Configuration.CE())
+    fun onCETabClicked(searchValue: String? = null) {
+        navigation.bringToFront(Configuration.CE(searchValue))
     }
 
-     fun onProjectTabClicked() {
-        navigation.bringToFront(Configuration.Project())
+     fun onProjectTabClicked(searchValue: String? = null) {
+        navigation.bringToFront(Configuration.Project(searchValue))
     }
 
+     fun onSETabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.SE(searchValue))
+    }
 
-     fun onSETabClicked() {
-         navigation.bringToFront(Configuration.SE())
+    fun onSQTabClicked(searchValue: String? = null) {
+        navigation.bringToFront(Configuration.SQ(searchValue))
+    }
+
+     fun onPITabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.PI(searchValue))
+    }
+
+     fun onPOTabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.PO(searchValue))
+    }
+
+     fun onShippingTabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.Shipping(searchValue))
+    }
+
+    fun onInvoiceTabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.Invoice(searchValue))
+    }
+
+    fun onBafaTabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.Bafa(searchValue))
+    }
+
+    fun onPaymentTabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.Payment(searchValue))
+    }
+
+    fun onProfileTabClicked() {
+         navigation.bringToFront(Configuration.Profile)
     }
 
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
@@ -162,6 +192,55 @@ class MainComponent(
                     ::onComingSoonOutput
                 )
             )
+            is Configuration.SQ -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+            is Configuration.PI -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+            is Configuration.PO -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+            is Configuration.Shipping -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+            is Configuration.Invoice -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+            is Configuration.Bafa -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+            is Configuration.Payment -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+            Configuration.Profile -> Child.ComingSoon(
+                comingSoon(
+                    componentContext,
+                    ::onComingSoonOutput
+                )
+            )
+
         }
 
     sealed class Child {
@@ -171,27 +250,25 @@ class MainComponent(
 
         data class CE(val component: ComingSoonComponent) : Child()
 
-//        data class CEDetails(val component: ComingSoonComponent) : Child()
-
         data class Project(val component: ProjectComponent) : Child()
-
-//        data class ProjectDetails(val component: ProjectDetailsComponent) : Child()
 
         data class SE(val component: ComingSoonComponent) : Child()
 
-//        data class SEDetails(val component: ComingSoonComponent) : Child()
+        data class SQ(val component: ComingSoonComponent) : Child()
 
-//        data class SQ(val component: ComingSoonComponent) : Child()
+        data class PI(val component: ComingSoonComponent) : Child()
 
-//        data class SEDetails(val component: ComingSoonComponent) : Child()
+        data class PO(val component: ComingSoonComponent) : Child()
 
-//        data class PI(val component: ComingSoonComponent) : Child()
+        data class Shipping(val component: ComingSoonComponent) : Child()
 
-//        data class SEDetails(val component: ComingSoonComponent) : Child()
+        data class Invoice(val component: ComingSoonComponent) : Child()
 
-//        data class PO(val component: ComingSoonComponent) : Child()
+        data class Payment(val component: ComingSoonComponent) : Child()
 
-//        data class SEDetails(val component: ComingSoonComponent) : Child()
+        data class BAFA(val component: ComingSoonComponent) : Child()
+
+        data class Profile(val component: ComingSoonComponent) : Child()
 
         data class ComingSoon(val component: ComingSoonComponent) : Child()
     }
@@ -205,19 +282,37 @@ class MainComponent(
         data object Database : Configuration()
 
         @Serializable
-        data class CE(val searchValue: String = "") : Configuration()
+        data class CE(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Project(val searchValue: String = "") : Configuration()
-//
-//        @Serializable
-//        data class ProjectDetails(val id: Long?) : Configuration()
+        data class Project(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class SE(val searchValue: String = "") : Configuration()
-//
-//        @Parcelize
-//        data class CEDetails(val ceCode: String) : Configuration()
+        data class SE(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data class SQ(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data class PI(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data class PO(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data class Shipping(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data class Invoice(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data class Bafa(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data class Payment(val searchValue: String? = "") : Configuration()
+
+        @Serializable
+        data object Profile : Configuration()
 
         @Serializable
         data object ComingSoon : Configuration()
@@ -226,43 +321,25 @@ class MainComponent(
 
     private fun onDashboardOutput(output: DashboardComponent.Output): Unit =
         when (output) {
-            DashboardComponent.Output.DatabaseClicked -> navigation.bringToFront(Configuration.Database)
-//            DashboardComponent.Output.CEClicked -> navigation.push(Configuration.CE())
-            DashboardComponent.Output.ProjectClicked -> navigation.bringToFront(Configuration.Project())
-            is DashboardComponent.Output.SearchSubmitted -> navigation.bringToFront(
-                Configuration.Project(
-                    output.searchValue
-                )
-            )
-//            DashboardComponent.Output.SEClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.SQClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.PIClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.POClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.ShippingClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.InvoiceClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.PaymentClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.BafaClicked -> navigation.push(Configuration.Database)
-//            DashboardComponent.Output.ProfileClicked -> navigation.push(Configuration.ComingSoon)
-//            DashboardComponent.Output.ProfileClicked -> navigation.push(Configuration.ComingSoon)
+            DashboardComponent.Output.DatabaseClicked -> onDatabaseTabClicked()
+            DashboardComponent.Output.CEClicked -> onCETabClicked()
+            DashboardComponent.Output.ProjectClicked -> onProjectTabClicked()
+            is DashboardComponent.Output.SearchSubmitted -> onProjectTabClicked(output.searchValue)
+            DashboardComponent.Output.SEClicked -> onSETabClicked()
+            DashboardComponent.Output.SQClicked -> onSQTabClicked()
+            DashboardComponent.Output.PIClicked -> onPITabClicked()
+            DashboardComponent.Output.POClicked -> onPOTabClicked()
+            DashboardComponent.Output.ShippingClicked -> onShippingTabClicked()
+            DashboardComponent.Output.InvoiceClicked -> onInvoiceTabClicked()
+            DashboardComponent.Output.PaymentClicked -> onPaymentTabClicked()
+            DashboardComponent.Output.BafaClicked -> onBafaTabClicked()
+            DashboardComponent.Output.ProfileClicked -> onProfileTabClicked()
+            DashboardComponent.Output.Unauthorized -> output(Output.Unauthorized)
             DashboardComponent.Output.ComingSoonClicked -> navigation.bringToFront(Configuration.ComingSoon)
-            DashboardComponent.Output.Unauthorized -> TODO()
         }
 
 
-    private fun onProjectOutput(output: ProjectComponent.Output): Unit {}
-//        when (output) {
-//            is ProjectComponent.Output.NavigateBack -> navigation.pop()
-//            is ProjectComponent.Output.NavigateToDetails -> navigation.pushNew(
-//                Configuration.ProjectDetails(
-//                    output.id
-//                )
-//            )
-//        }
-
-    private fun onProjectDetailsOutput(output: ProjectDetailsComponent.Output): Unit =
-        when (output) {
-            is ProjectDetailsComponent.Output.NavigateBack -> navigation.pop()
-        }
+    private fun onProjectOutput(output: ProjectComponent.Output) {}
 
     private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit =
        when (output) {
@@ -270,11 +347,6 @@ class MainComponent(
             is DatabaseComponent.Output.NavigateToItemDetails -> navigation.push(Configuration.ComingSoon)
             is DatabaseComponent.Output.NavigateToPersonDetails -> navigation.push(Configuration.ComingSoon)
             is DatabaseComponent.Output.NavigateToSupplierDetails -> navigation.push(Configuration.ComingSoon)
-        }
-
-    private fun onDatabaseDetailsOutput(output: ProjectDetailsComponent.Output): Unit =
-       when (output) {
-            is ProjectDetailsComponent.Output.NavigateBack -> navigation.pop()
         }
 
     private fun onComingSoonOutput(output: ComingSoonComponent.Output): Unit =

@@ -3,6 +3,8 @@ package app.duss.easyproject.presentation.ui.project.components
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.ui.project.ProjectComponent
 import app.duss.easyproject.presentation.ui.project.multipane.ProjectMultiPaneScreen
@@ -19,6 +21,7 @@ internal fun ProjectContent(
 
     val onEvent: (ProjectStore.Intent) -> Unit = component::onEvent
 
+    val state by component.state.collectAsState()
 
     BoxWithConstraints {
             Children(
@@ -36,5 +39,11 @@ internal fun ProjectContent(
             onEvent(if (isMultiPaneRequired) ProjectStore.Intent.MultiPane else ProjectStore.Intent.SinglePane)
             onDispose {  }
         }
+
+//        if (state.isMultiPane) {
+//            ProjectMultiPaneScreen()
+//        } else {
+//            ProjectSinglePaneScreen()
+//        }
     }
 }
