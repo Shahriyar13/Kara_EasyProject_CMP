@@ -9,6 +9,7 @@ import app.duss.easyproject.domain.usecase.attachment.AttachmentUploadUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectCreateUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectDeleteUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetByIdUseCase
+import app.duss.easyproject.domain.usecase.project.ProjectGetNewUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectUpdateUseCase
 import app.duss.easyproject.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
@@ -28,6 +29,7 @@ internal class ProjectDetailsStoreFactory(
 ) : KoinComponent {
 
     private val projectGetByIdUseCase by inject<ProjectGetByIdUseCase>()
+    private val projectGetNewUseCase by inject<ProjectGetNewUseCase>()
     private val projectCreateUseCase by inject<ProjectCreateUseCase>()
     private val projectUpdateUseCase by inject<ProjectUpdateUseCase>()
     private val projectDeleteUseCase by inject<ProjectDeleteUseCase>()
@@ -76,8 +78,16 @@ internal class ProjectDetailsStoreFactory(
             when (intent) {
                 is ProjectDetailsStore.Intent.SaveState -> updateProject(intent.request)
                 is ProjectDetailsStore.Intent.DeleteState -> deleteProject(intent.id)
-                is ProjectDetailsStore.Intent.UploadFileState -> uploadFiles(intent.projectId, intent.request)
-                is ProjectDetailsStore.Intent.DeleteFileState -> deleteFile(intent.projectId, intent.fileId)
+                is ProjectDetailsStore.Intent.UploadFileState -> uploadFiles(
+                    intent.projectId,
+                    intent.request
+                )
+
+                is ProjectDetailsStore.Intent.DeleteFileState -> deleteFile(
+                    intent.projectId,
+                    intent.fileId
+                )
+
                 ProjectDetailsStore.Intent.EditState -> Unit
             }
 
@@ -88,14 +98,26 @@ internal class ProjectDetailsStoreFactory(
             loadProjectByIdJob = scope.launch {
                 dispatch(Msg.InfoLoading)
 
-                projectGetByIdUseCase
-                    .execute(id)
-                    .onSuccess { project ->
-                        dispatch(Msg.InfoLoaded(project))
-                    }
-                    .onFailure { e ->
-                        dispatch(Msg.InfoFailed(e.message))
-                    }
+                if ((id ?: -1) > 0) {
+                    projectGetByIdUseCase
+                        .execute(id!!)
+                        .onSuccess { project ->
+                            dispatch(Msg.InfoLoaded(project))
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.InfoFailed(e.message))
+                        }
+                } else {
+                    projectGetNewUseCase
+                        .execute(Unit)
+                        .onSuccess { project ->
+                            dispatch(Msg.InfoLoaded(project))
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.InfoFailed(e.message))
+                        }
+                }
+
             }
         }
 
@@ -137,15 +159,17 @@ internal class ProjectDetailsStoreFactory(
             if (uploadFilesJob?.isActive == true) return
 
             uploadFilesJob = scope.launch {
-                    dispatch(Msg.FileUploading)
+                dispatch(Msg.FileUploading)
                 projectFileUploadUseCase
-                        .execute(FileAttachmentUpdateRequest(
+                    .execute(
+                        FileAttachmentUpdateRequest(
                             projectId = projectId,
                             files = request,
-                        ))
-                        .onSuccess { loadProjectById(projectId) }
-                        .onFailure { e -> dispatch(Msg.FileUploadFailed(e.message)) }
-                }
+                        )
+                    )
+                    .onSuccess { loadProjectById(projectId) }
+                    .onFailure { e -> dispatch(Msg.FileUploadFailed(e.message)) }
+            }
 
         }
 
@@ -154,12 +178,12 @@ internal class ProjectDetailsStoreFactory(
             if (deleteFileJob?.isActive == true) return
 
             deleteFileJob = scope.launch {
-                    dispatch(Msg.FileDeleting)
+                dispatch(Msg.FileDeleting)
                 projectFileDeleteUseCase
-                        .execute(fileId)
-                        .onSuccess { loadProjectById(projectId) }
-                        .onFailure { e -> dispatch(Msg.FileDeleteFailed(e.message)) }
-                }
+                    .execute(fileId)
+                    .onSuccess { loadProjectById(projectId) }
+                    .onFailure { e -> dispatch(Msg.FileDeleteFailed(e.message)) }
+            }
 
         }
     }
@@ -191,6 +215,7 @@ internal class ProjectDetailsStoreFactory(
                     isLoading = false,
                     inEditeMode = false
                 )
+
                 Msg.Deleting -> copy(isLoading = true)
                 is Msg.FileDeleteFailed -> copy(isLoading = false, error = msg.error)
 

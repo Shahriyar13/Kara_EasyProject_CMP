@@ -9,6 +9,6 @@ class ProjectsGetAllUseCase(
 ): BaseCoroutinesUseCase<Int, List<Project>>() {
 
     override suspend fun execute(param: Int): Result<List<Project>> =
-        projectRepository.getProjectList(param)
+        projectRepository.getAll(param)
 
 }

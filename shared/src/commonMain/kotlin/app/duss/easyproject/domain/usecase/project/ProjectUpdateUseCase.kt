@@ -9,6 +9,6 @@ class ProjectUpdateUseCase(
     private val projectRepository: ProjectRepository,
 ): BaseCoroutinesUseCase<ProjectUpdateRequest, Project>() {
     override suspend fun execute(param: ProjectUpdateRequest): Result<Project> =
-        projectRepository.updateProject(param)
+        projectRepository.update(param)
 
 }

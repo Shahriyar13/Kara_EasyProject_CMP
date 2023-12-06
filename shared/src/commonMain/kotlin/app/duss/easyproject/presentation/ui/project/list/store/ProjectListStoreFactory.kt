@@ -68,7 +68,7 @@ internal class ProjectListStoreFactory(
                 dispatch(Msg.ProjectListLoading)
 
                 projectRepository
-                    .getProjectList(page)
+                    .getAll(page)
                     .onSuccess { list ->
                         if (list.isNotEmpty()) {
                             dispatch(Msg.ProjectListLoaded(list))

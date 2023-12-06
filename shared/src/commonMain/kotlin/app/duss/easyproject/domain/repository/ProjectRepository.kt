@@ -6,16 +6,18 @@ import app.duss.easyproject.domain.params.ProjectUpdateRequest
 
 interface ProjectRepository {
 
-    suspend fun getProjectList(page: Int): Result<List<Project>>
+    suspend fun getAll(page: Int): Result<List<Project>>
 
-    suspend fun getProjectById(id: Long?): Result<Project>
+    suspend fun getById(id: Long): Result<Project>
 
-    suspend fun isProjectCodeAvailable(code: String): Result<Boolean>
+    suspend fun getNew(): Result<Project>
 
-    suspend fun createProject(param: ProjectCreateRequest): Result<Project>
+    suspend fun isCodeAvailable(code: String): Result<Boolean>
 
-    suspend fun updateProject(param: ProjectUpdateRequest): Result<Project>
+    suspend fun create(param: ProjectCreateRequest): Result<Project>
 
-    suspend fun deleteProject(id: Long): Result<Boolean>
+    suspend fun update(param: ProjectUpdateRequest): Result<Project>
+
+    suspend fun delete(id: Long): Result<Boolean>
 
 }

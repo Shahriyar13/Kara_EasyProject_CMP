@@ -7,6 +7,7 @@ import app.duss.easyproject.domain.usecase.auth.UserLoginUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectCreateUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectDeleteUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetByIdUseCase
+import app.duss.easyproject.domain.usecase.project.ProjectGetNewUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectUpdateUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectsGetAllUseCase
 import org.koin.dsl.module
@@ -19,6 +20,7 @@ val useCaseModule = module {
     // project
     factory { ProjectsGetAllUseCase( get() ) }
     factory { ProjectGetByIdUseCase( get() ) }
+    factory { ProjectGetNewUseCase( get() ) }
     factory { ProjectCreateUseCase( get() ) }
     factory { ProjectUpdateUseCase( get() ) }
     factory { ProjectDeleteUseCase( get() ) }

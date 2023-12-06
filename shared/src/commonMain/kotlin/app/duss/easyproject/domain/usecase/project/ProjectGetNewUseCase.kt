@@ -1,12 +1,13 @@
 package app.duss.easyproject.domain.usecase.project
 
+import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
 import app.duss.easyproject.domain.usecase.BaseCoroutinesUseCase
 
-class ProjectDeleteUseCase(
+class ProjectGetNewUseCase(
     private val projectRepository: ProjectRepository,
-): BaseCoroutinesUseCase<Long, Boolean>() {
-    override suspend fun execute(param: Long): Result<Boolean> =
-        projectRepository.delete(param)
+): BaseCoroutinesUseCase<Unit, Project>() {
+    override suspend fun execute(param: Unit): Result<Project> =
+        projectRepository.getNew()
 
 }

@@ -9,6 +9,6 @@ class ProjectCreateUseCase(
     private val projectRepository: ProjectRepository,
 ): BaseCoroutinesUseCase<ProjectCreateRequest, Project>() {
     override suspend fun execute(param: ProjectCreateRequest): Result<Project> =
-        projectRepository.createProject(param)
+        projectRepository.create(param)
 
 }
