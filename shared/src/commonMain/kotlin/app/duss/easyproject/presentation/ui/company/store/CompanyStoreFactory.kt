@@ -2,7 +2,7 @@ package app.duss.easyproject.presentation.ui.company.store
 
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.utils.appDispatchers
+import app.duss.easyproject.core.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store

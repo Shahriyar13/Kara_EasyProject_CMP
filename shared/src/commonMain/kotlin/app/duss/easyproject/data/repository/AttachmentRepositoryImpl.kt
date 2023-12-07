@@ -1,6 +1,6 @@
 package app.duss.easyproject.data.repository
 
-import app.duss.easyproject.core.network.client.AttachmentClient
+import app.duss.easyproject.data.network.client.AttachmentClient
 import app.duss.easyproject.domain.entity.FileAttachment
 import app.duss.easyproject.domain.params.FileAttachmentUpdateRequest
 import app.duss.easyproject.domain.repository.AttachmentRepository

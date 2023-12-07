@@ -1,6 +1,6 @@
 package app.duss.easyproject.data.repository
 
-import app.duss.easyproject.core.network.client.ProjectClient
+import app.duss.easyproject.data.network.client.ProjectClient
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.params.ProjectCreateRequest
 import app.duss.easyproject.domain.params.ProjectUpdateRequest

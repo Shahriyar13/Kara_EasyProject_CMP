@@ -1,7 +1,7 @@
 package app.duss.easyproject.data.repository
 
-import app.duss.easyproject.core.database.dao.UserDao
-import app.duss.easyproject.core.network.client.UserClient
+import app.duss.easyproject.data.database.dao.UserDao
+import app.duss.easyproject.data.network.client.UserClient
 import app.duss.easyproject.data.mapToDatabaseEntity
 import app.duss.easyproject.data.mapToDomainEntity
 import app.duss.easyproject.domain.entity.User

@@ -10,13 +10,14 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializerOrNull
 
 class ProjectListComponent(
     componentContext: ComponentContext,
@@ -46,9 +47,11 @@ class ProjectListComponent(
 
     private val navigation = StackNavigation<Configuration>()
 
+    @OptIn(InternalSerializationApi::class)
     private val stack =
         childStack(
             source = navigation,
+            serializer = Configuration::class.serializerOrNull(),
             initialConfiguration = Configuration.None,
             handleBackButton = false,
             childFactory = ::createChild
@@ -95,7 +98,7 @@ class ProjectListComponent(
         data object None : Child()
     }
 
-    sealed class Configuration : Parcelable {
+    sealed class Configuration {
         @Serializable
         data object None : Configuration()
         @Serializable

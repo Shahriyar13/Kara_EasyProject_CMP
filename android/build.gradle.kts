@@ -1,38 +1,31 @@
-import app.duss.easyproject.Configuration
-
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
 }
 
 android {
     namespace = "app.duss.easyproject.android"
-    compileSdk = app.duss.easyproject.Configuration.compileSdk
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         applicationId = "app.duss.easyproject.android"
-        minSdk = Configuration.minSdk
-        targetSdk = Configuration.targetSdk
-        versionCode = Configuration.versionCode
-        versionName = Configuration.versionName
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.compileSdk.get().toInt()
+
+        versionCode = libs.versions.code.get().toInt()
+        versionName = libs.versions.major.get() + "." + libs.versions.minor.get() + "." + libs.versions.patch.get()
     }
     buildFeatures {
         compose = true
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = app.duss.easyproject.Versions.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     packaging {
         resources {
-            pickFirsts.add(
-                "META-INF/INDEX.LIST"
-            )
-            excludes.addAll(
-                listOf(
-                    "META-INF/AL2.0",
-                    "META-INF/LGPL2.1",
-                ),
-            )
+            pickFirsts += "META-INF/INDEX.LIST"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
     buildTypes {
@@ -47,20 +40,22 @@ android {
 
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
 }
 
 dependencies {
-    implementation(project(":shared"))
-    implementation(app.duss.easyproject.Deps.Androidx.Activity.activityCompose)
-
+    implementation(projects.shared)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.androidx.activity.compose)
     // Koin
-    with(app.duss.easyproject.Deps.Koin) {
-        api(android)
-    }
+    api(libs.koin.android)
+
+    debugImplementation(libs.compose.ui.tooling)
 }

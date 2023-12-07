@@ -10,7 +10,7 @@ class ProjectUpdateRequest(
     val annualId: Int,
     val codeExtension: String?,
     val time: Long,
-    val customerEnquiries: List<CustomerEnquiryCreateRequest> = ArrayList(),
+    val customerEnquiriesIds: List<Long>,
 )
 
 fun Project.toUpdateRequest() = ProjectUpdateRequest(
@@ -20,5 +20,5 @@ fun Project.toUpdateRequest() = ProjectUpdateRequest(
     annualId = annualId,
     codeExtension = codeExtension,
     time = time,
-    customerEnquiries = listOf()//TODO
+    customerEnquiriesIds = customerEnquiries.mapNotNull { it.id }
 )

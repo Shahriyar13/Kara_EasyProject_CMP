@@ -1,6 +1,6 @@
 package app.duss.easyproject.data
 
-import app.duss.easyproject.core.network.model.UserLoginDto
+import app.duss.easyproject.data.network.dto.UserLoginDto
 import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.domain.enums.Role
 import app.duss.easyproject.domain.enums.Title

@@ -1,9 +1,9 @@
 package app.duss.easyproject.domain.params
 
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
+import com.mohamedrejeb.calf.io.KmpFile
 
 class FileAttachmentUpdateRequest(
-    val files: List<MPFile<*>>,
+    val files: List<KmpFile>,
     val projectId: Long? = null,
     val customerEnquiryId: Long? = null,
     val customerEnquiryItemId: Long? = null,

@@ -1,7 +1,7 @@
 package app.duss.easyproject.presentation.ui.dashboard.store
 
 import app.duss.easyproject.domain.entity.User
-import app.duss.easyproject.utils.appDispatchers
+import app.duss.easyproject.core.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store

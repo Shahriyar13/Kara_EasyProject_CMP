@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         initKoin(
-            enableNetworkLogs = app.duss.easyproject.android.BuildConfig.DEBUG
+            enableNetworkLogs = BuildConfig.DEBUG
         ) {
             androidContext(applicationContext)
         }

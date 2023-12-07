@@ -12,4 +12,6 @@ data class FileAttachment(
         override val modifiedBy: String?,
         override val creatorId: Long?,
         override val modifierId: Long?
-): BaseEntity()
+): BaseEntity() {
+        fun getFileName() = url.split("/").last()
+}

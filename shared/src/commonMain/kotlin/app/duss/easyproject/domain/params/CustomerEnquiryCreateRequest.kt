@@ -1,7 +1,5 @@
 package app.duss.easyproject.domain.params
 
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
-
 class CustomerEnquiryCreateRequest (
     val title: String?,
     val code: String?,
@@ -13,5 +11,4 @@ class CustomerEnquiryCreateRequest (
     val projectId: Long?,
     val time: Long,
     val customerEnquiryItems: List<CustomerEnquiryItemCreateOrUpdateRequest>? = ArrayList(),
-    val fileAttachments: List<MPFile<Any>>? = ArrayList(),
 )

@@ -1,23 +1,24 @@
 package app.duss.easyproject.presentation.ui.project.details.store
 
+import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.params.FileAttachmentUpdateRequest
 import app.duss.easyproject.domain.params.toCreateRequest
 import app.duss.easyproject.domain.params.toUpdateRequest
 import app.duss.easyproject.domain.usecase.attachment.AttachmentDeleteUseCase
 import app.duss.easyproject.domain.usecase.attachment.AttachmentUploadUseCase
+import app.duss.easyproject.domain.usecase.project.ProjectCodeIsValidUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectCreateUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectDeleteUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetByIdUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetNewUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectUpdateUseCase
-import app.duss.easyproject.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
+import com.mohamedrejeb.calf.io.KmpFile
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -30,12 +31,13 @@ internal class ProjectDetailsStoreFactory(
 
     private val projectGetByIdUseCase by inject<ProjectGetByIdUseCase>()
     private val projectGetNewUseCase by inject<ProjectGetNewUseCase>()
+    private val projectCodeIsValidUseCase by inject<ProjectCodeIsValidUseCase>()
     private val projectCreateUseCase by inject<ProjectCreateUseCase>()
     private val projectUpdateUseCase by inject<ProjectUpdateUseCase>()
     private val projectDeleteUseCase by inject<ProjectDeleteUseCase>()
 
-    private val projectFileUploadUseCase by inject<AttachmentUploadUseCase>()
-    private val projectFileDeleteUseCase by inject<AttachmentDeleteUseCase>()
+    private val attachmentUploadUseCase by inject<AttachmentUploadUseCase>()
+    private val attachmentDeleteUseCase by inject<AttachmentDeleteUseCase>()
 
     fun create(): ProjectDetailsStore =
         object : ProjectDetailsStore,
@@ -155,12 +157,12 @@ internal class ProjectDetailsStoreFactory(
         }
 
         private var uploadFilesJob: Job? = null
-        private fun uploadFiles(projectId: Long, request: List<MPFile<*>>) {
+        private fun uploadFiles(projectId: Long, request: List<KmpFile>) {
             if (uploadFilesJob?.isActive == true) return
 
             uploadFilesJob = scope.launch {
                 dispatch(Msg.FileUploading)
-                projectFileUploadUseCase
+                attachmentUploadUseCase
                     .execute(
                         FileAttachmentUpdateRequest(
                             projectId = projectId,
@@ -179,7 +181,7 @@ internal class ProjectDetailsStoreFactory(
 
             deleteFileJob = scope.launch {
                 dispatch(Msg.FileDeleting)
-                projectFileDeleteUseCase
+                attachmentDeleteUseCase
                     .execute(fileId)
                     .onSuccess { loadProjectById(projectId) }
                     .onFailure { e -> dispatch(Msg.FileDeleteFailed(e.message)) }

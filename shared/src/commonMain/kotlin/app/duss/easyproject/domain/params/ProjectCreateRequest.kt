@@ -18,5 +18,5 @@ fun Project.toCreateRequest() = ProjectCreateRequest(
     annualId = annualId,
     codeExtension = codeExtension,
     time = time,
-    customerEnquiriesIds = customerEnquiries.mapNotNull { it.id }.toList()
+    customerEnquiriesIds = customerEnquiries.mapNotNull { it.id }
 )

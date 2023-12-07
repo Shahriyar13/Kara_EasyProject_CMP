@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.ui.item.ItemComponent
 import app.duss.easyproject.presentation.ui.item.store.ItemStore
-import app.duss.easyproject.presentation.ui.project.components.PokemonGrid
+import app.duss.easyproject.presentation.components.PokemonGrid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

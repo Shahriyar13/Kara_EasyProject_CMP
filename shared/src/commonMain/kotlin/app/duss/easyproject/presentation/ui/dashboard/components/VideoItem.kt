@@ -1,7 +1,14 @@
 package app.duss.easyproject.presentation.ui.dashboard.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -17,13 +24,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import app.duss.easyproject.core.model.Video
+import app.duss.easyproject.domain.entity.FileAttachment
+import app.duss.easyproject.presentation.components.AsyncImage
 import app.duss.easyproject.presentation.theme.Black
+import app.duss.easyproject.presentation.utils.toFormattedDateTime
 
 @Composable
 internal fun VideoItem(
     onClick: () -> Unit,
-    video: Video,
+    fileAttachment: FileAttachment,
     modifier: Modifier = Modifier
 ) {
 
@@ -39,8 +48,8 @@ internal fun VideoItem(
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
-                url = video.imageUrl,
-                contentDescription = video.title,
+                url = fileAttachment.url,
+                contentDescription = fileAttachment.getFileName(),
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(Black.copy(.5f), BlendMode.Darken),
                 modifier = Modifier
@@ -65,14 +74,14 @@ internal fun VideoItem(
         }
 
         Text(
-            text = video.title,
+            text = fileAttachment.getFileName(),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.titleSmall,
 
         )
 
         Text(
-            text = "${video.year} | ${video.category} | ${video.details}",
+            text = fileAttachment.creationTime.toFormattedDateTime(),
             color = MaterialTheme.colorScheme.onBackground.copy(.8f),
             style = MaterialTheme.typography.bodyMedium,
         )

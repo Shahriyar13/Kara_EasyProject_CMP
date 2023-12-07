@@ -3,7 +3,7 @@ package app.duss.easyproject.presentation.ui.root.store
 import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.domain.usecase.auth.UserLoggedInUseCase
 import app.duss.easyproject.presentation.ui.main.store.MainStore
-import app.duss.easyproject.utils.appDispatchers
+import app.duss.easyproject.core.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store

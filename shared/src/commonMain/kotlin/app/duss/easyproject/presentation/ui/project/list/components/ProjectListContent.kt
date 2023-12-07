@@ -14,7 +14,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.presentation.component.PagingVerticalGrid
+import app.duss.easyproject.presentation.components.PagingVerticalGrid
 import app.duss.easyproject.presentation.ui.project.components.ProjectItem
 import app.duss.easyproject.presentation.ui.project.components.ProjectLoadingItem
 import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent

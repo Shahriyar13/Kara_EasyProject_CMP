@@ -1,11 +1,7 @@
 package app.duss.easyproject.core.di
 
-import app.duss.easyproject.data.repository.AttachmentRepositoryImpl
-import app.duss.easyproject.data.repository.ProjectRepositoryImpl
-import app.duss.easyproject.data.repository.UserRepositoryImpl
-import app.duss.easyproject.domain.repository.AttachmentRepository
-import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.domain.repository.UserRepository
+import app.duss.easyproject.data.repository.*
+import app.duss.easyproject.domain.repository.*
 import org.koin.dsl.module
 
 val repositoryModule = module {
