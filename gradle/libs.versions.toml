@@ -82,7 +82,7 @@ ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 logback-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
 touchlab-stately-common = { module = "co.touchlab:stately-common", version.ref = "touchlab" }
 
-calf-ui = { module = "com.mohamedrejeb.calf:calf-ui", version.ref = "calf" }
+#calf-ui = { module = "com.mohamedrejeb.calf:calf-ui", version.ref = "calf" }
 #calf-ui = { module = "com.github.Shahriyar13:calf", version.ref = "calfUi" }
 calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calf" }
 
