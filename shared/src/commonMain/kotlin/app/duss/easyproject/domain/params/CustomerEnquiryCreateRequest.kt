@@ -1,5 +1,8 @@
 package app.duss.easyproject.domain.params
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class CustomerEnquiryCreateRequest (
     val title: String?,
     val code: String?,

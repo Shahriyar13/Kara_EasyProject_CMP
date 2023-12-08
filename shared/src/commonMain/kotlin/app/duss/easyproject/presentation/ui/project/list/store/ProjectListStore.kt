@@ -10,6 +10,8 @@ interface ProjectListStore: Store<ProjectListStore.Intent, ProjectListStore.Stat
         data class UpdateSearchValue(val searchValue: String): Intent()
         data object AddNew: Intent()
         data object DetailsDone: Intent()
+        data class DetailsChanged(val project: Project): Intent()
+        data class DetailsDeleted(val deletedId: Long): Intent()
         data class Details(val id: Long): Intent()
     }
 

@@ -3,8 +3,6 @@ package app.duss.easyproject.presentation.ui.project.details.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.params.FileAttachmentUpdateRequest
-import app.duss.easyproject.domain.params.toCreateRequest
-import app.duss.easyproject.domain.params.toUpdateRequest
 import app.duss.easyproject.domain.usecase.attachment.AttachmentDeleteUseCase
 import app.duss.easyproject.domain.usecase.attachment.AttachmentUploadUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectCodeIsValidUseCase
@@ -13,6 +11,7 @@ import app.duss.easyproject.domain.usecase.project.ProjectDeleteUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetByIdUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetNewUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectUpdateUseCase
+import app.duss.easyproject.presentation.forms.ProjectForm
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -50,6 +49,9 @@ internal class ProjectDetailsStoreFactory(
             ) {}
 
     private sealed class Msg {
+        data object Changing : Msg()
+        data object EditMode : Msg()
+        data object ViewMode : Msg()
         data object InfoLoading : Msg()
         data class InfoLoaded(val project: Project) : Msg()
         data class InfoFailed(val error: String?) : Msg()
@@ -78,7 +80,7 @@ internal class ProjectDetailsStoreFactory(
             getState: () -> ProjectDetailsStore.State
         ): Unit =
             when (intent) {
-                is ProjectDetailsStore.Intent.SaveState -> updateProject(intent.request)
+                is ProjectDetailsStore.Intent.SaveState -> updateProject(intent.request, intent.isChanged)
                 is ProjectDetailsStore.Intent.DeleteState -> deleteProject(intent.id)
                 is ProjectDetailsStore.Intent.UploadFileState -> uploadFiles(
                     intent.projectId,
@@ -90,7 +92,8 @@ internal class ProjectDetailsStoreFactory(
                     intent.fileId
                 )
 
-                ProjectDetailsStore.Intent.EditState -> Unit
+                ProjectDetailsStore.Intent.EditState -> dispatch(Msg.EditMode)
+                ProjectDetailsStore.Intent.EditingState -> dispatch(Msg.Changing)
             }
 
         private var loadProjectByIdJob: Job? = null
@@ -124,11 +127,12 @@ internal class ProjectDetailsStoreFactory(
         }
 
         private var updateProjectJob: Job? = null
-        private fun updateProject(request: Project) {
+        private fun updateProject(request: ProjectForm, isChanged: Boolean) {
+            if (!isChanged) return dispatch(Msg.Updated(request.project))
             if (updateProjectJob?.isActive == true) return
 
             updateProjectJob = scope.launch {
-                if ((request.id ?: -1) > 0) {
+                if ((request.project.id ?: -1) > 0) {
                     dispatch(Msg.Updating)
                     projectUpdateUseCase
                         .execute(request.toUpdateRequest())
@@ -195,7 +199,7 @@ internal class ProjectDetailsStoreFactory(
             when (msg) {
                 is Msg.InfoLoading -> copy(isLoading = true)
                 is Msg.InfoLoaded -> copy(
-                    projectInfo = msg.project,
+                    projectForm = ProjectForm(msg.project),
                     inEditeMode = (msg.project.id ?: -1) < 0,
                     isLoading = false
                 )
@@ -203,20 +207,18 @@ internal class ProjectDetailsStoreFactory(
                 is Msg.InfoFailed -> copy(error = msg.error, isLoading = false)
                 is Msg.Updating -> copy(isLoading = true)
                 is Msg.Updated -> copy(
-                    projectInfo = msg.project,
+                    projectForm = ProjectForm(msg.project),
+                    isChanged = false,
+                    isUpdated = true,
                     isLoading = false,
-                    inEditeMode = false
+                    inEditeMode = false,
                 )
 
                 is Msg.UpdateFailed -> copy(isLoading = false, error = msg.error)
 
 
                 is Msg.DeleteFailed -> copy(isLoading = false, error = msg.error)
-                Msg.Deleted -> copy(
-                    isDeleted = true,
-                    isLoading = false,
-                    inEditeMode = false
-                )
+                Msg.Deleted -> copy(isDeleted = true)
 
                 Msg.Deleting -> copy(isLoading = true)
                 is Msg.FileDeleteFailed -> copy(isLoading = false, error = msg.error)
@@ -225,6 +227,9 @@ internal class ProjectDetailsStoreFactory(
                 is Msg.FileUploadFailed -> copy(isLoading = false, error = msg.error)
 
                 Msg.FileUploading -> copy(isLoading = true)
+                Msg.EditMode -> copy(inEditeMode = true)
+                Msg.ViewMode -> copy(inEditeMode = false)
+                Msg.Changing -> copy(isChanged = projectForm?.hasUnsavedChanges() ?: false)
             }
     }
 

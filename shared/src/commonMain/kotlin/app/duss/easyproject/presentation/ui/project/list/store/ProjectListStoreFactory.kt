@@ -1,9 +1,9 @@
 package app.duss.easyproject.presentation.ui.project.list.store
 
+import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.core.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -34,6 +34,8 @@ internal class ProjectListStoreFactory(
         data object AddNewProject : Msg()
         data class NavigateToProjectDetails(val id: Long) : Msg()
         data object ProjectDetailsDone : Msg()
+        data class UpdateItem(val project: Project) : Msg()
+        data class DeleteItem(val id: Long) : Msg()
         data object ProjectListLoading : Msg()
         data class ProjectListLoaded(val projectList: List<Project>) : Msg()
         data class ProjectListFailed(val error: String?) : Msg()
@@ -54,6 +56,8 @@ internal class ProjectListStoreFactory(
                 ProjectListStore.Intent.AddNew -> dispatch(Msg.AddNewProject)
                 is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.id))
                 ProjectListStore.Intent.DetailsDone -> dispatch(Msg.ProjectDetailsDone)
+                is ProjectListStore.Intent.DetailsChanged -> dispatch(Msg.UpdateItem(intent.project))
+                is ProjectListStore.Intent.DetailsDeleted -> dispatch(Msg.DeleteItem(intent.deletedId))
             }
 
         private var loadProjectListByPageJob: Job? = null
@@ -95,6 +99,12 @@ internal class ProjectListStoreFactory(
                 Msg.AddNewProject -> copy(projectId = -1)
                 is Msg.NavigateToProjectDetails -> copy(projectId = msg.id)
                 is Msg.ProjectDetailsDone -> copy(projectId = null)
+                is Msg.DeleteItem -> copy(projectList = projectList.filterNot { it.id == msg.id })
+                is Msg.UpdateItem -> copy(
+                    projectList = projectList.map {
+                        if (it.id == msg.project.id) { msg.project } else { it }
+                    }
+                )
             }
     }
 }

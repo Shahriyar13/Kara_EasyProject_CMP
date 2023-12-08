@@ -1,7 +1,9 @@
 package app.duss.easyproject.domain.params
 
 import app.duss.easyproject.domain.enums.Title
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class UserRegisterRequest(
     val username: String,
     val password: String,

@@ -109,8 +109,14 @@ class ProjectListComponent(
 
     private fun onDetailsOutput(output: ProjectDetailsComponent.Output) {
         when (output) {
-            ProjectDetailsComponent.Output.NavigateBack -> {
-                onEvent(ProjectListStore.Intent.DetailsDone)
+            is ProjectDetailsComponent.Output.NavigateBack -> {
+                if (output.deletedId != null) {
+                    onEvent(ProjectListStore.Intent.DetailsDeleted(output.deletedId))
+                } else if (output.updatedProject != null) {
+                    onEvent(ProjectListStore.Intent.DetailsChanged(output.updatedProject))
+                } else {
+                    onEvent(ProjectListStore.Intent.DetailsDone)
+                }
                 navigation.pop()
             }
         }

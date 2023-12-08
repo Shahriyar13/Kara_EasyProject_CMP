@@ -1,7 +1,9 @@
 package app.duss.easyproject.domain.params
 
 import app.duss.easyproject.domain.enums.Title
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PersonCreateRequest(
     val title: String? = Title.Unknown.name,
     val firstName: String? = null,

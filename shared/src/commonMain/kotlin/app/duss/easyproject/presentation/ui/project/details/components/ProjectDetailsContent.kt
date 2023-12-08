@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.duss.easyproject.presentation.components.EditableText
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
 import app.duss.easyproject.presentation.ui.project.details.store.ProjectDetailsStore
@@ -41,10 +42,10 @@ internal fun DetailsContent(
     Box(contentAlignment = Alignment.TopCenter) {
 
         if (state.isDeleted) {
-            onOutput(ProjectDetailsComponent.Output.NavigateBack)
+            onOutput(ProjectDetailsComponent.Output.NavigateBack(state.projectForm!!.project.id))
         }
 
-        state.projectInfo?.let { item ->
+        state.projectForm?.let { item ->
 
         }
 
@@ -53,15 +54,21 @@ internal fun DetailsContent(
                 TopAppBar(
                     navigationIcon = {
                         IconButton(
-                            onClick = { onOutput(ProjectDetailsComponent.Output.NavigateBack) }
+                            onClick = {
+                                onOutput(
+                                    ProjectDetailsComponent.Output.NavigateBack(
+                                        updatedProject = if (state.isUpdated) state.projectForm?.project else null,
+                                    )
+                                )
+                            }
                         ) {
                             Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = null)
                         }
                     },
                     title = {
-                        state.projectInfo?.let { pokemonInfo ->
+                        state.projectForm?.let { project ->
                             Text(
-                                text = pokemonInfo.code.replaceFirstChar { it.uppercaseChar() },
+                                text = if (state.isChanged) "Unsaved Changes" else project.code,
                                 color = MaterialTheme.colorScheme.onBackground,
                                 style = MaterialTheme.typography.titleLarge.copy(
                                     fontWeight = FontWeight.Bold
@@ -72,12 +79,12 @@ internal fun DetailsContent(
                         }
                     },
                     actions = {
-                        if (state.projectInfo != null) {
+                        if (state.projectForm != null) {
                             if (state.inEditeMode) {
                                 IconButton(
                                     onClick = {
                                         if (!state.isLoading)
-                                            onEvent(ProjectDetailsStore.Intent.EditState)
+                                            onEvent(ProjectDetailsStore.Intent.SaveState(state.projectForm, state.isChanged))
                                     }
                                 ) {
                                     Icon(
@@ -123,34 +130,29 @@ internal fun DetailsContent(
                 }
 
                 state.error?.let { error ->
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(text = error)
-                    }
+                    Text(text = error, color = MaterialTheme.colorScheme.error)
                 }
 
-                state.projectInfo?.let { item ->
+                state.projectForm?.let { item ->
                     LazyColumn(
-                        horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         item("name") {
-                            Text(
-                                text = item.code.replaceFirstChar { it.uppercaseChar() },
-                                color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.displaySmall.copy(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                textAlign = TextAlign.Center,
+                            EditableText(
+                                value = item.code.replaceFirstChar { it.uppercaseChar() },
+                                onValueChange = {
+                                    state.projectForm.code = it ?: ""
+                                    onEvent(ProjectDetailsStore.Intent.EditingState)
+                                },
+                                label = "Code",
+                                readOnly = !state.inEditeMode,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
 
                         item("id") {
                             Text(
-                                text = item.id.toString(),
+                                text = item.project.id.toString(),
                                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = .6f),
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold
@@ -168,7 +170,7 @@ internal fun DetailsContent(
 
                         item("infos") {
                             PokemonInfos(
-                                project = item,
+                                project = item.project,
                                 modifier = Modifier
                                     .padding(top = 18.dp)
                                     .fillMaxWidth(.9f)
@@ -177,7 +179,7 @@ internal fun DetailsContent(
 
                         item("stats") {
                             PokemonStats(
-                                project = item,
+                                project = item.project,
                                 modifier = Modifier
                                     .padding(top = 12.dp)
                                     .fillMaxWidth(.9f)

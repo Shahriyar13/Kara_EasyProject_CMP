@@ -1,15 +1,9 @@
 [versions]
 agp = "8.2.0"
-kotlin = "1.9.21"
+kotlin = "2.0.0-Beta1"
 compose = "1.5.11"
 kotlinx-serialization-json = "1.6.2"
-compose-compiler = "1.5.6"
-activity-compose = "1.8.1"
-navigation-compose = "2.7.5"
 kotlinx-coroutines = "1.8.0-RC"
-appcompat = "1.6.1"
-android-lifecycle = "2.2.0"
-play-services-location = "21.0.1"
 compose-material3 = "1.1.2"
 androidx-activityCompose = "1.8.1"
 sqlDelight = "2.0.1"
@@ -18,11 +12,12 @@ logback-classic = "1.2.11"
 touchlab = "2.0.5"
 koin = "3.5.2-RC1"
 mvi = "3.3.0"
-decompose = "2.2.0-compose-experimental-beta02"
+decompose = "2.2.0-compose-experimental"
 essenty = "1.3.0"
-calfUi = "ee38302d42"
 calf = "0.3.0"
 image-loader = "1.7.1"
+
+compose-compiler = "1.5.6"
 
 android-minSdk = "24"
 android-compileSdk = "34"
@@ -32,16 +27,8 @@ minor = "0"
 patch = "0"
 
 [libraries]
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "android-lifecycle" }
-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-javafx = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-javafx", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
@@ -83,7 +70,6 @@ logback-logback-classic = { module = "ch.qos.logback:logback-classic", version.r
 touchlab-stately-common = { module = "co.touchlab:stately-common", version.ref = "touchlab" }
 
 #calf-ui = { module = "com.mohamedrejeb.calf:calf-ui", version.ref = "calf" }
-#calf-ui = { module = "com.github.Shahriyar13:calf", version.ref = "calfUi" }
 calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calf" }
 
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "image-loader" }

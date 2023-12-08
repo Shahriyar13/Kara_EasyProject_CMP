@@ -1,7 +1,6 @@
 package app.duss.easyproject.data.network
 
 import app.duss.easyproject.domain.repository.UserRepository
-import app.duss.easyproject.core.utils.appDispatchers
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
@@ -13,8 +12,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
 internal fun createHttpClient(userRepository: UserRepository): HttpClient {
@@ -30,16 +28,14 @@ internal fun createHttpClient(userRepository: UserRepository): HttpClient {
             })
         }
 
-        var token: String? = null
-        val coroutineScope = CoroutineScope(appDispatchers.main)
-        coroutineScope.launch {
-            token = userRepository.getToken()
-        }
-        if (!token.isNullOrEmpty()) {
-            install(Auth) {
-                bearer {
-                    loadTokens {
-                        BearerTokens(token!!, "token")
+        install(Auth) {
+            bearer {
+                runBlocking {
+                    val token: String? = userRepository.getToken()
+                    if (!token.isNullOrEmpty()) {
+                        loadTokens {
+                            BearerTokens(token, "token")
+                        }
                     }
                 }
             }

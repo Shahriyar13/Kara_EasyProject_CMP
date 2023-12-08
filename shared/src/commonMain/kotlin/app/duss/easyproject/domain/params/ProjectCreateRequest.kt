@@ -1,8 +1,9 @@
 package app.duss.easyproject.domain.params
 
-import app.duss.easyproject.domain.entity.Project
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 class ProjectCreateRequest(
     val code: String,
     val title: String?,
@@ -10,13 +11,4 @@ class ProjectCreateRequest(
     val codeExtension: String?,
     val time: Long,
     val customerEnquiriesIds: List<Long>,
-)
-
-fun Project.toCreateRequest() = ProjectCreateRequest(
-    code = code,
-    title = title,
-    annualId = annualId,
-    codeExtension = codeExtension,
-    time = time,
-    customerEnquiriesIds = customerEnquiries.mapNotNull { it.id }
 )

@@ -7,9 +7,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Backpack
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DataArray
+import androidx.compose.material.icons.filled.FactCheck
+import androidx.compose.material.icons.filled.FormatQuote
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.RequestQuote
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
@@ -59,43 +66,43 @@ fun MainContent(component: MainComponent) {
         ),
         MenuItemData(
             title = "Customer Enquiry",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.QuestionMark,
             onClick = component::onCETabClicked,
             isSelected = activeComponent is MainComponent.Child.CE,
         ),
         MenuItemData(
             title = "Project",
-            icon = Icons.Default.Dashboard,
+            icon = Icons.Default.Backpack,
             onClick = component::onProjectTabClicked,
             isSelected = activeComponent is MainComponent.Child.Project,
         ),
         MenuItemData(
             title = "Supplier Enquiry",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.QuestionMark,
             onClick = component::onSETabClicked,
             isSelected = activeComponent is MainComponent.Child.SE,
         ),
         MenuItemData(
             title = "Supplier Quotation",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.FormatQuote,
             onClick = component::onSQTabClicked,
             isSelected = activeComponent is MainComponent.Child.SQ,
         ),
         MenuItemData(
             title = "Proforma Invoice",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.List,
             onClick = component::onPITabClicked,
             isSelected = activeComponent is MainComponent.Child.PI,
         ),
         MenuItemData(
             title = "Purchase Order",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.List,
             onClick = component::onPOTabClicked,
             isSelected = activeComponent is MainComponent.Child.PO,
         ),
         MenuItemData(
             title = "Shipping",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.LocalShipping,
             onClick = component::onShippingTabClicked,
             isSelected = activeComponent is MainComponent.Child.Shipping,
         ),
@@ -107,13 +114,13 @@ fun MainContent(component: MainComponent) {
         ),
         MenuItemData(
             title = "BAFA",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.FactCheck,
             onClick = component::onBafaTabClicked,
             isSelected = activeComponent is MainComponent.Child.BAFA,
         ),
         MenuItemData(
             title = "Payment",
-            icon = Icons.Default.RequestQuote,
+            icon = Icons.Default.Payments,
             onClick = component::onPaymentTabClicked,
             isSelected = activeComponent is MainComponent.Child.Payment,
         ),

@@ -1,5 +1,8 @@
 package app.duss.easyproject.domain.params
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class CustomerEnquiryItemCreateOrUpdateRequest (
     val id: Long?,
     val customerEnquiryId: Long,
