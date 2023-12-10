@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.project.components
+package app.duss.easyproject.presentation.ui.project.list.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
