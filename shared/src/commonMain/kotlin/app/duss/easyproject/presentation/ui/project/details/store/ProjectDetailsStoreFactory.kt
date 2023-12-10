@@ -128,7 +128,7 @@ internal class ProjectDetailsStoreFactory(
 
         private var updateProjectJob: Job? = null
         private fun updateProject(request: ProjectForm, isChanged: Boolean) {
-            if (!isChanged) return dispatch(Msg.Updated(request.project))
+            if ((request.project.id ?: -1) > 0 && !isChanged) return dispatch(Msg.Updated(request.project))
             if (updateProjectJob?.isActive == true) return
 
             updateProjectJob = scope.launch {
