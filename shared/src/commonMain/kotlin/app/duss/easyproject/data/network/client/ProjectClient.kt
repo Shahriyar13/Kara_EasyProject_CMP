@@ -7,7 +7,7 @@ import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.params.ProjectCreateRequest
 import app.duss.easyproject.domain.params.ProjectUpdateRequest
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.post
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
