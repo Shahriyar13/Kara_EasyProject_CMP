@@ -101,9 +101,11 @@ internal class ProjectListStoreFactory(
                 is Msg.ProjectDetailsDone -> copy(projectId = null)
                 is Msg.DeleteItem -> copy(projectList = projectList.filterNot { it.id == msg.id })
                 is Msg.UpdateItem -> copy(
-                    projectList = projectList.map {
-                        if (it.id == msg.project.id) { msg.project } else { it }
-                    }
+                    projectList = if (projectList.any { it.id == msg.project.id }) {
+                        projectList.map { if (it.id == msg.project.id) msg.project else it }
+                    } else {
+                        projectList + msg.project
+                    }.sortedByDescending { it.code }
                 )
             }
     }
