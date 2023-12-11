@@ -4,7 +4,7 @@ import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.data.network.dto.ServerResponse
 import app.duss.easyproject.data.network.helper.handleErrors
 import app.duss.easyproject.domain.entity.FileAttachment
-import app.duss.easyproject.domain.params.FileAttachmentUpdateRequest
+import app.duss.easyproject.domain.params.FileAttachmentRequest
 import com.mohamedrejeb.calf.io.name
 import com.mohamedrejeb.calf.io.path
 import com.mohamedrejeb.calf.io.readByteArray
@@ -25,7 +25,7 @@ class AttachmentClient(
     private val httpClient: HttpClient
 ) {
     suspend fun upload(
-        param: FileAttachmentUpdateRequest,
+        param: FileAttachmentRequest,
     ): ServerResponse<List<FileAttachment>> {
         return handleErrors {
             httpClient.post(NetworkConstants.Attachment.upload) {
@@ -41,7 +41,7 @@ class AttachmentClient(
                             param.quotationItemId?.let { append("quotationItemId", it.toString()) }
                             param.proformaInvoiceId?.let { append("proformaInvoiceId", it.toString()) }
                             param.purchaseOrderId?.let { append("purchaseOrderId", it.toString()) }
-                            param.shippingId?.let { append("shippingId", it.toString()) }
+                            param.packingId?.let { append("packingId", it.toString()) }
                             param.invoiceId?.let { append("invoiceId", it.toString()) }
                             param.bafaId?.let { append("bafaId", it.toString()) }
                             param.paymentId?.let { append("paymentId", it.toString()) }

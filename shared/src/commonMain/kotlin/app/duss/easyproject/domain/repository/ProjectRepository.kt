@@ -1,8 +1,7 @@
 package app.duss.easyproject.domain.repository
 
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.params.ProjectCreateRequest
-import app.duss.easyproject.domain.params.ProjectUpdateRequest
+import app.duss.easyproject.domain.params.ProjectRequest
 
 interface ProjectRepository {
 
@@ -14,9 +13,9 @@ interface ProjectRepository {
 
     suspend fun isCodeAvailable(code: String): Result<Boolean>
 
-    suspend fun create(param: ProjectCreateRequest): Result<Project>
+    suspend fun create(param: ProjectRequest): Result<Project>
 
-    suspend fun update(param: ProjectUpdateRequest): Result<Project>
+    suspend fun update(param: ProjectRequest): Result<Project>
 
     suspend fun delete(id: Long): Result<Boolean>
 

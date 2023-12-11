@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Item(
     var note: String?,
     var parentItem: Item?,
-    val subItems: List<Item> = emptyList(),
+    val subItems: List<Item>? = emptyList(),
     override val name: String,
     override val id: Long?,
     override val creationTime: Long,

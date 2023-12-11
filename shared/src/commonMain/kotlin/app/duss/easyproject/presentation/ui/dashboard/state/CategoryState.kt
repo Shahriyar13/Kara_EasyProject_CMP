@@ -76,9 +76,9 @@ data class CategoryState(
             endColor = Purple500,
         )
 
-        val shipping = CategoryState(
-            title = "Shipping Lists",
-            iconUrl = "https://raw.githubusercontent.com/Shahriyar13/Kara_EasyProject_CMP/featuremvplist/icons/shipping.png",
+        val packing = CategoryState(
+            title = "Packing Lists",
+            iconUrl = "https://raw.githubusercontent.com/Shahriyar13/Kara_EasyProject_CMP/featuremvplist/icons/package.png",
             startColor = Blue300,
             endColor = Blue500,
         )

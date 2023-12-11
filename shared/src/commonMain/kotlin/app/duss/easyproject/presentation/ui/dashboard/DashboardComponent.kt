@@ -45,7 +45,7 @@ class DashboardComponent(
         data object SQClicked : Output()
         data object PIClicked : Output()
         data object POClicked : Output()
-        data object ShippingClicked : Output()
+        data object PackingClicked : Output()
         data object InvoiceClicked : Output()
         data object BafaClicked : Output()
         data object PaymentClicked : Output()

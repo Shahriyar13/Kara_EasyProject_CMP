@@ -136,8 +136,8 @@ class MainComponent(
          navigation.bringToFront(Configuration.PO(searchValue))
     }
 
-     fun onShippingTabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.Shipping(searchValue))
+     fun onPackingTabClicked(searchValue: String? = null) {
+         navigation.bringToFront(Configuration.Packing(searchValue))
     }
 
     fun onInvoiceTabClicked(searchValue: String? = null) {
@@ -213,7 +213,7 @@ class MainComponent(
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.Shipping -> Child.ComingSoon(
+            is Configuration.Packing -> Child.ComingSoon(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
@@ -263,7 +263,7 @@ class MainComponent(
 
         data class PO(val component: ComingSoonComponent) : Child()
 
-        data class Shipping(val component: ComingSoonComponent) : Child()
+        data class Packing(val component: ComingSoonComponent) : Child()
 
         data class Invoice(val component: ComingSoonComponent) : Child()
 
@@ -303,7 +303,7 @@ class MainComponent(
         data class PO(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Shipping(val searchValue: String? = "") : Configuration()
+        data class Packing(val searchValue: String? = "") : Configuration()
 
         @Serializable
         data class Invoice(val searchValue: String? = "") : Configuration()
@@ -332,7 +332,7 @@ class MainComponent(
             DashboardComponent.Output.SQClicked -> onSQTabClicked()
             DashboardComponent.Output.PIClicked -> onPITabClicked()
             DashboardComponent.Output.POClicked -> onPOTabClicked()
-            DashboardComponent.Output.ShippingClicked -> onShippingTabClicked()
+            DashboardComponent.Output.PackingClicked -> onPackingTabClicked()
             DashboardComponent.Output.InvoiceClicked -> onInvoiceTabClicked()
             DashboardComponent.Output.PaymentClicked -> onPaymentTabClicked()
             DashboardComponent.Output.BafaClicked -> onBafaTabClicked()

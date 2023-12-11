@@ -4,10 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Project(
-    val title: String? = null,
+    var title: String? = null,
     val customerEnquiries: List<CustomerEnquiry> = emptyList(),
     override val sendTime: Long? = null,
-    override val code: String,
+    override var code: String,
     override val codeExtension: String? = null,
     override val time: Long,
     override val annualId: Int,

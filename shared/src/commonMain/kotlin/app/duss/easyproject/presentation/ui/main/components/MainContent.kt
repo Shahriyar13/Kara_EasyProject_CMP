@@ -12,8 +12,8 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DataArray
 import androidx.compose.material.icons.filled.FactCheck
 import androidx.compose.material.icons.filled.FormatQuote
+import androidx.compose.material.icons.filled.GifBox
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QuestionMark
@@ -101,10 +101,10 @@ fun MainContent(component: MainComponent) {
             isSelected = activeComponent is MainComponent.Child.PO,
         ),
         MenuItemData(
-            title = "Shipping",
-            icon = Icons.Default.LocalShipping,
-            onClick = component::onShippingTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Shipping,
+            title = "Packing",
+            icon = Icons.Default.GifBox,
+            onClick = component::onPackingTabClicked,
+            isSelected = activeComponent is MainComponent.Child.Packing,
         ),
         MenuItemData(
             title = "Invoice",
@@ -195,7 +195,7 @@ fun MainContent(component: MainComponent) {
                     is MainComponent.Child.Payment -> ComingSoonScreen(child.component)
                     is MainComponent.Child.Profile -> ComingSoonScreen(child.component)
                     is MainComponent.Child.SQ -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.Shipping -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.Packing -> ComingSoonScreen(child.component)
                 }
             }
         }

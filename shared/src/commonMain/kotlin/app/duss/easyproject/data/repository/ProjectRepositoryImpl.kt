@@ -2,8 +2,7 @@ package app.duss.easyproject.data.repository
 
 import app.duss.easyproject.data.network.client.ProjectClient
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.params.ProjectCreateRequest
-import app.duss.easyproject.domain.params.ProjectUpdateRequest
+import app.duss.easyproject.domain.params.ProjectRequest
 import app.duss.easyproject.domain.repository.ProjectRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -61,7 +60,7 @@ class ProjectRepositoryImpl : ProjectRepository, KoinComponent {
         }
     }
 
-    override suspend fun create(param: ProjectCreateRequest): Result<Project> {
+    override suspend fun create(param: ProjectRequest): Result<Project> {
         return try {
             val response = projectClient.createProject(params = param)
             response.data?.let { Result.success(it) }
@@ -71,7 +70,7 @@ class ProjectRepositoryImpl : ProjectRepository, KoinComponent {
         }
     }
 
-    override suspend fun update(param: ProjectUpdateRequest): Result<Project> {
+    override suspend fun update(param: ProjectRequest): Result<Project> {
         return try {
             val response = projectClient.updateProject(params = param)
             response.data?.let { Result.success(it) }

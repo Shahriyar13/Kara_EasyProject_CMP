@@ -2,7 +2,7 @@ package app.duss.easyproject.presentation.ui.project.details.store
 
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.params.FileAttachmentUpdateRequest
+import app.duss.easyproject.domain.params.FileAttachmentRequest
 import app.duss.easyproject.domain.usecase.attachment.AttachmentDeleteUseCase
 import app.duss.easyproject.domain.usecase.attachment.AttachmentUploadUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectCodeIsValidUseCase
@@ -128,19 +128,19 @@ internal class ProjectDetailsStoreFactory(
 
         private var updateProjectJob: Job? = null
         private fun updateProject(request: ProjectForm, isChanged: Boolean) {
-            if ((request.project.id ?: -1) > 0 && !isChanged) return dispatch(Msg.Updated(request.project))
+            if ((request.origin.id ?: -1) > 0 && !isChanged) return dispatch(Msg.Updated(request.origin))
             if (updateProjectJob?.isActive == true) return
 
             updateProjectJob = scope.launch {
-                if ((request.project.id ?: -1) > 0) {
+                if ((request.origin.id ?: -1) > 0) {
                     dispatch(Msg.Updating)
                     projectUpdateUseCase
-                        .execute(request.toUpdateRequest())
+                        .execute(request.toRequestDto())
                         .onSuccess { project -> dispatch(Msg.Updated(project)) }
                         .onFailure { e -> dispatch(Msg.UpdateFailed(e.message)) }
                 } else {
                     projectCreateUseCase
-                        .execute(request.toCreateRequest())
+                        .execute(request.toRequestDto())
                         .onSuccess { project -> dispatch(Msg.Updated(project)) }
                         .onFailure { e -> dispatch(Msg.UpdateFailed(e.message)) }
                 }
@@ -168,7 +168,7 @@ internal class ProjectDetailsStoreFactory(
                 dispatch(Msg.FileUploading)
                 attachmentUploadUseCase
                     .execute(
-                        FileAttachmentUpdateRequest(
+                        FileAttachmentRequest(
                             projectId = projectId,
                             files = request,
                         )
