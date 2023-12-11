@@ -11,7 +11,7 @@ interface ProjectRepository {
 
     suspend fun getNew(): Result<Project>
 
-    suspend fun isCodeAvailable(code: String): Result<Boolean>
+    suspend fun validate(param: ProjectRequest): Result<Boolean>
 
     suspend fun create(param: ProjectRequest): Result<Project>
 

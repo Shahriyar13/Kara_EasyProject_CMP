@@ -11,7 +11,7 @@ interface SupplierEnquiryRepository {
 
     suspend fun getNew(): Result<SupplierEnquiry>
 
-    suspend fun isCodeAvailable(code: String): Result<Boolean>
+    suspend fun validate(param: SupplierEnquiryRequest): Result<Boolean>
 
     suspend fun create(param: SupplierEnquiryRequest): Result<SupplierEnquiry>
 

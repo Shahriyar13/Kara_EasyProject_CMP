@@ -1,16 +1,27 @@
 package app.duss.easyproject.presentation.ui.item.components
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import app.duss.easyproject.presentation.components.PokemonGrid
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.ui.item.ItemComponent
 import app.duss.easyproject.presentation.ui.item.store.ItemStore
-import app.duss.easyproject.presentation.components.PokemonGrid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +40,7 @@ internal fun ItemContent(
             )
         },
         modifier = Modifier.padding(LocalSafeArea.current)
-    ) {  paddingValue ->
+    ) { paddingValue ->
         Box(
             modifier = Modifier.padding(paddingValue)
         ) {

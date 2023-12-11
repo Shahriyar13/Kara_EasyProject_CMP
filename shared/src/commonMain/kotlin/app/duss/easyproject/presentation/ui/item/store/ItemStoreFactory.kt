@@ -1,8 +1,8 @@
 package app.duss.easyproject.presentation.ui.item.store
 
+import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.core.utils.appDispatchers
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -17,7 +17,7 @@ class ItemStoreFactory(
     private val storeFactory: StoreFactory,
 ): KoinComponent {
 
-    private val pokemonRepository by inject<ProjectRepository>()
+    private val getAll by inject<GetAllUseCase>()
 
     fun create(): ItemStore =
         object : ItemStore, Store<ItemStore.Intent, ItemStore.State, Nothing> by storeFactory.create(

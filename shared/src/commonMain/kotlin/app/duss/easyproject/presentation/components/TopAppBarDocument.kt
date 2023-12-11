@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 @Composable
 fun TopAppBarDocument(
     title: String?,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
     onSave: (() -> Unit)? = null,
     onEdit: (() -> Unit)? = null,
     editState: Boolean = false,
@@ -35,7 +35,7 @@ fun TopAppBarDocument(
         TopAppBar(
             navigationIcon = {
                 IconButton(
-                    onClick = { onBack() }
+                    onClick = { onBack?.invoke() }
                 ) {
                     Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = null)
                 }

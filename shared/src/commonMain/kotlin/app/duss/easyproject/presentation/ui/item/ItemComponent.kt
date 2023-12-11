@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 class ItemComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    val searchValue: String?,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
 

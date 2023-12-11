@@ -3,10 +3,11 @@ package app.duss.easyproject.domain.entity
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SupplierEnquiry(
+data class PurchaseOrder(
+    val conformTime: Long?,
+    val quotation: Quotation,
+    val quotationItems: List<QuotationItem> = ArrayList(),
     val project: Project,
-    val supplier: Company,
-    val customerEnquiryItems: List<CustomerEnquiryItem> = ArrayList(),
     val fileAttachments: List<FileAttachment> = ArrayList(),
     override val code: String,
     override val codeExtension: String?,
