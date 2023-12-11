@@ -3,8 +3,6 @@ package app.duss.easyproject.presentation.ui.main
 import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonComponent
 import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
-import app.duss.easyproject.presentation.ui.main.store.MainStore
-import app.duss.easyproject.presentation.ui.main.store.MainStoreFactory
 import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -14,11 +12,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializerOrNull
@@ -70,19 +64,6 @@ class MainComponent(
             componentContext = childContext,
             output = output
         )
-    }
-    private val rootStore =
-        instanceKeeper.getStore {
-            MainStoreFactory(
-                storeFactory = storeFactory,
-            ).create()
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<MainStore.State> = rootStore.stateFlow
-
-    fun onEvent(event: MainStore.Intent) {
-        rootStore.accept(event)
     }
 
     fun onOutput(output: Output) {

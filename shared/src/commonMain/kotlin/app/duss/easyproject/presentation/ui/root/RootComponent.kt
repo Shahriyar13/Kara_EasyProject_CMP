@@ -3,8 +3,8 @@ package app.duss.easyproject.presentation.ui.root
 import app.duss.easyproject.presentation.ui.landing.LandingComponent
 import app.duss.easyproject.presentation.ui.login.LoginComponent
 import app.duss.easyproject.presentation.ui.main.MainComponent
-import app.duss.easyproject.presentation.ui.main.store.MainStore
-import app.duss.easyproject.presentation.ui.main.store.MainStoreFactory
+import app.duss.easyproject.presentation.ui.root.store.RootStore
+import app.duss.easyproject.presentation.ui.root.store.RootStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -61,15 +61,15 @@ class RootComponent(
 
     private val rootStore =
         instanceKeeper.getStore {
-            MainStoreFactory(
+            RootStoreFactory(
                 storeFactory = storeFactory,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<MainStore.State> = rootStore.stateFlow
+    val state: StateFlow<RootStore.State> = rootStore.stateFlow
 
-    fun onEvent(event: MainStore.Intent) {
+    fun onEvent(event: RootStore.Intent) {
         rootStore.accept(event)
     }
 

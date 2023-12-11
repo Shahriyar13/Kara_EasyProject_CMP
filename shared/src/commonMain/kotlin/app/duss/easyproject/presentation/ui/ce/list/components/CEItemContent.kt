@@ -62,7 +62,7 @@ internal fun CEItemContents(
 //            Spacer(Modifier.height(14.dp))
 
             Text(
-                text = (item.code + " - " + ((item.title?.takeIf { it.isNotBlank() }?.replaceFirstChar { it.uppercase() }) ?: "No title")),
+                text = item.customerBuyer.company.name + " - " + ((item.title?.takeIf { it.isNotBlank() }) ?: "No title"),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
