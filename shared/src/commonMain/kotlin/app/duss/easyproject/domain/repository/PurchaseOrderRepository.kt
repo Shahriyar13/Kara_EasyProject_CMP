@@ -1,7 +1,7 @@
 package app.duss.easyproject.domain.repository
 
-import app.duss.easyproject.domain.entity.Person
-import app.duss.easyproject.domain.params.PersonRequest
+import app.duss.easyproject.domain.entity.PurchaseOrder
+import app.duss.easyproject.domain.params.PurchaseOrderRequest
 
 interface PurchaseOrderRepository {
 

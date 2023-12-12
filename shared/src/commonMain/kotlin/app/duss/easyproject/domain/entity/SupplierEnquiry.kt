@@ -8,6 +8,7 @@ data class SupplierEnquiry(
     val supplier: Company,
     val customerEnquiryItems: List<CustomerEnquiryItem> = ArrayList(),
     val fileAttachments: List<FileAttachment> = ArrayList(),
+    val peopleInCharge: List<Person>,
     override val code: String,
     override val codeExtension: String?,
     override val annualId: Int,

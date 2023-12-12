@@ -3,8 +3,9 @@ package app.duss.easyproject.domain.params
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CountryRequest(
+data class BoxItemRequest(
     val id: Long? = null,
-    val title: String,
-    val states: List<StateRequest>? = arrayListOf()
+    var quotationItemId: Long,
+    var quantity: Int,
+    val code: String?,
 )

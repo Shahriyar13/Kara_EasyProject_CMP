@@ -8,6 +8,8 @@ class CompanyRequest (
     val name: String = "",
     val supplierCode: String?,
     val customerCode: String?,
+    val freightForwarderCode: String?,
+    val symbol: String? = null,
     val street: String? = null,
     val postcode: String? = null,
     val cityId: Long? = null,

@@ -11,12 +11,20 @@ data class PersonRequest(
     val firstName: String? = null,
     val lastName: String? = null,
     val jobTitle: String? = null,
-    val companyId: Long? = null,
+    var individualCompanyName: String? = null,
     val email: String? = null,
     val telephone: String? = null,
     val mobile: String? = null,
 )
 
-fun Person.toDto() {
-
-}
+fun Person.toDto() = PersonRequest(
+    id = id,
+    title = title?.name,
+    firstName = firstName,
+    lastName = lastName,
+    jobTitle = jobTitle,
+    individualCompanyName = individualCompanyName,
+    email = email,
+    telephone = telephone,
+    mobile = mobile,
+)

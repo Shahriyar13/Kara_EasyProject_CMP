@@ -8,6 +8,7 @@ data class Quotation(
     val supplierEnquiry: SupplierEnquiry,
     val quotationItems: List<QuotationItem> = ArrayList(),
     val fileAttachments: List<FileAttachment> = ArrayList(),
+    var confirmTime: Long?,
     override val code: String,
     override val codeExtension: String?,
     override val annualId: Int,

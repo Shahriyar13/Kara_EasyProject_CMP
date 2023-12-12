@@ -8,8 +8,6 @@ data class QuotationItem(
     val customerEnquiryItem: CustomerEnquiryItem,
     var price: Double,
     var weightNet: Double,
-
-    val item: Item,
     var quantity: Int,
     var note: String?,
     val fileAttachments: List<FileAttachment>,

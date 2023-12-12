@@ -3,8 +3,9 @@ package app.duss.easyproject.domain.params
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CityRequest(
+data class RegionCustomsPortRequest(
     val id: Long? = null,
-    val title: String,
-    val stateId: Long?,
+    val name: String,
+    val cityId: Long? = null,
+    val countryId: Long? = null,
 )

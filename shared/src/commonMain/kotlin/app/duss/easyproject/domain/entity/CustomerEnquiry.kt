@@ -4,12 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CustomerEnquiry(
-    var title: String?,
-    val customerBuyer: Customer,
-    val customerConsignee: Customer?,
-    val customerEndUser: Customer?,
+    val title: String?,
+    val customerBuyer: Company,
+    val customerConsignee: Company?,
+    val customerEndUser: Company?,
     val customerEnquiryItems: List<CustomerEnquiryItem>,
-    var projectId: Long?,
+    val peopleInCharge: List<Person>,
+    val fileAttachments: List<FileAttachment>,
+    val project: Project,
     override var code: String,
     override val codeExtension: String,
     override val time: Long,

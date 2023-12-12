@@ -1,13 +1,13 @@
-package app.duss.easyproject.domain.usecase.se
+package app.duss.easyproject.domain.usecase.item
 
-import app.duss.easyproject.domain.entity.SupplierEnquiry
-import app.duss.easyproject.domain.repository.SupplierEnquiryRepository
+import app.duss.easyproject.domain.entity.Item
+import app.duss.easyproject.domain.repository.ItemRepository
 import app.duss.easyproject.domain.usecase.BaseCoroutinesUseCase
 
 class GetByIdUseCase(
-    private val repository: SupplierEnquiryRepository,
-): BaseCoroutinesUseCase<Long, SupplierEnquiry>() {
-    override suspend fun execute(param: Long): Result<SupplierEnquiry> =
+    private val repository: ItemRepository,
+): BaseCoroutinesUseCase<Long, Item>() {
+    override suspend fun execute(param: Long): Result<Item> =
         repository.getById(param)
 
 }

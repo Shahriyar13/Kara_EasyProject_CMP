@@ -1,6 +1,7 @@
 package app.duss.easyproject.domain.repository
 
 import app.duss.easyproject.domain.entity.Quotation
+import app.duss.easyproject.domain.params.QuotationRequest
 
 interface QuotationRepository {
 

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class CustomerEnquiryRequest (
-    var id: Long? = null,
+    val id: Long? = null,
     val title: String?,
     val code: String?,
     val codeExtension: String?,
@@ -13,8 +13,10 @@ class CustomerEnquiryRequest (
     val customerBuyerId: Long,
     val customerConsigneeId: Long?,
     val customerEndUserId: Long?,
+    val peopleInCharges: List<PersonRequest>,
     val projectId: Long?,
     val time: Long,
+    val sendTime: Long?,
     val customerEnquiryItems: List<CustomerEnquiryItemRequest>? = ArrayList(),
 )
 
@@ -29,5 +31,7 @@ fun CustomerEnquiry.toDto() = CustomerEnquiryRequest(
     customerConsigneeId = customerConsignee?.id,
     customerEndUserId = customerEndUser?.id,
     projectId = projectId,
+    sendTime = sendTime,
     customerEnquiryItems = customerEnquiryItems.map { it.toDto() },
+    peopleInCharges = peopleInCharges.map { it.toDto() },
 )

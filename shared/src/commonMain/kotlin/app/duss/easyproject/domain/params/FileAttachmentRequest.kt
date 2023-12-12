@@ -3,7 +3,6 @@ package app.duss.easyproject.domain.params
 import com.mohamedrejeb.calf.io.KmpFile
 
 class FileAttachmentRequest(
-    var id: Long? = null,
     val files: List<KmpFile>,
     val projectId: Long? = null,
     val customerEnquiryId: Long? = null,
@@ -15,6 +14,6 @@ class FileAttachmentRequest(
     val purchaseOrderId: Long? = null,
     val packingId: Long? = null,
     val invoiceId: Long? = null,
-    val bafaId: Long? = null,
-    val paymentId: Long? = null,
+//    val bafaId: Long? = null,
+//    val paymentId: Long? = null,
 )

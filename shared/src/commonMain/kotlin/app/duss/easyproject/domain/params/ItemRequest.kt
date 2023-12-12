@@ -5,11 +5,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ItemRequest (
-    var id: Long? = null,
+    val id: Long? = null,
+    val type: String? = null,
+    val modelNo: String? = null,
+    val unit: String? = "PCs",
+    val hsCodeEu: String? = null,
+
     var name: String = "",
     var note: String? = null,
-    var parentItem: ItemRequest? = null,
-    val subItems: List<ItemRequest>? = ArrayList(),
+    var parentItem: ItemRequest? = null, // Reference to the parent item
+    val subItems: List<ItemRequest>? = ArrayList()
 )
 
 fun Item.toDto(): ItemRequest = ItemRequest(

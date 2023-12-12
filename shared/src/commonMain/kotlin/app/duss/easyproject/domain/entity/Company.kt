@@ -5,9 +5,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Company(
     val symbol: String?,
+    val customerCode: String?,
+    val supplierCode: String?,
+    val freightForwarderCode: String?,
     var street: String?,
     var postcode: String?,
-    val city: City?,
+    val city: RegionCity?,
     var taxNumber: String?,
     var vatNumber: String?,
     var handelsregisternumber: String?,

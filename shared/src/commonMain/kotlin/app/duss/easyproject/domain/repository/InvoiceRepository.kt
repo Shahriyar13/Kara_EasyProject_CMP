@@ -1,7 +1,7 @@
 package app.duss.easyproject.domain.repository
 
-import app.duss.easyproject.domain.entity.Person
-import app.duss.easyproject.domain.params.PersonRequest
+import app.duss.easyproject.domain.entity.Invoice
+import app.duss.easyproject.domain.params.InvoiceRequest
 
 interface InvoiceRepository {
 
