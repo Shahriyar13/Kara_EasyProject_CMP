@@ -3,8 +3,8 @@ package app.duss.easyproject.data.network.client
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.data.network.dto.ServerResponse
 import app.duss.easyproject.data.network.helper.handleErrors
-import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.params.ProjectRequest
+import app.duss.easyproject.domain.entity.Person
+import app.duss.easyproject.domain.params.PersonRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -15,86 +15,80 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-class ProjectClient(
+class PersonClient(
     private val httpClient: HttpClient
 ) {
 
-    suspend fun getProjectList(
+    suspend fun getAll(
         query: String?,
         page: Int,
-    ): ServerResponse<List<Project>> {
+    ): ServerResponse<List<Person>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getAll) {
+            httpClient.get(NetworkConstants.Person.getAll) {
                 url {
-                    query?.let {
+                    parameters.append("page", page.toString())
+                   query?.let {
                         parameters.append("query", it)
                     }
-                    parameters.append("page", page.toString())
-//                    parameters.append("limit", PageSize.toString())
-//                    parameters.append("offset", (page * PageSize).toString())
                 }
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun validateCode(code: String): ServerResponse<Boolean> {
+    suspend fun getAllByCompanyId(
+        companyId: Long,
+        page: Int,
+    ): ServerResponse<List<Person>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.validateCode) {
+            httpClient.get(NetworkConstants.Person.getAllByCompanyId) {
                 url {
-                    parameters.append("code", code)
+                    parameters.append("page", page.toString())
+                    parameters.append("companyId", companyId.toString())
                 }
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun getProjectById(
+    suspend fun getById(
         id: Long,
-    ): ServerResponse<Project> {
+    ): ServerResponse<Person> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getById) {
+            httpClient.get(NetworkConstants.Person.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun getProjectNewProject(): ServerResponse<Project> {
+    suspend fun create(
+        params: PersonRequest,
+    ): ServerResponse<Person> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getNew) {
-                contentType(ContentType.Application.Json)
-            }
-        }
-    }
-
-    suspend fun createProject(
-        params: ProjectRequest,
-    ): ServerResponse<Project> {
-        return handleErrors {
-            httpClient.post(NetworkConstants.Project.create) {
+            httpClient.post(NetworkConstants.Person.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun updateProject(
-        params: ProjectRequest,
-    ): ServerResponse<Project> {
+    suspend fun update(
+        params: PersonRequest,
+    ): ServerResponse<Person> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Project.update) {
+            httpClient.put(NetworkConstants.Person.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun deleteProject(
+    suspend fun deleteById(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Project.deleteById) {
+            httpClient.delete(NetworkConstants.Person.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

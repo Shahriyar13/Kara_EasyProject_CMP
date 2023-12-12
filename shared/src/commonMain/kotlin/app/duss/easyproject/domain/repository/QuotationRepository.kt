@@ -5,13 +5,13 @@ import app.duss.easyproject.domain.params.QuotationRequest
 
 interface QuotationRepository {
 
-    suspend fun getAll(page: Int): Result<List<Quotation>>
+    suspend fun getAll(query: String?, page: Int): Result<List<Quotation>>
+
+    suspend fun getAllByProjectId(projectId: Long, page: Int): Result<List<Quotation>>
 
     suspend fun getById(id: Long): Result<Quotation>
 
-    suspend fun getNew(): Result<Quotation>
-
-    suspend fun validate(param: QuotationRequest): Result<Boolean>
+    suspend fun validateCode(code: String): Result<Boolean>
 
     suspend fun create(param: QuotationRequest): Result<Quotation>
 

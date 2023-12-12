@@ -5,13 +5,13 @@ import app.duss.easyproject.domain.params.ProjectRequest
 
 interface ProjectRepository {
 
-    suspend fun getAll(page: Int): Result<List<Project>>
+    suspend fun getAll(query: String?, page: Int): Result<List<Project>>
 
     suspend fun getById(id: Long): Result<Project>
 
     suspend fun getNew(): Result<Project>
 
-    suspend fun validate(param: ProjectRequest): Result<Boolean>
+    suspend fun validateCode(param: String): Result<Boolean>
 
     suspend fun create(param: ProjectRequest): Result<Project>
 

@@ -5,13 +5,13 @@ import app.duss.easyproject.domain.params.SupplierEnquiryRequest
 
 interface SupplierEnquiryRepository {
 
-    suspend fun getAll(page: Int): Result<List<SupplierEnquiry>>
+    suspend fun getAll(query: String?, page: Int): Result<List<SupplierEnquiry>>
+
+    suspend fun getAllByProjectId(projectId: Long, page: Int): Result<List<SupplierEnquiry>>
 
     suspend fun getById(id: Long): Result<SupplierEnquiry>
 
-    suspend fun getNew(): Result<SupplierEnquiry>
-
-    suspend fun validate(param: SupplierEnquiryRequest): Result<Boolean>
+    suspend fun validateCode(code: String): Result<Boolean>
 
     suspend fun create(param: SupplierEnquiryRequest): Result<SupplierEnquiry>
 

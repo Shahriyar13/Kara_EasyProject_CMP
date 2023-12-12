@@ -12,6 +12,7 @@ data class Person (
     val email: String?,
     val telephone: String?,
     val mobile: String?,
+    val company: Company?,
     val individualCompanyName: String?,
     override val id: Long?,
     override val creationTime: Long,

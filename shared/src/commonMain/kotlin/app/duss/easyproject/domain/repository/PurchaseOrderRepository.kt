@@ -5,13 +5,13 @@ import app.duss.easyproject.domain.params.PurchaseOrderRequest
 
 interface PurchaseOrderRepository {
 
-    suspend fun getAll(page: Int): Result<List<PurchaseOrder>>
+    suspend fun getAll(query: String?, page: Int): Result<List<PurchaseOrder>>
+
+    suspend fun getAllByProjectId(projectId: Long, page: Int): Result<List<PurchaseOrder>>
 
     suspend fun getById(id: Long): Result<PurchaseOrder>
 
-    suspend fun getNew(): Result<PurchaseOrder>
-
-    suspend fun validate(param: PurchaseOrderRequest): Result<Boolean>
+    suspend fun validateCode(code: String): Result<Boolean>
 
     suspend fun create(param: PurchaseOrderRequest): Result<PurchaseOrder>
 

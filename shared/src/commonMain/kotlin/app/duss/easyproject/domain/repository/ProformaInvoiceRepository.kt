@@ -5,13 +5,13 @@ import app.duss.easyproject.domain.params.ProformaInvoiceRequest
 
 interface ProformaInvoiceRepository {
 
-    suspend fun getAll(page: Int): Result<List<ProformaInvoice>>
+    suspend fun getAll(query: String?, page: Int): Result<List<ProformaInvoice>>
+
+    suspend fun getAllByProjectId(projectId: Long, page: Int): Result<List<ProformaInvoice>>
 
     suspend fun getById(id: Long): Result<ProformaInvoice>
 
-    suspend fun getNew(): Result<ProformaInvoice>
-
-    suspend fun validate(param: ProformaInvoiceRequest): Result<Boolean>
+    suspend fun validateCode(code: String): Result<Boolean>
 
     suspend fun create(param: ProformaInvoiceRequest): Result<ProformaInvoice>
 

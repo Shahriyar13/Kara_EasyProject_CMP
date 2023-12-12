@@ -3,8 +3,8 @@ package app.duss.easyproject.data.network.client
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.data.network.dto.ServerResponse
 import app.duss.easyproject.data.network.helper.handleErrors
-import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.params.ProjectRequest
+import app.duss.easyproject.domain.entity.Invoice
+import app.duss.easyproject.domain.params.InvoiceRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -15,23 +15,36 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-class ProjectClient(
+class InvoiceClient(
     private val httpClient: HttpClient
 ) {
 
-    suspend fun getProjectList(
+    suspend fun getAll(
         query: String?,
         page: Int,
-    ): ServerResponse<List<Project>> {
+    ): ServerResponse<List<Invoice>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getAll) {
+            httpClient.get(NetworkConstants.Invoice.getAll) {
                 url {
-                    query?.let {
+                    parameters.append("page", page.toString())
+                   query?.let {
                         parameters.append("query", it)
                     }
+                }
+                contentType(ContentType.Application.Json)
+            }
+        }
+    }
+
+    suspend fun getAllByProjectId(
+        projectId: Long,
+        page: Int,
+    ): ServerResponse<List<Invoice>> {
+        return handleErrors {
+            httpClient.get(NetworkConstants.Invoice.getAllByProjectId) {
+                url {
                     parameters.append("page", page.toString())
-//                    parameters.append("limit", PageSize.toString())
-//                    parameters.append("offset", (page * PageSize).toString())
+                    parameters.append("projectId", projectId.toString())
                 }
                 contentType(ContentType.Application.Json)
             }
@@ -40,7 +53,7 @@ class ProjectClient(
 
     suspend fun validateCode(code: String): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.validateCode) {
+            httpClient.get(NetworkConstants.Invoice.validateCode) {
                 url {
                     parameters.append("code", code)
                 }
@@ -49,52 +62,44 @@ class ProjectClient(
         }
     }
 
-    suspend fun getProjectById(
+    suspend fun getById(
         id: Long,
-    ): ServerResponse<Project> {
+    ): ServerResponse<Invoice> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getById) {
+            httpClient.get(NetworkConstants.Invoice.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun getProjectNewProject(): ServerResponse<Project> {
+    suspend fun create(
+        params: InvoiceRequest,
+    ): ServerResponse<Invoice> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getNew) {
-                contentType(ContentType.Application.Json)
-            }
-        }
-    }
-
-    suspend fun createProject(
-        params: ProjectRequest,
-    ): ServerResponse<Project> {
-        return handleErrors {
-            httpClient.post(NetworkConstants.Project.create) {
+            httpClient.post(NetworkConstants.Invoice.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun updateProject(
-        params: ProjectRequest,
-    ): ServerResponse<Project> {
+    suspend fun update(
+        params: InvoiceRequest,
+    ): ServerResponse<Invoice> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Project.update) {
+            httpClient.put(NetworkConstants.Invoice.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
         }
     }
 
-    suspend fun deleteProject(
+    suspend fun deleteById(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Project.deleteById) {
+            httpClient.delete(NetworkConstants.Invoice.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

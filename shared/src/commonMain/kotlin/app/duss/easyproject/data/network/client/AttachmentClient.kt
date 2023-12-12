@@ -43,8 +43,8 @@ class AttachmentClient(
                             param.purchaseOrderId?.let { append("purchaseOrderId", it.toString()) }
                             param.packingId?.let { append("packingId", it.toString()) }
                             param.invoiceId?.let { append("invoiceId", it.toString()) }
-                            param.bafaId?.let { append("bafaId", it.toString()) }
-                            param.paymentId?.let { append("paymentId", it.toString()) }
+//                            param.bafaId?.let { append("bafaId", it.toString()) }
+//                            param.paymentId?.let { append("paymentId", it.toString()) }
                             param.files.forEach {
                                 val key = it.path!!
                                 append(key, it.readByteArray(), Headers.build {

@@ -10,11 +10,10 @@ import org.koin.core.component.inject
 class ProjectRepositoryImpl : ProjectRepository, KoinComponent {
 
     private val projectClient by inject<ProjectClient>()
-//    private val pokemonInfoDao by inject<PokemonInfoDao>()
 
-    override suspend fun getAll(page: Int): Result<List<Project>> {
+    override suspend fun getAll(query: String?, page: Int): Result<List<Project>> {
         return try {
-            val response = projectClient.getProjectList(page = page)
+            val response = projectClient.getProjectList(query = query, page = page)
             Result.success(response.data ?: emptyList())
         } catch (e: Exception) {
             e.printStackTrace()
@@ -22,9 +21,9 @@ class ProjectRepositoryImpl : ProjectRepository, KoinComponent {
         }
     }
 
-    override suspend fun isCodeAvailable(code: String): Result<Boolean> {
+    override suspend fun validateCode(param: String): Result<Boolean> {
         return try {
-            val response = projectClient.isProjectCodeAvailable(code = code)
+            val response = projectClient.validateCode(code = param)
             Result.success(response.data ?: false)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -47,7 +46,6 @@ class ProjectRepositoryImpl : ProjectRepository, KoinComponent {
 
     override suspend fun getNew(): Result<Project> {
         return try {
-
             val response = projectClient.getProjectNewProject()
             if (response.data != null) {
                 Result.success(response.data)
