@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class QuotationItem(
-    val quotation: Quotation,
     val customerEnquiryItem: CustomerEnquiryItem,
     var price: Double,
     var weightNet: Double,

@@ -34,16 +34,6 @@ class CustomerEnquiryRepositoryImpl : CustomerEnquiryRepository, KoinComponent {
         }
     }
 
-    override suspend fun validateCode(code: String): Result<Boolean> {
-        return try {
-            val response = client.validateCode(code = code)
-            Result.success(response.data ?: false)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure(e)
-        }
-    }
-
     override suspend fun getById(id: Long): Result<CustomerEnquiry> {
         return try {
             val response = client.getById(id = id)

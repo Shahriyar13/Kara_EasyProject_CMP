@@ -11,7 +11,7 @@ data class CustomerEnquiry(
     val customerEnquiryItems: List<CustomerEnquiryItem>,
     val peopleInCharge: List<Person>,
     val fileAttachments: List<FileAttachment>,
-    val project: Project,
+    val project: Project?,
     override var code: String,
     override val codeExtension: String,
     override val time: Long,
