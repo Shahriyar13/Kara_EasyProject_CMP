@@ -24,7 +24,7 @@ class ProjectClient(
         page: Int,
     ): ServerResponse<List<Project>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getAll) {
+            httpClient.get(NetworkConstants.ProjectAPIs.getAll) {
                 url {
                     query?.let {
                         parameters.append("query", it)
@@ -40,7 +40,7 @@ class ProjectClient(
 
     suspend fun validateCode(code: String): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.validateCode) {
+            httpClient.get(NetworkConstants.ProjectAPIs.validateCode) {
                 url {
                     parameters.append("code", code)
                 }
@@ -53,7 +53,7 @@ class ProjectClient(
         id: Long,
     ): ServerResponse<Project> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getById) {
+            httpClient.get(NetworkConstants.ProjectAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -62,7 +62,7 @@ class ProjectClient(
 
     suspend fun getProjectNewProject(): ServerResponse<Project> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Project.getNew) {
+            httpClient.get(NetworkConstants.ProjectAPIs.getNew) {
                 contentType(ContentType.Application.Json)
             }
         }
@@ -72,7 +72,7 @@ class ProjectClient(
         params: ProjectRequest,
     ): ServerResponse<Project> {
         return handleErrors {
-            httpClient.post(NetworkConstants.Project.create) {
+            httpClient.post(NetworkConstants.ProjectAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -83,7 +83,7 @@ class ProjectClient(
         params: ProjectRequest,
     ): ServerResponse<Project> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Project.update) {
+            httpClient.put(NetworkConstants.ProjectAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -94,7 +94,7 @@ class ProjectClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Project.deleteById) {
+            httpClient.delete(NetworkConstants.ProjectAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

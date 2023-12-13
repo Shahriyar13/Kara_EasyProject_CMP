@@ -24,7 +24,7 @@ class PurchaseOrderClient(
         page: Int,
     ): ServerResponse<List<PurchaseOrder>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.PurchaseOrder.getAll) {
+            httpClient.get(NetworkConstants.PurchaseOrderAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -41,7 +41,7 @@ class PurchaseOrderClient(
         page: Int,
     ): ServerResponse<List<PurchaseOrder>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.PurchaseOrder.getAllByProjectId) {
+            httpClient.get(NetworkConstants.PurchaseOrderAPIs.getAllByProjectId) {
                 url {
                     parameters.append("page", page.toString())
                     parameters.append("projectId", projectId.toString())
@@ -53,7 +53,7 @@ class PurchaseOrderClient(
 
     suspend fun validateCode(code: String): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.PurchaseOrder.validateCode) {
+            httpClient.get(NetworkConstants.PurchaseOrderAPIs.validateCode) {
                 url {
                     parameters.append("code", code)
                 }
@@ -66,7 +66,7 @@ class PurchaseOrderClient(
         id: Long,
     ): ServerResponse<PurchaseOrder> {
         return handleErrors {
-            httpClient.get(NetworkConstants.PurchaseOrder.getById) {
+            httpClient.get(NetworkConstants.PurchaseOrderAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -77,7 +77,7 @@ class PurchaseOrderClient(
         params: PurchaseOrderRequest,
     ): ServerResponse<PurchaseOrder> {
         return handleErrors {
-            httpClient.post(NetworkConstants.PurchaseOrder.create) {
+            httpClient.post(NetworkConstants.PurchaseOrderAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -88,7 +88,7 @@ class PurchaseOrderClient(
         params: PurchaseOrderRequest,
     ): ServerResponse<PurchaseOrder> {
         return handleErrors {
-            httpClient.put(NetworkConstants.PurchaseOrder.update) {
+            httpClient.put(NetworkConstants.PurchaseOrderAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -99,7 +99,7 @@ class PurchaseOrderClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.PurchaseOrder.deleteById) {
+            httpClient.delete(NetworkConstants.PurchaseOrderAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

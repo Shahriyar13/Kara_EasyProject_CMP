@@ -24,7 +24,7 @@ class CustomerEnquiryClient(
         page: Int,
     ): ServerResponse<List<CustomerEnquiry>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.CustomerEnquiry.getAll) {
+            httpClient.get(NetworkConstants.CustomerEnquiryAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -41,21 +41,10 @@ class CustomerEnquiryClient(
         page: Int,
     ): ServerResponse<List<CustomerEnquiry>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.CustomerEnquiry.getAllByProjectId) {
+            httpClient.get(NetworkConstants.CustomerEnquiryAPIs.getAllByProjectId) {
                 url {
                     parameters.append("page", page.toString())
                     parameters.append("projectId", projectId.toString())
-                }
-                contentType(ContentType.Application.Json)
-            }
-        }
-    }
-
-    suspend fun validateCode(code: String): ServerResponse<Boolean> {
-        return handleErrors {
-            httpClient.get(NetworkConstants.CustomerEnquiry.validateCode) {
-                url {
-                    parameters.append("code", code)
                 }
                 contentType(ContentType.Application.Json)
             }
@@ -66,7 +55,7 @@ class CustomerEnquiryClient(
         id: Long,
     ): ServerResponse<CustomerEnquiry> {
         return handleErrors {
-            httpClient.get(NetworkConstants.CustomerEnquiry.getById) {
+            httpClient.get(NetworkConstants.CustomerEnquiryAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -77,7 +66,7 @@ class CustomerEnquiryClient(
         params: CustomerEnquiryRequest,
     ): ServerResponse<CustomerEnquiry> {
         return handleErrors {
-            httpClient.post(NetworkConstants.CustomerEnquiry.create) {
+            httpClient.post(NetworkConstants.CustomerEnquiryAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -88,7 +77,7 @@ class CustomerEnquiryClient(
         params: CustomerEnquiryRequest,
     ): ServerResponse<CustomerEnquiry> {
         return handleErrors {
-            httpClient.put(NetworkConstants.CustomerEnquiry.update) {
+            httpClient.put(NetworkConstants.CustomerEnquiryAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -99,7 +88,7 @@ class CustomerEnquiryClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.CustomerEnquiry.deleteById) {
+            httpClient.delete(NetworkConstants.CustomerEnquiryAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

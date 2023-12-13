@@ -24,7 +24,7 @@ class ProformaInvoiceClient(
         page: Int,
     ): ServerResponse<List<ProformaInvoice>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.ProformaInvoice.getAll) {
+            httpClient.get(NetworkConstants.ProformaInvoiceAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -41,7 +41,7 @@ class ProformaInvoiceClient(
         page: Int,
     ): ServerResponse<List<ProformaInvoice>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.ProformaInvoice.getAllByProjectId) {
+            httpClient.get(NetworkConstants.ProformaInvoiceAPIs.getAllByProjectId) {
                 url {
                     parameters.append("page", page.toString())
                     parameters.append("projectId", projectId.toString())
@@ -53,7 +53,7 @@ class ProformaInvoiceClient(
 
     suspend fun validateCode(code: String): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.ProformaInvoice.validateCode) {
+            httpClient.get(NetworkConstants.ProformaInvoiceAPIs.validateCode) {
                 url {
                     parameters.append("code", code)
                 }
@@ -66,7 +66,7 @@ class ProformaInvoiceClient(
         id: Long,
     ): ServerResponse<ProformaInvoice> {
         return handleErrors {
-            httpClient.get(NetworkConstants.ProformaInvoice.getById) {
+            httpClient.get(NetworkConstants.ProformaInvoiceAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -77,7 +77,7 @@ class ProformaInvoiceClient(
         params: ProformaInvoiceRequest,
     ): ServerResponse<ProformaInvoice> {
         return handleErrors {
-            httpClient.post(NetworkConstants.ProformaInvoice.create) {
+            httpClient.post(NetworkConstants.ProformaInvoiceAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -88,7 +88,7 @@ class ProformaInvoiceClient(
         params: ProformaInvoiceRequest,
     ): ServerResponse<ProformaInvoice> {
         return handleErrors {
-            httpClient.put(NetworkConstants.ProformaInvoice.update) {
+            httpClient.put(NetworkConstants.ProformaInvoiceAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -99,7 +99,7 @@ class ProformaInvoiceClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.ProformaInvoice.deleteById) {
+            httpClient.delete(NetworkConstants.ProformaInvoiceAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

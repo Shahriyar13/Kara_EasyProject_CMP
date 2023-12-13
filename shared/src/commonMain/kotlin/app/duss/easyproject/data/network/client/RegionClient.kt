@@ -22,7 +22,7 @@ class RegionClient(
         page: Int,
     ): ServerResponse<List<RegionCity>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getAllCities) {
+            httpClient.get(NetworkConstants.RegionAPIs.getAllCities) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -37,7 +37,7 @@ class RegionClient(
         id: Long,
     ): ServerResponse<RegionCity> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getCityById) {
+            httpClient.get(NetworkConstants.RegionAPIs.getCityById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -49,7 +49,7 @@ class RegionClient(
         page: Int,
     ): ServerResponse<List<RegionState>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getAllStates) {
+            httpClient.get(NetworkConstants.RegionAPIs.getAllStates) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -64,7 +64,7 @@ class RegionClient(
         id: Long,
     ): ServerResponse<RegionState> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getStateById) {
+            httpClient.get(NetworkConstants.RegionAPIs.getStateById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -76,7 +76,7 @@ class RegionClient(
         page: Int,
     ): ServerResponse<List<RegionCountry>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getAllCountries) {
+            httpClient.get(NetworkConstants.RegionAPIs.getAllCountries) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -91,7 +91,7 @@ class RegionClient(
         id: Long,
     ): ServerResponse<RegionCountry> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getCountryById) {
+            httpClient.get(NetworkConstants.RegionAPIs.getCountryById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -103,7 +103,7 @@ class RegionClient(
         page: Int,
     ): ServerResponse<List<RegionCustomsPort>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getAllCustomsPorts) {
+            httpClient.get(NetworkConstants.RegionAPIs.getAllCustomsPorts) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -118,7 +118,7 @@ class RegionClient(
         id: Long,
     ): ServerResponse<RegionCustomsPort> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Region.getCustomsPortById) {
+            httpClient.get(NetworkConstants.RegionAPIs.getCustomsPortById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

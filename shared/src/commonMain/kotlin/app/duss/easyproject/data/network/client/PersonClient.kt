@@ -24,7 +24,7 @@ class PersonClient(
         page: Int,
     ): ServerResponse<List<Person>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Person.getAll) {
+            httpClient.get(NetworkConstants.PersonAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -41,7 +41,7 @@ class PersonClient(
         page: Int,
     ): ServerResponse<List<Person>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Person.getAllByCompanyId) {
+            httpClient.get(NetworkConstants.PersonAPIs.getAllByCompanyId) {
                 url {
                     parameters.append("page", page.toString())
                     parameters.append("companyId", companyId.toString())
@@ -55,7 +55,7 @@ class PersonClient(
         id: Long,
     ): ServerResponse<Person> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Person.getById) {
+            httpClient.get(NetworkConstants.PersonAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -66,7 +66,7 @@ class PersonClient(
         params: PersonRequest,
     ): ServerResponse<Person> {
         return handleErrors {
-            httpClient.post(NetworkConstants.Person.create) {
+            httpClient.post(NetworkConstants.PersonAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -77,7 +77,7 @@ class PersonClient(
         params: PersonRequest,
     ): ServerResponse<Person> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Person.update) {
+            httpClient.put(NetworkConstants.PersonAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -88,7 +88,7 @@ class PersonClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Person.deleteById) {
+            httpClient.delete(NetworkConstants.PersonAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

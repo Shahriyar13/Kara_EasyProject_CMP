@@ -24,7 +24,7 @@ class QuotationClient(
         page: Int,
     ): ServerResponse<List<Quotation>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Quotation.getAll) {
+            httpClient.get(NetworkConstants.QuotationAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -41,7 +41,7 @@ class QuotationClient(
         page: Int,
     ): ServerResponse<List<Quotation>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Quotation.getAllByProjectId) {
+            httpClient.get(NetworkConstants.QuotationAPIs.getAllByProjectId) {
                 url {
                     parameters.append("page", page.toString())
                     parameters.append("projectId", projectId.toString())
@@ -53,7 +53,7 @@ class QuotationClient(
 
     suspend fun validateCode(code: String): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Quotation.validateCode) {
+            httpClient.get(NetworkConstants.QuotationAPIs.validateCode) {
                 url {
                     parameters.append("code", code)
                 }
@@ -66,7 +66,7 @@ class QuotationClient(
         id: Long,
     ): ServerResponse<Quotation> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Quotation.getById) {
+            httpClient.get(NetworkConstants.QuotationAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -77,7 +77,7 @@ class QuotationClient(
         params: QuotationRequest,
     ): ServerResponse<Quotation> {
         return handleErrors {
-            httpClient.post(NetworkConstants.Quotation.create) {
+            httpClient.post(NetworkConstants.QuotationAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -88,7 +88,7 @@ class QuotationClient(
         params: QuotationRequest,
     ): ServerResponse<Quotation> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Quotation.update) {
+            httpClient.put(NetworkConstants.QuotationAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -99,7 +99,7 @@ class QuotationClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Quotation.deleteById) {
+            httpClient.delete(NetworkConstants.QuotationAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

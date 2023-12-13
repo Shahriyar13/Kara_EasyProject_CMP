@@ -28,7 +28,7 @@ class AttachmentClient(
         param: FileAttachmentRequest,
     ): ServerResponse<List<FileAttachment>> {
         return handleErrors {
-            httpClient.post(NetworkConstants.Attachment.upload) {
+            httpClient.post(NetworkConstants.AttachmentAPIs.upload) {
                 setBody(
                     MultiPartFormDataContent(
                         formData {
@@ -69,7 +69,7 @@ class AttachmentClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Attachment.deleteById) {
+            httpClient.delete(NetworkConstants.AttachmentAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

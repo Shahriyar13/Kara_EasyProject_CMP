@@ -6,7 +6,7 @@ object NetworkConstants {
     const val baseUrl = "http://127.0.0.1:8080"
     private const val baseApiUrl = "$baseUrl/api"
 
-    object Company {
+    object CompanyAPIs {
         private const val route = "$baseApiUrl/company"
         const val getAll: String = "$route/v1/getAll"
         const val validateCode: String = "$route/v1/validCode"
@@ -20,17 +20,16 @@ object NetworkConstants {
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
-    object CustomerEnquiry {
+    object CustomerEnquiryAPIs {
         private const val route = "$baseApiUrl/ce"
         const val getAll: String = "$route/v1/getAll"
-        const val validateCode: String = "$route/v1/validCode"
         const val getById: String = "$route/v1/getById"
         const val getAllByProjectId: String = "$route/v1/getAllByProjectId"
         const val deleteById: String = "$route/v1/deleteById"
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
-    object Invoice {
+    object InvoiceAPIs {
         private const val route = "$baseApiUrl/invoice"
         const val getAll: String = "$route/v1/getAll"
         const val getAllByProjectId: String = "$route/v1/getAllByProjectId"
@@ -40,7 +39,7 @@ object NetworkConstants {
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
-    object Packing {
+    object PackingAPIs {
         private const val route = "$baseApiUrl/packing"
         const val getAll: String = "$route/v1/getAll"
         const val getAllByProjectId: String = "$route/v1/getAllByProjectId"
@@ -50,7 +49,7 @@ object NetworkConstants {
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
-    object Item {
+    object ItemAPIs {
         private const val route = "$baseApiUrl/item"
         const val getAll: String = "$route/v1/getAll"
         const val getById: String = "$route/v1/getById"
@@ -58,7 +57,7 @@ object NetworkConstants {
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
-    object Person {
+    object PersonAPIs {
         private const val route = "$baseApiUrl/person"
         const val getAll: String = "$route/v1/getAll"
         const val getAllByCompanyId: String = "$route/v1/getAllByCompanyId"
@@ -68,7 +67,7 @@ object NetworkConstants {
         const val update: String = "$route/v1/update"
     }
 
-    object ProformaInvoice {
+    object ProformaInvoiceAPIs {
         private const val route = "$baseApiUrl/pi"
         const val getAll: String = "$route/v1/getAll"
         const val getAllByProjectId: String = "$route/v1/getAllByProjectId"
@@ -79,7 +78,7 @@ object NetworkConstants {
         const val update: String = "$route/v1/update"
     }
 
-    object PurchaseOrder {
+    object PurchaseOrderAPIs {
         private const val route = "$baseApiUrl/po"
         const val getAll: String = "$route/v1/getAll"
         const val getAllByProjectId: String = "$route/v1/getAllByProjectId"
@@ -90,7 +89,7 @@ object NetworkConstants {
         const val update: String = "$route/v1/update"
     }
 
-    object Quotation {
+    object QuotationAPIs {
         private const val route = "$baseApiUrl/quotation"
         const val getAll: String = "$route/v1/getAll"
         const val getAllByProjectId: String = "$route/v1/getAllByProjectId"
@@ -101,7 +100,7 @@ object NetworkConstants {
         const val update: String = "$route/v1/update"
     }
 
-    object SupplierEnquiry {
+    object SupplierEnquiryAPIs {
         private const val route = "$baseApiUrl/se"
         const val getAll: String = "$route/v1/getAll"
         const val getAllByProjectId: String = "$route/v1/getAllByProjectId"
@@ -111,7 +110,7 @@ object NetworkConstants {
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
-    object Project {
+    object ProjectAPIs {
         private const val route = "$baseApiUrl/project"
         const val getAll: String = "$route/v1/getAll"
         const val validateCode: String = "$route/v1/validCode"
@@ -122,7 +121,7 @@ object NetworkConstants {
         const val create: String = "$route/v1/create"
         const val update: String = "$route/v1/update"
     }
-    object Region {
+    object RegionAPIs {
         private const val route = "$baseApiUrl/region"
         const val getCountryById: String = "$route/v1/getCountryById"
         const val getAllCountries: String = "$route/v1/getAllCountries"
@@ -133,12 +132,12 @@ object NetworkConstants {
         const val getCustomsPortById: String = "$route/v1/getCustomsPortById"
         const val getAllCustomsPorts: String = "$route/v1/getAllCustomsPorts"
     }
-    object Attachment {
+    object AttachmentAPIs {
         private const val route = "$baseApiUrl/file_attachment"
         const val upload: String = "$route/v1/upload"
         const val deleteById: String = "$route/v1/deleteById"
     }
-    object User {
+    object AuthAPIs {
         private const val route = "$baseApiUrl/auth"
         const val login: String = "$route/v1/login"
         const val create: String = "$route/v1/create"

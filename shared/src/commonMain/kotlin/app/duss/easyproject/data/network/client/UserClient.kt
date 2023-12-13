@@ -20,7 +20,7 @@ class UserClient(
         params: UserLoginRequest,
     ): ServerResponse<UserLoginDto> {
         return handleErrors {
-            httpClient.post(NetworkConstants.User.login) {
+            httpClient.post(NetworkConstants.AuthAPIs.login) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -31,7 +31,7 @@ class UserClient(
         params: UserRequest,
     ): ServerResponse<User> {
         return handleErrors {
-            httpClient.post(NetworkConstants.User.create) {
+            httpClient.post(NetworkConstants.AuthAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -42,7 +42,7 @@ class UserClient(
         params: UserRequest,
     ): ServerResponse<User> {
         return handleErrors {
-            httpClient.post(NetworkConstants.User.update) {
+            httpClient.post(NetworkConstants.AuthAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }

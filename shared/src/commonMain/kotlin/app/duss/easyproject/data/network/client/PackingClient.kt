@@ -24,7 +24,7 @@ class PackingClient(
         page: Int,
     ): ServerResponse<List<Packing>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Packing.getAll) {
+            httpClient.get(NetworkConstants.PackingAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -41,7 +41,7 @@ class PackingClient(
         page: Int,
     ): ServerResponse<List<Packing>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Packing.getAllByProjectId) {
+            httpClient.get(NetworkConstants.PackingAPIs.getAllByProjectId) {
                 url {
                     parameters.append("page", page.toString())
                     parameters.append("projectId", projectId.toString())
@@ -53,7 +53,7 @@ class PackingClient(
 
     suspend fun validateCode(code: String): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Packing.validateCode) {
+            httpClient.get(NetworkConstants.PackingAPIs.validateCode) {
                 url {
                     parameters.append("code", code)
                 }
@@ -66,7 +66,7 @@ class PackingClient(
         id: Long,
     ): ServerResponse<Packing> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Packing.getById) {
+            httpClient.get(NetworkConstants.PackingAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -77,7 +77,7 @@ class PackingClient(
         params: PackingRequest,
     ): ServerResponse<Packing> {
         return handleErrors {
-            httpClient.post(NetworkConstants.Packing.create) {
+            httpClient.post(NetworkConstants.PackingAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -88,7 +88,7 @@ class PackingClient(
         params: PackingRequest,
     ): ServerResponse<Packing> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Packing.update) {
+            httpClient.put(NetworkConstants.PackingAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -99,7 +99,7 @@ class PackingClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Packing.deleteById) {
+            httpClient.delete(NetworkConstants.PackingAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

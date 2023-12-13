@@ -24,7 +24,7 @@ class InvoiceClient(
         page: Int,
     ): ServerResponse<List<Invoice>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Invoice.getAll) {
+            httpClient.get(NetworkConstants.InvoiceAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                    query?.let {
@@ -41,7 +41,7 @@ class InvoiceClient(
         page: Int,
     ): ServerResponse<List<Invoice>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Invoice.getAllByProjectId) {
+            httpClient.get(NetworkConstants.InvoiceAPIs.getAllByProjectId) {
                 url {
                     parameters.append("page", page.toString())
                     parameters.append("projectId", projectId.toString())
@@ -53,7 +53,7 @@ class InvoiceClient(
 
     suspend fun validateCode(code: String): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Invoice.validateCode) {
+            httpClient.get(NetworkConstants.InvoiceAPIs.validateCode) {
                 url {
                     parameters.append("code", code)
                 }
@@ -66,7 +66,7 @@ class InvoiceClient(
         id: Long,
     ): ServerResponse<Invoice> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Invoice.getById) {
+            httpClient.get(NetworkConstants.InvoiceAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -77,7 +77,7 @@ class InvoiceClient(
         params: InvoiceRequest,
     ): ServerResponse<Invoice> {
         return handleErrors {
-            httpClient.post(NetworkConstants.Invoice.create) {
+            httpClient.post(NetworkConstants.InvoiceAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -88,7 +88,7 @@ class InvoiceClient(
         params: InvoiceRequest,
     ): ServerResponse<Invoice> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Invoice.update) {
+            httpClient.put(NetworkConstants.InvoiceAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -99,7 +99,7 @@ class InvoiceClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Invoice.deleteById) {
+            httpClient.delete(NetworkConstants.InvoiceAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }

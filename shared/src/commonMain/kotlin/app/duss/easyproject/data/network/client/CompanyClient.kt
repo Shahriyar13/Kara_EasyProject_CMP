@@ -24,7 +24,7 @@ class CompanyClient(
         page: Int,
     ): ServerResponse<List<Company>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Company.getAll) {
+            httpClient.get(NetworkConstants.CompanyAPIs.getAll) {
                 url {
                     parameters.append("page", page.toString())
                     query?.let {
@@ -41,7 +41,7 @@ class CompanyClient(
         page: Int,
     ): ServerResponse<List<Company>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Company.getAllCustomers) {
+            httpClient.get(NetworkConstants.CompanyAPIs.getAllCustomers) {
                 url {
                     parameters.append("page", page.toString())
                     query?.let {
@@ -58,7 +58,7 @@ class CompanyClient(
         page: Int,
     ): ServerResponse<List<Company>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Company.getAllSuppliers) {
+            httpClient.get(NetworkConstants.CompanyAPIs.getAllSuppliers) {
                 url {
                     parameters.append("page", page.toString())
                     query?.let {
@@ -75,7 +75,7 @@ class CompanyClient(
         page: Int,
     ): ServerResponse<List<Company>> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Company.getAllFreightForwarders) {
+            httpClient.get(NetworkConstants.CompanyAPIs.getAllFreightForwarders) {
                 url {
                     parameters.append("page", page.toString())
                     query?.let {
@@ -93,7 +93,7 @@ class CompanyClient(
         freightForwarderCode: String?
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Company.validateCode) {
+            httpClient.get(NetworkConstants.CompanyAPIs.validateCode) {
                 url {
                     customerCode?.let {
                         parameters.append("customerCode", it)
@@ -114,7 +114,7 @@ class CompanyClient(
         id: Long,
     ): ServerResponse<Company> {
         return handleErrors {
-            httpClient.get(NetworkConstants.Company.getById) {
+            httpClient.get(NetworkConstants.CompanyAPIs.getById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
@@ -125,7 +125,7 @@ class CompanyClient(
         params: CompanyRequest,
     ): ServerResponse<Company> {
         return handleErrors {
-            httpClient.post(NetworkConstants.Company.create) {
+            httpClient.post(NetworkConstants.CompanyAPIs.create) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -136,7 +136,7 @@ class CompanyClient(
         params: CompanyRequest,
     ): ServerResponse<Company> {
         return handleErrors {
-            httpClient.put(NetworkConstants.Company.update) {
+            httpClient.put(NetworkConstants.CompanyAPIs.update) {
                 setBody(params)
                 contentType(ContentType.Application.Json)
             }
@@ -147,7 +147,7 @@ class CompanyClient(
         id: Long,
     ): ServerResponse<Boolean> {
         return handleErrors {
-            httpClient.delete(NetworkConstants.Company.deleteById) {
+            httpClient.delete(NetworkConstants.CompanyAPIs.deleteById) {
                 parameter("id", id)
                 contentType(ContentType.Application.Json)
             }
