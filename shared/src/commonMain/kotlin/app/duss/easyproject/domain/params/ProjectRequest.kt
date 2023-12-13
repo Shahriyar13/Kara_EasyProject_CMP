@@ -22,5 +22,5 @@ fun Project.toDto() = ProjectRequest(
     annualId = annualId,
     codeExtension = codeExtension,
     time = time,
-    customerEnquiries = customerEnquiries.map { it.toDto() }
+    customerEnquiries = customerEnquiries?.map { it.toDto() } ?: listOf()
 )

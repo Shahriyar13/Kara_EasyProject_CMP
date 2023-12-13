@@ -18,7 +18,7 @@ class ItemComponent(
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
 
-    private val favoriteStore =
+    private val store =
         instanceKeeper.getStore {
             ItemStoreFactory(
                 storeFactory = storeFactory,
@@ -28,10 +28,10 @@ class ItemComponent(
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<ItemStore.State> = favoriteStore.stateFlow
+    val state: StateFlow<ItemStore.State> = store.stateFlow
 
     fun onEvent(event: ItemStore.Intent) {
-        favoriteStore.accept(event)
+        store.accept(event)
     }
 
     fun onOutput(output: Output) {

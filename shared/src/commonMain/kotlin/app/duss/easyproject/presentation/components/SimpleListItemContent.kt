@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.ce.list.components
+package app.duss.easyproject.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,19 +14,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import app.duss.easyproject.domain.entity.CustomerEnquiry
-import app.duss.easyproject.presentation.utils.toFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CEItemContents(
+internal fun SimpleListItemContent(
     onClick: () -> Unit,
-    item: CustomerEnquiry,
+    title: String,
+    subtitle: String? = null,
+    caption: String? = null,
     brush: Brush,
     modifier: Modifier = Modifier,
 ) {
@@ -35,11 +34,20 @@ internal fun CEItemContents(
         onClick = {
             onClick.invoke()
         },
-        shape = MaterialTheme.shapes.large,
+        shape = MaterialTheme.shapes.small,
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
         ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            focusedElevation = 0.dp,
+            hoveredElevation = 0.dp,
+            draggedElevation = 0.dp,
+            disabledElevation = 0.dp,
+
+            ),
         modifier = modifier
     ) {
         Column(
@@ -62,20 +70,23 @@ internal fun CEItemContents(
 //            Spacer(Modifier.height(14.dp))
 
             Text(
-                text = item.customerBuyer.company.name + " - " + ((item.title?.takeIf { it.isNotBlank() }) ?: "No title"),
+                text = title,
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.alpha(.8f)
+                modifier = Modifier.background(Color.Transparent)
             )
 
-            Spacer(Modifier.height(4.dp))
+            subtitle?.let {
+                Spacer(Modifier.height(4.dp))
 
-            Text(
-                text = item.time.toFormattedDate(),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.alpha(.4f)
-            )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.background(Color.Transparent)
+                )
+            }
+
         }
     }
 }

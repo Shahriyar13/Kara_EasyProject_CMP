@@ -33,36 +33,67 @@ class PersonStoreFactory(
             ) {}
 
     private sealed class Msg {
+        data object SelectMode : Msg()
         data object New : Msg()
+        data object Refresh: Msg()
         data class Edit(val id: Long?) : Msg()
         data object EditDone : Msg()
         data class Update(val item: Person) : Msg()
         data class Delete(val id: Long) : Msg()
         data object ListLoading : Msg()
-        data class Selected(val list: List<Person>) : Msg()
+        data class Selected(val item: Person) : Msg()
         data object SelectDone : Msg()
         data class ListLoaded(val list: List<Person>) : Msg()
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
-        data object LastPageLoaded : Msg()
+        data object LastPageLoaded: Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<PersonStore.Intent, Unit, PersonStore.State, Msg, Nothing>(
         appDispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> PersonStore.State) {
+            if (selectMode) {
+                dispatch(Msg.SelectMode)
+            }
             fetchList(page = 0, isLastPageLoaded = false, searchValue = searchValue)
         }
 
         override fun executeIntent(intent: PersonStore.Intent, getState: () -> PersonStore.State) {
             when (intent) {
-                is PersonStore.Intent.Delete -> dispatch(Msg.Delete(intent.deletedId))
-                is PersonStore.Intent.Edit -> dispatch(Msg.Edit(intent.id))
-                PersonStore.Intent.EditDone -> dispatch(Msg.EditDone)
-                is PersonStore.Intent.LoadByPage -> fetchList(intent.page, getState().isLastPageLoaded, getState().searchValue)
-                PersonStore.Intent.New -> dispatch(Msg.New)
-                is PersonStore.Intent.Update -> dispatch(Msg.Update(intent.item))
-                is PersonStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
-                is PersonStore.Intent.UpdateSelected -> dispatch(Msg.Selected(intent.items))
+                is PersonStore.Intent.Delete -> {
+                    dispatch(Msg.Delete(intent.deletedId))
+                }
+                is PersonStore.Intent.Edit -> {
+                    dispatch(Msg.Edit(intent.id))
+                }
+                PersonStore.Intent.EditDone -> {
+                    dispatch(Msg.EditDone)
+                }
+                is PersonStore.Intent.LoadByPage -> {
+                    fetchList(
+                        intent.page,
+                        getState().isLastPageLoaded,
+                        getState().searchValue,
+                    )
+                }
+                PersonStore.Intent.New -> {
+                    dispatch(Msg.New)
+                }
+                is PersonStore.Intent.Update -> {
+                    dispatch(Msg.Update(intent.item))
+                }
+                is PersonStore.Intent.UpdateSearchValue -> {
+                    dispatch(Msg.Refresh)
+                    dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                    fetchList(
+                        getState().page,
+                        getState().isLastPageLoaded,
+                        getState().searchValue,
+                    )
+                }
+                is PersonStore.Intent.UpdateSelected -> {
+                    dispatch(Msg.Selected(intent.item))
+                }
             }
         }
 
@@ -100,11 +131,21 @@ class PersonStoreFactory(
             when (msg) {
                 is Msg.SelectDone -> copy(selectingDone = true)
                 is Msg.ListLoading -> copy(isLoading = true)
-                is Msg.ListLoaded -> PersonStore.State(list = list + msg.list, selectMode = this.selectMode)
-                is Msg.Selected -> PersonStore.State(selected = msg.list)
+                is Msg.ListLoaded -> copy(
+                    list = list + msg.list,
+                    isLoading = false,
+                )
+                is Msg.Selected -> copy(
+                    selected = if (selected.any { it.id == msg.item.id }) {
+                        selected - msg.item
+                    } else {
+                        selected + msg.item
+                    }
+                )
                 is Msg.ListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
-                Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
+                Msg.LastPageLoaded -> copy(isLastPageLoaded = true, isLoading = false)
+                Msg.SelectMode -> copy(selectMode = true)
                 Msg.New -> copy(id = -1)
                 is Msg.Edit -> copy(id = msg.id)
                 is Msg.EditDone -> copy(id = null)
@@ -116,6 +157,7 @@ class PersonStoreFactory(
                         list + msg.item
                     }.sortedByDescending { it.creationTime }
                 )
+                Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
             }
     }
 }

@@ -7,6 +7,6 @@ class ProjectCodeIsValidUseCase(
     private val projectRepository: ProjectRepository,
 ): BaseCoroutinesUseCase<String, Boolean>() {
     override suspend fun execute(param: String): Result<Boolean> =
-        projectRepository.isCodeAvailable(param)
+        projectRepository.validateCode(param)
 
 }

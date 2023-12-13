@@ -15,6 +15,7 @@ internal fun CEDetailsScreen(component: CEDetailsComponent, modifier: Modifier =
         state = state,
         onEvent = component::onEvent,
         onOutput = component::onOutput,
+        component = component,
         modifier = modifier,
     )
 

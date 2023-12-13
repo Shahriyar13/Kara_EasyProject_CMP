@@ -10,11 +10,18 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
+enum class CompanyFilter(val id: Int) {
+    ALL(0),
+    Customer(1),
+    Supplier(2),
+    FreightForwarder(3),
+}
+
 class CompanyComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    val inSupplierSelectMode: Boolean = false,
-    val inCustomerSelectMode: Boolean = false,
+    val selectMode: Boolean = false,
+    val filter: CompanyFilter = CompanyFilter.ALL,
     val searchValue: String?,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {

@@ -1,53 +1,57 @@
 package app.duss.easyproject.presentation.ui.item.components
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import app.duss.easyproject.presentation.components.SimpleListItemContent
 import app.duss.easyproject.presentation.components.SimplePagingVerticalGrid
-import app.duss.easyproject.presentation.components.TopAppBarDocumentList
 import app.duss.easyproject.presentation.ui.item.ItemComponent
 import app.duss.easyproject.presentation.ui.item.store.ItemStore
-import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ItemContent(
+internal fun ItemSelectContent(
     state: ItemStore.State,
     onEvent: (ItemStore.Intent) -> Unit,
     onOutput: (ItemComponent.Output) -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    Scaffold(
-        topBar = {
-            TopAppBarDocumentList(
-                title = "Items",
-                onSearchValueChange = {
-                    onEvent(ItemStore.Intent.UpdateSearchValue(it))
-                },
-                searchValue = state.searchValue,
-                loadingState = state.isLoading,
-                onAddClicked = {
-                    //TODO()
-                },
-            )
-        },
-    ) { paddingValue ->
+    val modalBottomSheetState = rememberModalBottomSheetState()
 
-        state.error?.let { error ->
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    error,
-                    withDismissAction = true,
-                    duration = SnackbarDuration.Indefinite
-                )
+    ModalBottomSheet(
+        onDismissRequest = {
+            onOutput(ItemComponent.Output.ItemsSelected(state.selected))
+        },
+        sheetState = modalBottomSheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Spacer(Modifier)
+            Text("Select Items")
+            IconButton(
+                onClick = {
+                    onOutput(ItemComponent.Output.ItemsSelected(state.selected))
+                }
+            ){
+                Icon(Icons.Filled.Check, "done")
             }
         }
+        Divider()
         SimplePagingVerticalGrid(
             itemList = state.list,
             loadMoreItems = {
@@ -56,7 +60,6 @@ internal fun ItemContent(
                 onEvent(ItemStore.Intent.LoadByPage(page = nextPage))
             },
             isLoading = state.isLoading,
-            modifier = Modifier.padding(paddingValue)
         ) { item, brush ->
             SimpleListItemContent(
                 onClick = {

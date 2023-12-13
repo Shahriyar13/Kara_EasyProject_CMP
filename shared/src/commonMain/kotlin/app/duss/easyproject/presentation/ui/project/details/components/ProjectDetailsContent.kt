@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.components.EditableText
-import app.duss.easyproject.presentation.components.TopAppBarDocument
+import app.duss.easyproject.presentation.components.TopAppBarDocumentDetails
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
 import app.duss.easyproject.presentation.ui.project.details.store.ProjectDetailsStore
@@ -48,7 +48,7 @@ internal fun ProjectDetailsContent(
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                TopAppBarDocument(
+                TopAppBarDocumentDetails(
                     onBack = {
                         onOutput(
                             ProjectDetailsComponent.Output.NavigateBack(

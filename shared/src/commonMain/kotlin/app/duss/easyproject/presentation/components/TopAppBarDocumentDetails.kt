@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarDocument(
+fun TopAppBarDocumentDetails(
     title: String?,
     onBack: (() -> Unit)? = null,
     onSave: (() -> Unit)? = null,

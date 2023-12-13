@@ -9,6 +9,6 @@ class GetAllCustomersUseCase(
 ): BaseCoroutinesUseCaseMultiParam<String?, Int, List<Company>>() {
 
     override suspend fun execute(param1: String?, param2: Int): Result<List<Company>> =
-        repository.getAllSuppliers(param1, param2)
+        repository.getAllCustomers(param1, param2)
 
 }

@@ -80,7 +80,7 @@ class ProjectListComponent(
 
     fun onEvent(event: ProjectListStore.Intent) {
         projectListStore.accept(event)
-        if (event is ProjectListStore.Intent.Details) {
+        if (event is ProjectListStore.Intent.Edit) {
             navigation.push(Configuration.Details(event.id))
         } else if (event is ProjectListStore.Intent.AddNew) {
             navigation.push(Configuration.Details(null))

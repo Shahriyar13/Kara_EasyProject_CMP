@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface CEListStore: Store<CEListStore.Intent, CEListStore.State, Nothing> {
 
     sealed class Intent {
-        data class LoadListByPage(val page: Int): Intent()
+        data class LoadByPage(val page: Int): Intent()
         data class UpdateSearchValue(val searchValue: String): Intent()
         data object AddNew: Intent()
         data object DetailsDone: Intent()

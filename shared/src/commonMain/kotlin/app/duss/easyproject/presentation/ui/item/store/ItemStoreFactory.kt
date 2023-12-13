@@ -33,36 +33,63 @@ class ItemStoreFactory(
             ) {}
 
     private sealed class Msg {
+        data object SelectMode : Msg()
         data object New : Msg()
         data class Edit(val id: Long?) : Msg()
         data object EditDone : Msg()
         data class Update(val item: Item) : Msg()
         data class Delete(val id: Long) : Msg()
         data object ListLoading : Msg()
-        data class Selected(val list: List<Item>) : Msg()
+        data class Selected(val item: Item) : Msg()
         data object SelectDone : Msg()
         data class ListLoaded(val list: List<Item>) : Msg()
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
+        data object Refresh: Msg()
         data object LastPageLoaded : Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<ItemStore.Intent, Unit, ItemStore.State, Msg, Nothing>(
         appDispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> ItemStore.State) {
+            if (selectMode) {
+                dispatch(Msg.SelectMode)
+            }
             fetchList(page = 0, isLastPageLoaded = false, searchValue = searchValue)
         }
 
         override fun executeIntent(intent: ItemStore.Intent, getState: () -> ItemStore.State) {
             when (intent) {
-                is ItemStore.Intent.Delete -> dispatch(Msg.Delete(intent.deletedId))
-                is ItemStore.Intent.Edit -> dispatch(Msg.Edit(intent.id))
-                ItemStore.Intent.EditDone -> dispatch(Msg.EditDone)
-                is ItemStore.Intent.LoadByPage -> fetchList(intent.page, getState().isLastPageLoaded, getState().searchValue)
-                ItemStore.Intent.New -> dispatch(Msg.New)
-                is ItemStore.Intent.Update -> dispatch(Msg.Update(intent.item))
-                is ItemStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
-                is ItemStore.Intent.UpdateSelected -> dispatch(Msg.Selected(intent.items))
+                is ItemStore.Intent.Delete -> {
+                    dispatch(Msg.Delete(intent.deletedId))
+                }
+                is ItemStore.Intent.Edit -> {
+                    dispatch(Msg.Edit(intent.id))
+                }
+                ItemStore.Intent.EditDone -> {
+                    dispatch(Msg.EditDone)
+                }
+                is ItemStore.Intent.LoadByPage -> {
+                    fetchList(intent.page, getState().isLastPageLoaded, getState().searchValue)
+                }
+                ItemStore.Intent.New -> {
+                    dispatch(Msg.New)
+                }
+                is ItemStore.Intent.Update -> {
+                    dispatch(Msg.Update(intent.item))
+                }
+                is ItemStore.Intent.UpdateSearchValue -> {
+                    dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                    dispatch(Msg.Refresh)
+                    fetchList(
+                        page = getState().page,
+                        isLastPageLoaded = getState().isLastPageLoaded,
+                        searchValue = getState().searchValue,
+                    )
+                }
+                is ItemStore.Intent.UpdateSelected -> {
+                    dispatch(Msg.Selected(intent.item))
+                }
             }
         }
 
@@ -85,6 +112,9 @@ class ItemStoreFactory(
                             dispatch(Msg.ListLoaded(list))
                         }
                         if (list.size < NetworkConstants.PageSize) {
+                            if (list.isNotEmpty()) {
+                                dispatch(Msg.ListLoaded(list))
+                            }
                             dispatch(Msg.LastPageLoaded)
                         }
                     }
@@ -100,11 +130,21 @@ class ItemStoreFactory(
             when (msg) {
                 is Msg.SelectDone -> copy(selectingDone = true)
                 is Msg.ListLoading -> copy(isLoading = true)
-                is Msg.ListLoaded -> ItemStore.State(list = list + msg.list, selectMode = this.selectMode)
-                is Msg.Selected -> ItemStore.State(selected = msg.list)
+                is Msg.ListLoaded -> copy(
+                    list = list + msg.list,
+                    isLoading = false,
+                )
+                is Msg.Selected -> copy(
+                    selected = if (selected.any { it.id == msg.item.id }) {
+                        selected - msg.item
+                    } else {
+                        selected + msg.item
+                    }
+                )
                 is Msg.ListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
-                Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
+                Msg.LastPageLoaded -> copy(isLastPageLoaded = true, isLoading = false)
+                Msg.SelectMode -> copy(selectMode = true)
                 Msg.New -> copy(id = -1)
                 is Msg.Edit -> copy(id = msg.id)
                 is Msg.EditDone -> copy(id = null)
@@ -116,6 +156,7 @@ class ItemStoreFactory(
                         list + msg.item
                     }.sortedByDescending { it.creationTime }
                 )
+                Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
             }
     }
 }

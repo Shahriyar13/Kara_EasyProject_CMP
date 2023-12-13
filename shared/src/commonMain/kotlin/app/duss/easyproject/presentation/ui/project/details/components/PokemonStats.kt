@@ -19,7 +19,7 @@ internal fun PokemonStats(
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 16.dp)
     ) {
-        project.customerEnquiries.forEach { statResponse ->
+        project.customerEnquiries?.forEach { statResponse ->
             key(statResponse.title ?: statResponse.time.toString()) {
                 PokemonStatItem(
                     statResponse = statResponse,

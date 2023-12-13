@@ -51,10 +51,10 @@ internal class ProjectListStoreFactory(
 
         override fun executeIntent(intent: ProjectListStore.Intent, getState: () -> ProjectListStore.State): Unit =
             when (intent) {
-                is ProjectListStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
+                is ProjectListStore.Intent.LoadByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
                 is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
                 ProjectListStore.Intent.AddNew -> dispatch(Msg.AddNewProject)
-                is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.id))
+                is ProjectListStore.Intent.Edit -> dispatch(Msg.NavigateToProjectDetails(intent.id))
                 ProjectListStore.Intent.DetailsDone -> dispatch(Msg.ProjectDetailsDone)
                 is ProjectListStore.Intent.DetailsChanged -> dispatch(Msg.UpdateItem(intent.project))
                 is ProjectListStore.Intent.DetailsDeleted -> dispatch(Msg.DeleteItem(intent.deletedId))
@@ -78,6 +78,9 @@ internal class ProjectListStoreFactory(
                             dispatch(Msg.ProjectListLoaded(list))
                         }
                         if (list.size < NetworkConstants.PageSize) {
+                            if (list.isNotEmpty()) {
+                                dispatch(Msg.ProjectListLoaded(list))
+                            }
                             dispatch(Msg.LastPageLoaded)
                         }
                     }
@@ -92,19 +95,19 @@ internal class ProjectListStoreFactory(
         override fun ProjectListStore.State.reduce(msg: Msg): ProjectListStore.State =
             when (msg) {
                 is Msg.ProjectListLoading -> copy(isLoading = true)
-                is Msg.ProjectListLoaded -> ProjectListStore.State(projectList = projectList + msg.projectList)
+                is Msg.ProjectListLoaded -> ProjectListStore.State(list = list + msg.projectList)
                 is Msg.ProjectListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
-                Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
-                Msg.AddNewProject -> copy(projectId = -1)
-                is Msg.NavigateToProjectDetails -> copy(projectId = msg.id)
-                is Msg.ProjectDetailsDone -> copy(projectId = null)
-                is Msg.DeleteItem -> copy(projectList = projectList.filterNot { it.id == msg.id })
+                Msg.LastPageLoaded -> copy(isLastPageLoaded = true, isLoading = false)
+                Msg.AddNewProject -> copy(id = -1)
+                is Msg.NavigateToProjectDetails -> copy(id = msg.id)
+                is Msg.ProjectDetailsDone -> copy(id = null)
+                is Msg.DeleteItem -> copy(list = list.filterNot { it.id == msg.id })
                 is Msg.UpdateItem -> copy(
-                    projectList = if (projectList.any { it.id == msg.project.id }) {
-                        projectList.map { if (it.id == msg.project.id) msg.project else it }
+                    list = if (list.any { it.id == msg.project.id }) {
+                        list.map { if (it.id == msg.project.id) msg.project else it }
                     } else {
-                        projectList + msg.project
+                        list + msg.project
                     }.sortedByDescending { it.code }
                 )
             }

@@ -1,5 +1,6 @@
 package app.duss.easyproject.presentation.ui.main
 
+import app.duss.easyproject.presentation.ui.ce.list.CEListComponent
 import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonComponent
 import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
@@ -40,6 +41,18 @@ class MainComponent(
         DatabaseComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
+            output = output
+        )
+    }
+    private val ce: (
+        ComponentContext,
+        searchValue: String?,
+        (CEListComponent.Output) -> Unit,
+    ) -> CEListComponent= { childContext, searchValue, output ->
+        CEListComponent(
+            componentContext = childContext,
+            storeFactory = storeFactory,
+            searchValue = searchValue ?: "",
             output = output
         )
     }
@@ -150,10 +163,11 @@ class MainComponent(
                     ::onDatabaseOutput
                 )
             )
-            is Configuration.CEConfig -> Child.ComingSoonChild(
-                comingSoon(
+            is Configuration.CEConfig -> Child.CEChild(
+                ce(
                     componentContext,
-                    ::onComingSoonOutput
+                    configuration.searchValue,
+                    ::onCEOutput
                 )
             )
             is Configuration.ProjectConfig -> Child.ProjectChild(
@@ -231,7 +245,7 @@ class MainComponent(
 
         data class DatabaseChild(val component: DatabaseComponent) : Child()
 
-        data class CEChild(val component: ComingSoonComponent) : Child()
+        data class CEChild(val component: CEListComponent) : Child()
 
         data class ProjectChild(val component: ProjectListComponent) : Child()
 
@@ -323,6 +337,7 @@ class MainComponent(
 
 
     private fun onProjectOutput(output: ProjectListComponent.Output) {}
+    private fun onCEOutput(output: CEListComponent.Output) {}
 
     private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit = Unit
 

@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,12 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.components.EditableText
-import app.duss.easyproject.presentation.components.TopAppBarDocument
+import app.duss.easyproject.presentation.components.TopAppBarDocumentDetails
 import app.duss.easyproject.presentation.helper.LocalSafeArea
 import app.duss.easyproject.presentation.ui.ce.details.CEDetailsComponent
 import app.duss.easyproject.presentation.ui.ce.details.store.CEDetailsStore
-import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
-import app.duss.easyproject.presentation.ui.project.details.store.ProjectDetailsStore
 import kotlinx.coroutines.launch
 
 @Composable
@@ -33,6 +33,7 @@ internal fun CEDetailsContent(
     onEvent: (CEDetailsStore.Intent) -> Unit,
     onOutput: (CEDetailsComponent.Output) -> Unit,
     modifier: Modifier = Modifier.padding(LocalSafeArea.current),
+    component: CEDetailsComponent,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -50,7 +51,7 @@ internal fun CEDetailsContent(
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                TopAppBarDocument(
+                TopAppBarDocumentDetails(
                     onBack = {
                         onOutput(
                             CEDetailsComponent.Output.NavigateBack(
@@ -104,7 +105,7 @@ internal fun CEDetailsContent(
                     ) {
                         item("name") {
                             EditableText(
-                                value = item.updated.code.replaceFirstChar { it.uppercaseChar() },
+                                value = item.updated.code?.replaceFirstChar { it.uppercaseChar() },
                                 onValueChange = {
                                     state.form.updated.code = it ?: ""
                                     onEvent(CEDetailsStore.Intent.EditingState)
@@ -113,6 +114,16 @@ internal fun CEDetailsContent(
                                 readOnly = !state.inEditeMode,
                                 modifier = Modifier.fillMaxWidth()
                             )
+                        }
+
+                        item("items") {
+                            Button(
+                                onClick = {
+                                    component.off()
+                                }
+                            ) {
+                                Text("itemsselect")
+                            }
                         }
 
                         item("title") {

@@ -7,15 +7,12 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,8 +30,8 @@ internal fun <T> PagingVerticalGrid(
     loadSize: Int = PageSize,
     modifier: Modifier = Modifier,
     columns: GridCells = GridCells.Fixed(1),
-    content: @Composable (T) -> Unit,
     loadContent: @Composable (Float) -> Unit,
+    content: @Composable (T) -> Unit,
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val alpha by infiniteTransition.animateFloat(
@@ -47,13 +44,6 @@ internal fun <T> PagingVerticalGrid(
     )
 
     Column {
-        if (isLoading && itemList.isEmpty()) {
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary.copy(alpha = .6f),
-                trackColor = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
-            )
-        }
         if (!isLoading && itemList.isEmpty()) {
             Text(
                 text = "Your list is empty!",
@@ -62,7 +52,6 @@ internal fun <T> PagingVerticalGrid(
                 modifier = Modifier.padding(20.dp)
             )
         }
-        BoxWithConstraints {
             LazyVerticalGrid(
                 columns = columns,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -85,5 +74,4 @@ internal fun <T> PagingVerticalGrid(
                 }
             }
         }
-    }
 }

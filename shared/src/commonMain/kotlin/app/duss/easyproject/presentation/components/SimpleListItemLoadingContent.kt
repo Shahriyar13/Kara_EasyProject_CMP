@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.project.list.components
+package app.duss.easyproject.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import kotlin.math.max
 import kotlin.random.Random
 
 @Composable
-internal fun ProjectLoadingItem(
+internal fun SimpleListItemLoadingContent(
     modifier: Modifier = Modifier,
     alpha: Float,
 ) {
@@ -33,9 +33,9 @@ internal fun ProjectLoadingItem(
             .background(MaterialTheme.colorScheme.primary.copy(.6f))
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(10.dp)
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier.padding(12.dp)
         ) {
 
             val firstBoxWidthFraction = remember {
@@ -43,6 +43,7 @@ internal fun ProjectLoadingItem(
             }
             Box(
                 modifier = modifier
+                    .padding(top = 2.dp)
                     .fillMaxWidth(max(.3f, firstBoxWidthFraction))
                     .height(20.dp)
                     .graphicsLayer {
@@ -57,8 +58,9 @@ internal fun ProjectLoadingItem(
             }
             Box(
                 modifier = modifier
+                    .padding(bottom = 2.dp)
                     .fillMaxWidth(max(.3f, secondBoxWidthFraction))
-                    .height(20.dp)
+                    .height(14.dp)
                     .graphicsLayer {
                         this.alpha = alpha
                     }

@@ -29,4 +29,10 @@ data class Company(
     override val modifiedBy: String?,
     override val creatorId: Long?,
     override val modifierId: Long?
-): BaseNamedEntity()
+): BaseNamedEntity() {
+    fun getAddress(): String = (street?.let { "$it, " } ?: "") +
+            (postcode?.let { "$it " } ?: "") +
+            (city?.name?.let { "$it, " } ?: "") +
+            (city?.state?.name?.let { "$it, " } ?: "") +
+            (city?.state?.country?.name ?: "")
+}

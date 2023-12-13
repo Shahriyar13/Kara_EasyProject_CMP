@@ -72,7 +72,7 @@ class DatabaseComponent(
         childStack(
             source = navigation,
             serializer = Configuration::class.serializerOrNull(),
-            initialConfiguration = Configuration.ItemConfig(null),
+            initialConfiguration = Configuration.CompanyConfig(null),
             handleBackButton = false,
             childFactory = ::createChild
         )

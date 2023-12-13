@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import app.duss.easyproject.presentation.ui.ce.list.CEListScreen
 import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonScreen
 import app.duss.easyproject.presentation.ui.dashboard.DashboardScreen
 import app.duss.easyproject.presentation.ui.database.DatabaseScreen
@@ -183,7 +184,7 @@ internal fun MainScreen(component: MainComponent) {
                 when (val child = it.instance) {
                     is MainComponent.Child.DashboardChild -> DashboardScreen(child.component)
                     is MainComponent.Child.DatabaseChild -> DatabaseScreen(child.component)
-                    is MainComponent.Child.CEChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.CEChild -> CEListScreen(child.component)
                     is MainComponent.Child.ProjectChild -> ProjectListScreen(child.component)
                     is MainComponent.Child.SEChild -> ComingSoonScreen(child.component)
                     is MainComponent.Child.ComingSoonChild -> ComingSoonScreen(child.component)

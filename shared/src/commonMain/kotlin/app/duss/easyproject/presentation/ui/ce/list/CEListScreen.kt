@@ -8,7 +8,7 @@ import app.duss.easyproject.presentation.ui.ce.list.components.CEListContent
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 
 @Composable
-internal fun ProjectListScreen(component: CEListComponent) {
+internal fun CEListScreen(component: CEListComponent) {
 
     val state by component.state.collectAsState()
 

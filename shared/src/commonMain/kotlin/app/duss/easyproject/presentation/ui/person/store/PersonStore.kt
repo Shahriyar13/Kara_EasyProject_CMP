@@ -11,7 +11,7 @@ interface PersonStore: Store<PersonStore.Intent, PersonStore.State, Nothing> {
         data object New: Intent()
         data object EditDone: Intent()
         data class Update(val item: Person): Intent()
-        data class UpdateSelected(val items: List<Person>): Intent()
+        data class UpdateSelected(val item: Person): Intent()
         data class Delete(val deletedId: Long): Intent()
         data class Edit(val id: Long): Intent()
     }

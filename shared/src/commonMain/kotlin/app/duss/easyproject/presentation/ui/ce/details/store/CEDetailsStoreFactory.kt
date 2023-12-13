@@ -27,7 +27,6 @@ internal class CEDetailsStoreFactory(
 ) : KoinComponent {
 
     private val getByIdUseCase by inject<GetByIdUseCase>()
-    private val getNewUseCase by inject<GetNewUseCase>()
     private val createUseCase by inject<CreateUseCase>()
     private val updateUseCase by inject<UpdateUseCase>()
     private val deleteUseCase by inject<DeleteUseCase>()
@@ -110,16 +109,8 @@ internal class CEDetailsStoreFactory(
                             dispatch(Msg.InfoFailed(e.message))
                         }
                 } else {
-                    getNewUseCase
-                        .execute(Unit)
-                        .onSuccess { item ->
-                            dispatch(Msg.InfoLoaded(item))
-                        }
-                        .onFailure { e ->
-                            dispatch(Msg.InfoFailed(e.message))
-                        }
+                    dispatch(Msg.InfoLoaded(CustomerEnquiry()))
                 }
-
             }
         }
 

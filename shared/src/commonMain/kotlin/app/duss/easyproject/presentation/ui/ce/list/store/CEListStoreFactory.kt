@@ -46,12 +46,12 @@ internal class CEListStoreFactory(
     private inner class ExecutorImpl : CoroutineExecutor<CEListStore.Intent, Unit, CEListStore.State, Msg, Nothing>(
         appDispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> CEListStore.State) {
-            loadListByPage(page = 0)
+            loadListByPage(page = 0, searchValue = searchValue, isLastPageLoaded = false)
         }
 
         override fun executeIntent(intent: CEListStore.Intent, getState: () -> CEListStore.State): Unit =
             when (intent) {
-                is CEListStore.Intent.LoadListByPage -> loadListByPage(intent.page, getState().isLastPageLoaded)
+                is CEListStore.Intent.LoadByPage -> loadListByPage(intent.page, getState().searchValue, getState().isLastPageLoaded)
                 is CEListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
                 CEListStore.Intent.AddNew -> dispatch(Msg.AddNew)
                 is CEListStore.Intent.Details -> dispatch(Msg.NavigateToDetails(intent.id))
@@ -63,6 +63,7 @@ internal class CEListStoreFactory(
         private var loadListByPageJob: Job? = null
         private fun loadListByPage(
             page: Int,
+            searchValue: String? = null,
             isLastPageLoaded: Boolean = false
         ) {
             if (loadListByPageJob?.isActive == true) return
@@ -72,7 +73,7 @@ internal class CEListStoreFactory(
                 dispatch(Msg.ListLoading)
 
                 getAllUseCase
-                    .execute(page)
+                    .execute(searchValue, page)
                     .onSuccess { list ->
                         if (list.isNotEmpty()) {
                             dispatch(Msg.ListLoaded(list))

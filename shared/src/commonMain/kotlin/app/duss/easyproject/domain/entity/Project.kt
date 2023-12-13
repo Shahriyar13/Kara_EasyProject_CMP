@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Project(
-    val title: String?,
+    var title: String?,
     val customerEnquiries: List<CustomerEnquiry>? = listOf(),
     val supplierEnquiries: List<SupplierEnquiry>? = listOf(),
     val quotations: List<Quotation>? = listOf(),
