@@ -1,17 +1,17 @@
-package app.duss.easyproject.presentation.ui.item.store
+package app.duss.easyproject.presentation.ui.person.store
 
-import app.duss.easyproject.domain.entity.Item
+import app.duss.easyproject.domain.entity.Person
 import com.arkivanov.mvikotlin.core.store.Store
 
-interface ItemStore: Store<ItemStore.Intent, ItemStore.State, Nothing> {
+interface PersonStore: Store<PersonStore.Intent, PersonStore.State, Nothing> {
 
     sealed class Intent {
         data class LoadByPage(val page: Int): Intent()
         data class UpdateSearchValue(val searchValue: String): Intent()
         data object New: Intent()
         data object EditDone: Intent()
-        data class Update(val item: Item): Intent()
-        data class UpdateSelected(val items: List<Item>): Intent()
+        data class Update(val item: Person): Intent()
+        data class UpdateSelected(val items: List<Person>): Intent()
         data class Delete(val deletedId: Long): Intent()
         data class Edit(val id: Long): Intent()
     }
@@ -23,8 +23,8 @@ interface ItemStore: Store<ItemStore.Intent, ItemStore.State, Nothing> {
         val isLoading: Boolean = false,
         val isLastPageLoaded: Boolean = false,
         val error: String? = null,
-        val list: List<Item> = emptyList(),
-        val selected: List<Item> = emptyList(),
+        val list: List<Person> = emptyList(),
+        val selected: List<Person> = emptyList(),
         val selectingDone: Boolean= false,
         val searchValue: String = "",
     )

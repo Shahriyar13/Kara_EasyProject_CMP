@@ -1,8 +1,8 @@
-package app.duss.easyproject.presentation.ui.company
+package app.duss.easyproject.presentation.ui.person
 
-import app.duss.easyproject.domain.entity.Company
-import app.duss.easyproject.presentation.ui.company.store.CompanyStore
-import app.duss.easyproject.presentation.ui.company.store.CompanyStoreFactory
+import app.duss.easyproject.domain.entity.Person
+import app.duss.easyproject.presentation.ui.person.store.PersonStore
+import app.duss.easyproject.presentation.ui.person.store.PersonStoreFactory
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -10,26 +10,27 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
-class CompanyComponent(
+class PersonComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    val inSupplierSelectMode: Boolean = false,
-    val inCustomerSelectMode: Boolean = false,
+    val selectMode: Boolean = false,
     val searchValue: String?,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
 
     private val favoriteStore =
         instanceKeeper.getStore {
-            CompanyStoreFactory(
+            PersonStoreFactory(
                 storeFactory = storeFactory,
+                searchValue = searchValue,
+                selectMode = selectMode,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<CompanyStore.State> = favoriteStore.stateFlow
+    val state: StateFlow<PersonStore.State> = favoriteStore.stateFlow
 
-    fun onEvent(event: CompanyStore.Intent) {
+    fun onEvent(event: PersonStore.Intent) {
         favoriteStore.accept(event)
     }
 
@@ -38,7 +39,7 @@ class CompanyComponent(
     }
 
     sealed class Output {
-        data class CompanySelected(val company: Company) : Output()
+        data class ItemsSelected(val items: List<Person>) : Output()
 
     }
 

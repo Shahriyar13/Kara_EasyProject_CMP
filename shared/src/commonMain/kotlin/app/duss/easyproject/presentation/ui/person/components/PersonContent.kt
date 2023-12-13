@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.item.components
+package app.duss.easyproject.presentation.ui.person.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,15 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.presentation.helper.LocalSafeArea
-import app.duss.easyproject.presentation.ui.item.ItemComponent
-import app.duss.easyproject.presentation.ui.item.store.ItemStore
+import app.duss.easyproject.presentation.ui.person.PersonComponent
+import app.duss.easyproject.presentation.ui.person.store.PersonStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ItemContent(
-    state: ItemStore.State,
-    onEvent: (ItemStore.Intent) -> Unit,
-    onOutput: (ItemComponent.Output) -> Unit,
+internal fun PersonContent(
+    state: PersonStore.State,
+    onEvent: (PersonStore.Intent) -> Unit,
+    onOutput: (PersonComponent.Output) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -84,10 +84,11 @@ internal fun ItemContent(
                         modifier = Modifier.padding(20.dp)
                     )
                 } else {
-//                    PagingVerticalGrid(
-//                        onPokemonClicked = { name ->
-////                            onOutput(ItemComponent.Output.ItemsSelected(id = null))
-//                        },
+//                    PokemonGrid(
+//                        onPokemonClicked = { },
+////                        { list ->
+////                            onOutput(PersonComponent.Output.ItemsSelected(list))
+////                        },
 //                        projectList = state.list,
 //                        isLoading = state.isLoading,
 //                    )

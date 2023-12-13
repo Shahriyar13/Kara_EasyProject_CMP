@@ -55,79 +55,79 @@ internal fun MainScreen(component: MainComponent) {
             title = "Dashboard",
             icon = Icons.Default.Dashboard,
             onClick = component::onDashboardTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Dashboard,
+            isSelected = activeComponent is MainComponent.Child.DashboardChild,
         ),
         MenuItemData(
             title = "Database",
             icon = Icons.Default.DataArray,
             onClick = component::onDatabaseTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Database,
+            isSelected = activeComponent is MainComponent.Child.DatabaseChild,
         ),
         MenuItemData(
             title = "Customer Enquiry",
             icon = Icons.Default.QuestionMark,
             onClick = component::onCETabClicked,
-            isSelected = activeComponent is MainComponent.Child.CE,
+            isSelected = activeComponent is MainComponent.Child.CEChild,
         ),
         MenuItemData(
             title = "Project",
             icon = Icons.Default.Backpack,
             onClick = component::onProjectTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Project,
+            isSelected = activeComponent is MainComponent.Child.ProjectChild,
         ),
         MenuItemData(
             title = "Supplier Enquiry",
             icon = Icons.Default.QuestionMark,
             onClick = component::onSETabClicked,
-            isSelected = activeComponent is MainComponent.Child.SE,
+            isSelected = activeComponent is MainComponent.Child.SEChild,
         ),
         MenuItemData(
             title = "Supplier Quotation",
             icon = Icons.Default.FormatQuote,
             onClick = component::onSQTabClicked,
-            isSelected = activeComponent is MainComponent.Child.SQ,
+            isSelected = activeComponent is MainComponent.Child.SQChild,
         ),
         MenuItemData(
             title = "Proforma Invoice",
             icon = Icons.Default.List,
             onClick = component::onPITabClicked,
-            isSelected = activeComponent is MainComponent.Child.PI,
+            isSelected = activeComponent is MainComponent.Child.PIChild,
         ),
         MenuItemData(
             title = "Purchase Order",
             icon = Icons.Default.List,
             onClick = component::onPOTabClicked,
-            isSelected = activeComponent is MainComponent.Child.PO,
+            isSelected = activeComponent is MainComponent.Child.POChild,
         ),
         MenuItemData(
             title = "Packing",
             icon = Icons.Default.GifBox,
             onClick = component::onPackingTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Packing,
+            isSelected = activeComponent is MainComponent.Child.PackingChild,
         ),
         MenuItemData(
             title = "Invoice",
             icon = Icons.Default.RequestQuote,
             onClick = component::onInvoiceTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Invoice,
+            isSelected = activeComponent is MainComponent.Child.InvoiceChild,
         ),
         MenuItemData(
             title = "BAFA",
             icon = Icons.Default.FactCheck,
             onClick = component::onBafaTabClicked,
-            isSelected = activeComponent is MainComponent.Child.BAFA,
+            isSelected = activeComponent is MainComponent.Child.BAFAChild,
         ),
         MenuItemData(
             title = "Payment",
             icon = Icons.Default.Payments,
             onClick = component::onPaymentTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Payment,
+            isSelected = activeComponent is MainComponent.Child.PaymentChild,
         ),
         MenuItemData(
             title = "Profile",
             icon = Icons.Default.Person,
             onClick = component::onProfileTabClicked,
-            isSelected = activeComponent is MainComponent.Child.Profile,
+            isSelected = activeComponent is MainComponent.Child.ProfileChild,
         ),
     )
 
@@ -181,20 +181,20 @@ internal fun MainScreen(component: MainComponent) {
                 animation = stackAnimation(fade()),
             ) {
                 when (val child = it.instance) {
-                    is MainComponent.Child.Dashboard -> DashboardScreen(child.component)
-                    is MainComponent.Child.Database -> DatabaseScreen(child.component)
-                    is MainComponent.Child.CE -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.Project -> ProjectListScreen(child.component)
-                    is MainComponent.Child.SE -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.ComingSoon -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.BAFA -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.Invoice -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.PI -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.PO -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.Payment -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.Profile -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.SQ -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.Packing -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.DashboardChild -> DashboardScreen(child.component)
+                    is MainComponent.Child.DatabaseChild -> DatabaseScreen(child.component)
+                    is MainComponent.Child.CEChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.ProjectChild -> ProjectListScreen(child.component)
+                    is MainComponent.Child.SEChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.ComingSoonChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.BAFAChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.InvoiceChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.PIChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.POChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.PaymentChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.ProfileChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.SQChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.PackingChild -> ComingSoonScreen(child.component)
                 }
             }
         }

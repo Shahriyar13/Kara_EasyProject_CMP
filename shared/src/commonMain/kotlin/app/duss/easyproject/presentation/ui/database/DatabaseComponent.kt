@@ -1,7 +1,9 @@
 package app.duss.easyproject.presentation.ui.database
 
 
+import app.duss.easyproject.presentation.ui.company.CompanyComponent
 import app.duss.easyproject.presentation.ui.item.ItemComponent
+import app.duss.easyproject.presentation.ui.person.PersonComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -38,20 +40,26 @@ class DatabaseComponent(
 
     private val company: (
         ComponentContext,
+        searchValue: String?,
         (CompanyComponent.Output) -> Unit,
-    ) -> CompanyComponent = { childContext, output ->
+    ) -> CompanyComponent = { childContext, searchValue, output ->
         CompanyComponent(
             componentContext = childContext,
+            storeFactory = storeFactory,
+            searchValue = searchValue ?: "",
             output = output
         )
     }
 
     private val person: (
         ComponentContext,
+        searchValue: String?,
         (PersonComponent.Output) -> Unit,
-    ) -> PersonComponent = { childContext, output ->
+    ) -> PersonComponent = { childContext, searchValue, output ->
         PersonComponent(
             componentContext = childContext,
+            storeFactory = storeFactory,
+            searchValue = searchValue ?: "",
             output = output
         )
     }
@@ -64,7 +72,7 @@ class DatabaseComponent(
         childStack(
             source = navigation,
             serializer = Configuration::class.serializerOrNull(),
-            initialConfiguration = Configuration.Item,
+            initialConfiguration = Configuration.ItemConfig(null),
             handleBackButton = false,
             childFactory = ::createChild
         )
@@ -74,58 +82,73 @@ class DatabaseComponent(
     sealed class Output
 
     fun onItemTabClicked(searchValue: String? = null) {
-        navigation.bringToFront(Configuration.Item(searchValue))
+        navigation.bringToFront(Configuration.ItemConfig(searchValue))
     }
 
     fun onCompanyTabClicked(searchValue: String? = null) {
-        navigation.bringToFront(Configuration.Company(searchValue))
+        navigation.bringToFront(Configuration.CompanyConfig(searchValue))
     }
 
     fun onPersonTabClicked(searchValue: String? = null) {
-        navigation.bringToFront(Configuration.Person(searchValue))
+        navigation.bringToFront(Configuration.PersonConfig(searchValue))
     }
 
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
         when (configuration) {
-            is Configuration.Item -> Child.Item(
+            is Configuration.ItemConfig -> Child.ItemChild(
                 item(
                     componentContext,
+                    null,
                     ::onItemOutput
                 )
             )
-            is Configuration.Company -> Child.Company(
+            is Configuration.CompanyConfig -> Child.CompanyChild(
                 company(
                     componentContext,
+                    null,
                     ::onCompanyOutput
                 )
             )
-            is Configuration.Person -> Child.Person(
+            is Configuration.PersonConfig -> Child.PersonChild(
                 person(
                     componentContext,
+                    null,
                     ::onPersonOutput
                 )
             )
         }
 
+    private fun onItemOutput(output: ItemComponent.Output) {
+
+    }
+
+    private fun onCompanyOutput(output: CompanyComponent.Output) {
+
+    }
+
+    private fun onPersonOutput(output: PersonComponent.Output) {
+
+    }
+
     sealed class Child {
-        data class Item(val component: ItemComponent) : Child()
+        data class ItemChild(val component: ItemComponent) : Child()
 
-        data class Company(val component: CompanyComponent) : Child()
+        data class CompanyChild(val component: CompanyComponent) : Child()
 
-        data class Person(val component: PersonComponent) : Child()
+        data class PersonChild(val component: PersonComponent) : Child()
 
     }
 
 
     sealed class Configuration {
         @Serializable
-        data class Item(val searchValue: String? = "") : Configuration()
+        data class ItemConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Company(val searchValue: String? = "") : Configuration()
+        data class CompanyConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Person(val searchValue: String? = "") : Configuration()
+        data class PersonConfig(val searchValue: String? = "") : Configuration()
 
     }
 

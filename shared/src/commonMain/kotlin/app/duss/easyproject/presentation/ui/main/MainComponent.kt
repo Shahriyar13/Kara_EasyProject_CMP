@@ -10,7 +10,6 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import kotlinx.serialization.InternalSerializationApi
@@ -78,7 +77,7 @@ class MainComponent(
         childStack(
             source = navigation,
             serializer = Configuration::class.serializerOrNull(),
-            initialConfiguration = Configuration.Dashboard,
+            initialConfiguration = Configuration.DashboardConfig,
             handleBackButton = false,
             childFactory = ::createChild
         )
@@ -86,139 +85,139 @@ class MainComponent(
     val childStack: Value<ChildStack<*, Child>> = stack
 
      fun onDashboardTabClicked() {
-         navigation.bringToFront(Configuration.Dashboard)
+         navigation.bringToFront(Configuration.DashboardConfig)
     }
 
      fun onDatabaseTabClicked() {
-         navigation.bringToFront(Configuration.Database)
+         navigation.bringToFront(Configuration.DatabaseConfig)
     }
 
     fun onCETabClicked(searchValue: String? = null) {
-        navigation.bringToFront(Configuration.CE(searchValue))
+        navigation.bringToFront(Configuration.CEConfig(searchValue))
     }
 
      fun onProjectTabClicked(searchValue: String? = null) {
-        navigation.bringToFront(Configuration.Project(searchValue))
+        navigation.bringToFront(Configuration.ProjectConfig(searchValue))
     }
 
      fun onSETabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.SE(searchValue))
+         navigation.bringToFront(Configuration.SEConfig(searchValue))
     }
 
     fun onSQTabClicked(searchValue: String? = null) {
-        navigation.bringToFront(Configuration.SQ(searchValue))
+        navigation.bringToFront(Configuration.SQConfig(searchValue))
     }
 
      fun onPITabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.PI(searchValue))
+         navigation.bringToFront(Configuration.PIConfig(searchValue))
     }
 
      fun onPOTabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.PO(searchValue))
+         navigation.bringToFront(Configuration.POConfig(searchValue))
     }
 
      fun onPackingTabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.Packing(searchValue))
+         navigation.bringToFront(Configuration.PackingConfig(searchValue))
     }
 
     fun onInvoiceTabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.Invoice(searchValue))
+         navigation.bringToFront(Configuration.InvoiceConfig(searchValue))
     }
 
     fun onBafaTabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.Bafa(searchValue))
+         navigation.bringToFront(Configuration.BafaConfig(searchValue))
     }
 
     fun onPaymentTabClicked(searchValue: String? = null) {
-         navigation.bringToFront(Configuration.Payment(searchValue))
+         navigation.bringToFront(Configuration.PaymentConfig(searchValue))
     }
 
     fun onProfileTabClicked() {
-         navigation.bringToFront(Configuration.Profile)
+         navigation.bringToFront(Configuration.ProfileConfig)
     }
 
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
         when (configuration) {
-            is Configuration.Dashboard -> Child.Dashboard(
+            is Configuration.DashboardConfig -> Child.DashboardChild(
                 dashboard(
                     componentContext,
                     ::onDashboardOutput
                 )
             )
-            is Configuration.Database -> Child.Database(
+            is Configuration.DatabaseConfig -> Child.DatabaseChild(
                 database(
                     componentContext,
                     ::onDatabaseOutput
                 )
             )
-            is Configuration.CE -> Child.ComingSoon(
+            is Configuration.CEConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.Project -> Child.Project(
+            is Configuration.ProjectConfig -> Child.ProjectChild(
                 project(
                     componentContext,
                     configuration.searchValue,
                     ::onProjectOutput
                 )
             )
-            is Configuration.SE -> Child.ComingSoon(
+            is Configuration.SEConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.ComingSoon -> Child.ComingSoon(
+            is Configuration.ComingSoonConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.SQ -> Child.ComingSoon(
+            is Configuration.SQConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.PI -> Child.ComingSoon(
+            is Configuration.PIConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.PO -> Child.ComingSoon(
+            is Configuration.POConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.Packing -> Child.ComingSoon(
+            is Configuration.PackingConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.Invoice -> Child.ComingSoon(
+            is Configuration.InvoiceConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.Bafa -> Child.ComingSoon(
+            is Configuration.BafaConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.Payment -> Child.ComingSoon(
+            is Configuration.PaymentConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
                 )
             )
-            Configuration.Profile -> Child.ComingSoon(
+            Configuration.ProfileConfig -> Child.ComingSoonChild(
                 comingSoon(
                     componentContext,
                     ::onComingSoonOutput
@@ -228,78 +227,78 @@ class MainComponent(
         }
 
     sealed class Child {
-        data class Dashboard(val component: DashboardComponent) : Child()
+        data class DashboardChild(val component: DashboardComponent) : Child()
 
-        data class Database(val component: DatabaseComponent) : Child()
+        data class DatabaseChild(val component: DatabaseComponent) : Child()
 
-        data class CE(val component: ComingSoonComponent) : Child()
+        data class CEChild(val component: ComingSoonComponent) : Child()
 
-        data class Project(val component: ProjectListComponent) : Child()
+        data class ProjectChild(val component: ProjectListComponent) : Child()
 
-        data class SE(val component: ComingSoonComponent) : Child()
+        data class SEChild(val component: ComingSoonComponent) : Child()
 
-        data class SQ(val component: ComingSoonComponent) : Child()
+        data class SQChild(val component: ComingSoonComponent) : Child()
 
-        data class PI(val component: ComingSoonComponent) : Child()
+        data class PIChild(val component: ComingSoonComponent) : Child()
 
-        data class PO(val component: ComingSoonComponent) : Child()
+        data class POChild(val component: ComingSoonComponent) : Child()
 
-        data class Packing(val component: ComingSoonComponent) : Child()
+        data class PackingChild(val component: ComingSoonComponent) : Child()
 
-        data class Invoice(val component: ComingSoonComponent) : Child()
+        data class InvoiceChild(val component: ComingSoonComponent) : Child()
 
-        data class Payment(val component: ComingSoonComponent) : Child()
+        data class PaymentChild(val component: ComingSoonComponent) : Child()
 
-        data class BAFA(val component: ComingSoonComponent) : Child()
+        data class BAFAChild(val component: ComingSoonComponent) : Child()
 
-        data class Profile(val component: ComingSoonComponent) : Child()
+        data class ProfileChild(val component: ComingSoonComponent) : Child()
 
-        data class ComingSoon(val component: ComingSoonComponent) : Child()
+        data class ComingSoonChild(val component: ComingSoonComponent) : Child()
     }
 
 
     sealed class Configuration {
         @Serializable
-        data object Dashboard : Configuration()
+        data object DashboardConfig : Configuration()
 
         @Serializable
-        data object Database : Configuration()
+        data object DatabaseConfig : Configuration()
 
         @Serializable
-        data class CE(val searchValue: String? = "") : Configuration()
+        data class CEConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Project(val searchValue: String? = "") : Configuration()
+        data class ProjectConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class SE(val searchValue: String? = "") : Configuration()
+        data class SEConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class SQ(val searchValue: String? = "") : Configuration()
+        data class SQConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class PI(val searchValue: String? = "") : Configuration()
+        data class PIConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class PO(val searchValue: String? = "") : Configuration()
+        data class POConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Packing(val searchValue: String? = "") : Configuration()
+        data class PackingConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Invoice(val searchValue: String? = "") : Configuration()
+        data class InvoiceConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Bafa(val searchValue: String? = "") : Configuration()
+        data class BafaConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class Payment(val searchValue: String? = "") : Configuration()
+        data class PaymentConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data object Profile : Configuration()
+        data object ProfileConfig : Configuration()
 
         @Serializable
-        data object ComingSoon : Configuration()
+        data object ComingSoonConfig : Configuration()
     }
 
 
@@ -319,19 +318,13 @@ class MainComponent(
             DashboardComponent.Output.BafaClicked -> onBafaTabClicked()
             DashboardComponent.Output.ProfileClicked -> onProfileTabClicked()
             DashboardComponent.Output.Unauthorized -> output(Output.Unauthorized)
-            DashboardComponent.Output.ComingSoonClicked -> navigation.bringToFront(Configuration.ComingSoon)
+            DashboardComponent.Output.ComingSoonClicked -> navigation.bringToFront(Configuration.ComingSoonConfig)
         }
 
 
     private fun onProjectOutput(output: ProjectListComponent.Output) {}
 
-    private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit =
-       when (output) {
-            is DatabaseComponent.Output.NavigateToCustomerDetails -> navigation.push(Configuration.ComingSoon)
-            is DatabaseComponent.Output.NavigateToItemDetails -> navigation.push(Configuration.ComingSoon)
-            is DatabaseComponent.Output.NavigateToPersonDetails -> navigation.push(Configuration.ComingSoon)
-            is DatabaseComponent.Output.NavigateToSupplierDetails -> navigation.push(Configuration.ComingSoon)
-        }
+    private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit = Unit
 
     private fun onComingSoonOutput(output: ComingSoonComponent.Output): Unit =
        when (output) {

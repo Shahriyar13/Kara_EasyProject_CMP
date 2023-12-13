@@ -3,7 +3,7 @@ package app.duss.easyproject.presentation.ui.project.list.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.repository.ProjectRepository
+import app.duss.easyproject.domain.usecase.project.ProjectsGetAllUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -19,7 +19,7 @@ internal class ProjectListStoreFactory(
     private val searchValue: String?,
 ): KoinComponent {
 
-    private val projectRepository by inject<ProjectRepository>()
+    private val projectsGetAllUseCase by inject<ProjectsGetAllUseCase>()
 
     fun create(): ProjectListStore =
         object : ProjectListStore, Store<ProjectListStore.Intent, ProjectListStore.State, Nothing> by storeFactory.create(
@@ -71,8 +71,8 @@ internal class ProjectListStoreFactory(
             loadProjectListByPageJob = scope.launch {
                 dispatch(Msg.ProjectListLoading)
 
-                projectRepository
-                    .getAll(page)
+                projectsGetAllUseCase
+                    .execute(searchValue, page)
                     .onSuccess { list ->
                         if (list.isNotEmpty()) {
                             dispatch(Msg.ProjectListLoaded(list))

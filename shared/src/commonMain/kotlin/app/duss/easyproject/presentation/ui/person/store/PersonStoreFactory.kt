@@ -1,9 +1,9 @@
-package app.duss.easyproject.presentation.ui.item.store
+package app.duss.easyproject.presentation.ui.person.store
 
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.data.network.NetworkConstants
-import app.duss.easyproject.domain.entity.Item
-import app.duss.easyproject.domain.usecase.item.GetAllUseCase
+import app.duss.easyproject.domain.entity.Person
+import app.duss.easyproject.domain.usecase.person.GetAllUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ItemStoreFactory(
+class PersonStoreFactory(
     private val storeFactory: StoreFactory,
     private val searchValue: String? = null,
     private val selectMode: Boolean = false,
@@ -22,11 +22,11 @@ class ItemStoreFactory(
 
     private val getAllUseCase by inject<GetAllUseCase>()
 
-    fun create(): ItemStore =
-        object : ItemStore,
-            Store<ItemStore.Intent, ItemStore.State, Nothing> by storeFactory.create(
-                name = ItemStore::class.simpleName,
-                initialState = ItemStore.State(),
+    fun create(): PersonStore =
+        object : PersonStore,
+            Store<PersonStore.Intent, PersonStore.State, Nothing> by storeFactory.create(
+                name = PersonStore::class.simpleName,
+                initialState = PersonStore.State(),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
@@ -36,33 +36,33 @@ class ItemStoreFactory(
         data object New : Msg()
         data class Edit(val id: Long?) : Msg()
         data object EditDone : Msg()
-        data class Update(val item: Item) : Msg()
+        data class Update(val item: Person) : Msg()
         data class Delete(val id: Long) : Msg()
         data object ListLoading : Msg()
-        data class Selected(val list: List<Item>) : Msg()
+        data class Selected(val list: List<Person>) : Msg()
         data object SelectDone : Msg()
-        data class ListLoaded(val list: List<Item>) : Msg()
+        data class ListLoaded(val list: List<Person>) : Msg()
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
         data object LastPageLoaded : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<ItemStore.Intent, Unit, ItemStore.State, Msg, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<PersonStore.Intent, Unit, PersonStore.State, Msg, Nothing>(
         appDispatchers.main) {
-        override fun executeAction(action: Unit, getState: () -> ItemStore.State) {
+        override fun executeAction(action: Unit, getState: () -> PersonStore.State) {
             fetchList(page = 0, isLastPageLoaded = false, searchValue = searchValue)
         }
 
-        override fun executeIntent(intent: ItemStore.Intent, getState: () -> ItemStore.State) {
+        override fun executeIntent(intent: PersonStore.Intent, getState: () -> PersonStore.State) {
             when (intent) {
-                is ItemStore.Intent.Delete -> dispatch(Msg.Delete(intent.deletedId))
-                is ItemStore.Intent.Edit -> dispatch(Msg.Edit(intent.id))
-                ItemStore.Intent.EditDone -> dispatch(Msg.EditDone)
-                is ItemStore.Intent.LoadByPage -> fetchList(intent.page, getState().isLastPageLoaded, getState().searchValue)
-                ItemStore.Intent.New -> dispatch(Msg.New)
-                is ItemStore.Intent.Update -> dispatch(Msg.Update(intent.item))
-                is ItemStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
-                is ItemStore.Intent.UpdateSelected -> dispatch(Msg.Selected(intent.items))
+                is PersonStore.Intent.Delete -> dispatch(Msg.Delete(intent.deletedId))
+                is PersonStore.Intent.Edit -> dispatch(Msg.Edit(intent.id))
+                PersonStore.Intent.EditDone -> dispatch(Msg.EditDone)
+                is PersonStore.Intent.LoadByPage -> fetchList(intent.page, getState().isLastPageLoaded, getState().searchValue)
+                PersonStore.Intent.New -> dispatch(Msg.New)
+                is PersonStore.Intent.Update -> dispatch(Msg.Update(intent.item))
+                is PersonStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                is PersonStore.Intent.UpdateSelected -> dispatch(Msg.Selected(intent.items))
             }
         }
 
@@ -95,13 +95,13 @@ class ItemStoreFactory(
         }
     }
 
-    private object ReducerImpl: Reducer<ItemStore.State, Msg> {
-        override fun ItemStore.State.reduce(msg: Msg): ItemStore.State =
+    private object ReducerImpl: Reducer<PersonStore.State, Msg> {
+        override fun PersonStore.State.reduce(msg: Msg): PersonStore.State =
             when (msg) {
                 is Msg.SelectDone -> copy(selectingDone = true)
                 is Msg.ListLoading -> copy(isLoading = true)
-                is Msg.ListLoaded -> ItemStore.State(list = list + msg.list, selectMode = this.selectMode)
-                is Msg.Selected -> ItemStore.State(selected = msg.list)
+                is Msg.ListLoaded -> PersonStore.State(list = list + msg.list, selectMode = this.selectMode)
+                is Msg.Selected -> PersonStore.State(selected = msg.list)
                 is Msg.ListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
