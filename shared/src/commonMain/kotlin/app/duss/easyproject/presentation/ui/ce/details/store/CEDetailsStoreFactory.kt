@@ -8,7 +8,6 @@ import app.duss.easyproject.domain.usecase.attachment.AttachmentUploadUseCase
 import app.duss.easyproject.domain.usecase.ce.CreateUseCase
 import app.duss.easyproject.domain.usecase.ce.DeleteUseCase
 import app.duss.easyproject.domain.usecase.ce.GetByIdUseCase
-import app.duss.easyproject.domain.usecase.ce.GetNewUseCase
 import app.duss.easyproject.domain.usecase.ce.UpdateUseCase
 import app.duss.easyproject.presentation.forms.CustomerEnquiryForm
 import com.arkivanov.mvikotlin.core.store.Reducer
