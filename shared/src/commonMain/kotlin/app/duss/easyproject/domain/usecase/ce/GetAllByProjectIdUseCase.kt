@@ -4,11 +4,11 @@ import app.duss.easyproject.domain.entity.CustomerEnquiry
 import app.duss.easyproject.domain.repository.CustomerEnquiryRepository
 import app.duss.easyproject.domain.usecase.BaseCoroutinesUseCaseMultiParam
 
-class GetAllUseCase(
+class GetAllByProjectIdUseCase(
     private val repository: CustomerEnquiryRepository,
-): BaseCoroutinesUseCaseMultiParam<String?, Int, List<CustomerEnquiry>>() {
+): BaseCoroutinesUseCaseMultiParam<Long, Int, List<CustomerEnquiry>>() {
 
-    override suspend fun execute(param1: String?, param2: Int): Result<List<CustomerEnquiry>> =
-        repository.getAll(param1, param2)
+    override suspend fun execute(param1: Long, param2: Int): Result<List<CustomerEnquiry>> =
+        repository.getAllByProjectId(param1, param2)
 
 }
