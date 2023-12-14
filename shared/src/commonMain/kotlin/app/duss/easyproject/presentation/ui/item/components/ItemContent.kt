@@ -69,7 +69,7 @@ internal fun ItemContent(
                     }
                 },
                 title = item.name,
-                subtitle = "${item.unit?.let { "Unit: $it  " }}${item.type?.let { "Type: $it  " }}${item.modelNo?.let { "Model No.: $it  " }}${item.hsCodeEu?.let { "EU HSCode: $it" }}",
+                subtitle = item.getSubtitle(),
                 caption = item.note ?: "",
                 brush = brush
             )
