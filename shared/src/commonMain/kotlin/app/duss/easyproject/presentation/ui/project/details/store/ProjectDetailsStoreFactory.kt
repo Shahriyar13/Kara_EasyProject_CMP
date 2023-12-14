@@ -49,7 +49,7 @@ internal class ProjectDetailsStoreFactory(
             ) {}
 
     private sealed class Msg {
-        data object Changing : Msg()
+        data class Changing(val updated: Project) : Msg()
         data object EditMode : Msg()
         data object ViewMode : Msg()
         data object InfoLoading : Msg()
@@ -83,17 +83,17 @@ internal class ProjectDetailsStoreFactory(
                 is ProjectDetailsStore.Intent.SaveState -> updateProject(intent.request, intent.isChanged)
                 is ProjectDetailsStore.Intent.DeleteState -> deleteProject(intent.id)
                 is ProjectDetailsStore.Intent.UploadFileState -> uploadFiles(
-                    intent.projectId,
+                    intent.id,
                     intent.request
                 )
 
                 is ProjectDetailsStore.Intent.DeleteFileState -> deleteFile(
-                    intent.projectId,
+                    intent.id,
                     intent.fileId
                 )
 
                 ProjectDetailsStore.Intent.EditState -> dispatch(Msg.EditMode)
-                ProjectDetailsStore.Intent.EditingState -> dispatch(Msg.Changing)
+                is ProjectDetailsStore.Intent.EditingState -> dispatch(Msg.Changing(intent.updated))
             }
 
         private var loadProjectByIdJob: Job? = null
@@ -199,7 +199,7 @@ internal class ProjectDetailsStoreFactory(
             when (msg) {
                 is Msg.InfoLoading -> copy(isLoading = true)
                 is Msg.InfoLoaded -> copy(
-                    projectForm = ProjectForm(msg.project),
+                    form = ProjectForm(msg.project),
                     inEditeMode = (msg.project.id ?: -1) < 0,
                     isLoading = false
                 )
@@ -207,7 +207,7 @@ internal class ProjectDetailsStoreFactory(
                 is Msg.InfoFailed -> copy(error = msg.error, isLoading = false)
                 is Msg.Updating -> copy(isLoading = true)
                 is Msg.Updated -> copy(
-                    projectForm = ProjectForm(msg.project),
+                    form = ProjectForm(msg.project),
                     isChanged = false,
                     isUpdated = true,
                     isLoading = false,
@@ -229,7 +229,9 @@ internal class ProjectDetailsStoreFactory(
                 Msg.FileUploading -> copy(isLoading = true)
                 Msg.EditMode -> copy(inEditeMode = true)
                 Msg.ViewMode -> copy(inEditeMode = false)
-                Msg.Changing -> copy(isChanged = projectForm?.hasUnsavedChanges() ?: false)
+                is Msg.Changing -> copy(
+                    form = form?.copy(updated = msg.updated),
+                    isChanged = form?.hasUnsavedChanges() ?: false)
             }
     }
 

@@ -38,10 +38,10 @@ internal fun ProjectDetailsContent(
     Box(contentAlignment = Alignment.TopCenter) {
 
         if (state.isDeleted) {
-            onOutput(ProjectDetailsComponent.Output.NavigateBack(state.projectForm!!.origin.id))
+            onOutput(ProjectDetailsComponent.Output.NavigateBack(state.form!!.origin.id))
         }
 
-        state.projectForm?.let { item ->
+        state.form?.let { item ->
 
         }
 
@@ -52,20 +52,20 @@ internal fun ProjectDetailsContent(
                     onBack = {
                         onOutput(
                             ProjectDetailsComponent.Output.NavigateBack(
-                                updatedProject = if (state.isUpdated) state.projectForm?.origin else null,
+                                updatedProject = if (state.isUpdated) state.form?.origin else null,
                             )
                         )
                     },
                     onSave = {
-                        if (!state.isLoading && state.projectForm != null)
-                            onEvent(ProjectDetailsStore.Intent.SaveState(state.projectForm, state.isChanged))
+                        if (!state.isLoading && state.form != null)
+                            onEvent(ProjectDetailsStore.Intent.SaveState(state.form, state.isChanged))
                     },
                     onEdit = {
                         onEvent(ProjectDetailsStore.Intent.EditState)
                     },
                     editState = state.inEditeMode,
                     showUnsavedChanges = state.isChanged,
-                    title = state.projectForm?.updated?.code,
+                    title = state.form?.updated?.code,
                     loadingState = state.isLoading
                 )
             },
@@ -96,16 +96,18 @@ internal fun ProjectDetailsContent(
                     }
                 }
 
-                state.projectForm?.let { item ->
+                state.form?.let { item ->
+
+                    val projectState = item.updated
+
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         item("name") {
                             EditableText(
-                                value = item.updated.code.replaceFirstChar { it.uppercaseChar() },
+                                value = projectState.code,
                                 onValueChange = {
-                                    state.projectForm.updated.code = it ?: ""
-                                    onEvent(ProjectDetailsStore.Intent.EditingState)
+                                    onEvent(ProjectDetailsStore.Intent.EditingState(projectState.copy(code = it ?: "" )))
                                 },
                                 label = "Code",
                                 readOnly = !state.inEditeMode,
@@ -115,10 +117,9 @@ internal fun ProjectDetailsContent(
 
                         item("title") {
                             EditableText(
-                                value = item.origin.title,
+                                value = projectState.title,
                                 onValueChange = {
-                                    state.projectForm.updated.title = it ?: ""
-                                    onEvent(ProjectDetailsStore.Intent.EditingState)
+                                    onEvent(ProjectDetailsStore.Intent.EditingState(projectState.copy(title = it ?: "" )))
                                 },
                                 label = "Title",
                                 readOnly = !state.inEditeMode,
@@ -126,15 +127,21 @@ internal fun ProjectDetailsContent(
                             )
                         }
 
-//                        item("abilities") {
+//                        item("abilities") {//TODO Code extention for metpool
 //                            AbilityRow(
 //                                types = pokemonInfo.types
 //                            )
 //                        }
 
+                        item("managers") {
+                            AbilityRow(
+                                managers = projectState.managers ?: listOf()
+                            )
+                        }
+
                         item("infos") {
                             PokemonInfos(
-                                project = item.origin,
+                                project = projectState,
                                 modifier = Modifier
                                     .padding(top = 18.dp)
                                     .fillMaxWidth(.9f)
@@ -143,7 +150,7 @@ internal fun ProjectDetailsContent(
 
                         item("stats") {
                             PokemonStats(
-                                project = item.origin,
+                                project = projectState,
                                 modifier = Modifier
                                     .padding(top = 12.dp)
                                     .fillMaxWidth(.9f)
