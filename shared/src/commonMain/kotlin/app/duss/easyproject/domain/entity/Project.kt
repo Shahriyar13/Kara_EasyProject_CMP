@@ -14,7 +14,7 @@ data class Project(
     val invoices: List<Invoice>? = listOf(),
     //TODO BAFAs
     //TODO Payments
-    val managers: List<Person>? = listOf(),
+    val managers: List<User>? = listOf(),
     override val sendTime: Long? = null,
     override var code: String,
     override val codeExtension: String? = null,

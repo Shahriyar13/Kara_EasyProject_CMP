@@ -7,11 +7,11 @@ data class Item(
     var note: String? = null,
     var parentItem: Item? = null,
     val subItems: List<Item>? = emptyList(),
-    val type: String? = null,
-    val modelNo: String? = null,
+    var type: String? = null,
+    var modelNo: String? = null,
     val unit: String? = null,
     val hsCodeEu: String? = null,
-    override val name: String = "",
+    override var name: String = "",
     override val id: Long? = null,
     override val creationTime: Long? = null,
     override val modificationTime: Long? = null,
@@ -19,4 +19,9 @@ data class Item(
     override val modifiedBy: String? = null,
     override val creatorId: Long? = null,
     override val modifierId: Long? = null,
-): BaseNamedEntity()
+): BaseNamedEntity() {
+    fun getSubtitle() = (if (unit.isNullOrEmpty()) "Unit: Unknown" else "Unit: $unit ") +
+            (if (type.isNullOrEmpty()) "" else "Model No.: $type") +
+            (if (modelNo.isNullOrEmpty()) "" else "Type: $modelNo") +
+            if (hsCodeEu.isNullOrEmpty()) "" else "EU HSCode: $hsCodeEu"
+}
