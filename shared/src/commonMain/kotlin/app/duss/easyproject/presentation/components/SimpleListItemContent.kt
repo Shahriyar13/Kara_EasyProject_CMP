@@ -46,8 +46,7 @@ internal fun SimpleListItemContent(
             hoveredElevation = 0.dp,
             draggedElevation = 0.dp,
             disabledElevation = 0.dp,
-
-            ),
+        ),
         modifier = modifier
     ) {
         Column(
