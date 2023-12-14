@@ -1,5 +1,6 @@
 package app.duss.easyproject.presentation.ui.project.details
 
+import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.presentation.ui.project.details.store.ProjectDetailsStore
 import app.duss.easyproject.presentation.ui.project.details.store.ProjectDetailsStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -36,7 +37,10 @@ class ProjectDetailsComponent(
     }
 
     sealed class Output {
-        data object NavigateBack : Output()
+        data class NavigateBack(
+            val deletedId: Long? = null,
+            val updatedProject: Project? = null,
+        ) : Output()
     }
 
 }

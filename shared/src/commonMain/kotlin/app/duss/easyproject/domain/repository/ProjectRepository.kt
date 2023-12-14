@@ -1,21 +1,22 @@
 package app.duss.easyproject.domain.repository
 
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.params.ProjectCreateRequest
-import app.duss.easyproject.domain.params.ProjectUpdateRequest
+import app.duss.easyproject.domain.params.ProjectRequest
 
 interface ProjectRepository {
 
-    suspend fun getProjectList(page: Int): Result<List<Project>>
+    suspend fun getAll(query: String?, page: Int): Result<List<Project>>
 
-    suspend fun getProjectById(id: Long?): Result<Project>
+    suspend fun getById(id: Long): Result<Project>
 
-    suspend fun isProjectCodeAvailable(code: String): Result<Boolean>
+    suspend fun getNew(): Result<Project>
 
-    suspend fun createProject(param: ProjectCreateRequest): Result<Project?>
+    suspend fun validateCode(param: String): Result<Boolean>
 
-    suspend fun updateProject(param: ProjectUpdateRequest): Result<Project?>
+    suspend fun create(param: ProjectRequest): Result<Project>
 
-    suspend fun deleteProject(id: Long): Result<Boolean>
+    suspend fun update(param: ProjectRequest): Result<Project>
+
+    suspend fun delete(id: Long): Result<Boolean>
 
 }

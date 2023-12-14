@@ -39,7 +39,7 @@ internal fun PokemonStatItem(
         animationProgress.animateTo(
             targetValue = 1f,
             animationSpec = tween(
-                durationMillis = 8 * statResponse.annualId,
+                durationMillis = 8 * (statResponse.annualId ?: 10), //TODO wtf is that
                 easing = LinearEasing
             )
         )
@@ -50,14 +50,14 @@ internal fun PokemonStatItem(
         modifier = modifier
     ) {
         Text(
-            text = statResponse.title ?: statResponse.code,
+            text = statResponse.title ?: statResponse.code ?: "",
             color = MaterialTheme.colorScheme.onBackground.copy(.8f),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(.3f)
         )
 
         Text(
-            text = "${(statResponse.time * animationProgress.value).roundToInt()}",
+            text = "${((statResponse.time ?: 0) * animationProgress.value).roundToInt()}", //TODO wtf is that too
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold

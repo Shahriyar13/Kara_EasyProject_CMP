@@ -1,8 +1,9 @@
 package app.duss.easyproject.presentation.ui.project.list.store
 
+import app.duss.easyproject.core.utils.appDispatchers
+import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Project
-import app.duss.easyproject.domain.repository.ProjectRepository
-import app.duss.easyproject.utils.appDispatchers
+import app.duss.easyproject.domain.usecase.project.ProjectsGetAllUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -18,7 +19,7 @@ internal class ProjectListStoreFactory(
     private val searchValue: String?,
 ): KoinComponent {
 
-    private val projectRepository by inject<ProjectRepository>()
+    private val projectsGetAllUseCase by inject<ProjectsGetAllUseCase>()
 
     fun create(): ProjectListStore =
         object : ProjectListStore, Store<ProjectListStore.Intent, ProjectListStore.State, Nothing> by storeFactory.create(
@@ -33,6 +34,8 @@ internal class ProjectListStoreFactory(
         data object AddNewProject : Msg()
         data class NavigateToProjectDetails(val id: Long) : Msg()
         data object ProjectDetailsDone : Msg()
+        data class UpdateItem(val project: Project) : Msg()
+        data class DeleteItem(val id: Long) : Msg()
         data object ProjectListLoading : Msg()
         data class ProjectListLoaded(val projectList: List<Project>) : Msg()
         data class ProjectListFailed(val error: String?) : Msg()
@@ -48,10 +51,13 @@ internal class ProjectListStoreFactory(
 
         override fun executeIntent(intent: ProjectListStore.Intent, getState: () -> ProjectListStore.State): Unit =
             when (intent) {
-                is ProjectListStore.Intent.LoadProjectListByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
+                is ProjectListStore.Intent.LoadByPage -> loadProjectListByPage(intent.page, getState().isLastPageLoaded)
                 is ProjectListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
                 ProjectListStore.Intent.AddNew -> dispatch(Msg.AddNewProject)
-                is ProjectListStore.Intent.Details -> dispatch(Msg.NavigateToProjectDetails(intent.id))
+                is ProjectListStore.Intent.Edit -> dispatch(Msg.NavigateToProjectDetails(intent.id))
+                ProjectListStore.Intent.DetailsDone -> dispatch(Msg.ProjectDetailsDone)
+                is ProjectListStore.Intent.DetailsChanged -> dispatch(Msg.UpdateItem(intent.project))
+                is ProjectListStore.Intent.DetailsDeleted -> dispatch(Msg.DeleteItem(intent.deletedId))
             }
 
         private var loadProjectListByPageJob: Job? = null
@@ -65,13 +71,17 @@ internal class ProjectListStoreFactory(
             loadProjectListByPageJob = scope.launch {
                 dispatch(Msg.ProjectListLoading)
 
-                projectRepository
-                    .getProjectList(page)
+                projectsGetAllUseCase
+                    .execute(searchValue, page)
                     .onSuccess { list ->
-                        if (list.isEmpty()) {
-                            dispatch(Msg.LastPageLoaded)
-                        } else {
+                        if (list.isNotEmpty()) {
                             dispatch(Msg.ProjectListLoaded(list))
+                        }
+                        if (list.size < NetworkConstants.PageSize) {
+                            if (list.isNotEmpty()) {
+                                dispatch(Msg.ProjectListLoaded(list))
+                            }
+                            dispatch(Msg.LastPageLoaded)
                         }
                     }
                     .onFailure { e ->
@@ -85,13 +95,21 @@ internal class ProjectListStoreFactory(
         override fun ProjectListStore.State.reduce(msg: Msg): ProjectListStore.State =
             when (msg) {
                 is Msg.ProjectListLoading -> copy(isLoading = true)
-                is Msg.ProjectListLoaded -> ProjectListStore.State(projectList = projectList + msg.projectList)
+                is Msg.ProjectListLoaded -> ProjectListStore.State(list = list + msg.projectList)
                 is Msg.ProjectListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
-                Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
-                Msg.AddNewProject -> copy(projectId = -1)
-                is Msg.NavigateToProjectDetails -> copy(projectId = msg.id)
-                is Msg.ProjectDetailsDone -> copy(projectId = null)
+                Msg.LastPageLoaded -> copy(isLastPageLoaded = true, isLoading = false)
+                Msg.AddNewProject -> copy(id = -1)
+                is Msg.NavigateToProjectDetails -> copy(id = msg.id)
+                is Msg.ProjectDetailsDone -> copy(id = null)
+                is Msg.DeleteItem -> copy(list = list.filterNot { it.id == msg.id })
+                is Msg.UpdateItem -> copy(
+                    list = if (list.any { it.id == msg.project.id }) {
+                        list.map { if (it.id == msg.project.id) msg.project else it }
+                    } else {
+                        list + msg.project
+                    }.sortedByDescending { it.code }
+                )
             }
     }
 }

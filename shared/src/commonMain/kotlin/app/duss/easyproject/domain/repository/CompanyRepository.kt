@@ -1,17 +1,23 @@
 package app.duss.easyproject.domain.repository
 
-import app.duss.easyproject.domain.entity.Project
+import app.duss.easyproject.domain.entity.Company
+import app.duss.easyproject.domain.params.CompanyRequest
 
 interface CompanyRepository {
 
-    suspend fun getProjectList(page: Long): Result<List<Project>>
+    suspend fun getAll(query: String?, page: Int): Result<List<Company>>
+    suspend fun getAllCustomers(query: String?, page: Int): Result<List<Company>>
+    suspend fun getAllSuppliers(query: String?, page: Int): Result<List<Company>>
+    suspend fun getAllFreightForwarders(query: String?, page: Int): Result<List<Company>>
 
-    suspend fun getProjectById(id: Long): Result<Project>
+    suspend fun getById(id: Long): Result<Company>
 
-    suspend fun createProject(param: Project)
+    suspend fun validateCode(customerCode: String?, supplierCode: String?, freightForwarderCode: String?): Result<Boolean>
 
-    suspend fun updateProject(param: Project)
+    suspend fun create(param: CompanyRequest): Result<Company>
 
-    suspend fun deleteProject(param: Long)
+    suspend fun update(param: CompanyRequest): Result<Company>
+
+    suspend fun delete(id: Long): Result<Boolean>
 
 }

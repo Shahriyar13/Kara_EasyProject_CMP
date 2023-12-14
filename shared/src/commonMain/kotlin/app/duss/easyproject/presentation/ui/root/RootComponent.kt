@@ -3,21 +3,23 @@ package app.duss.easyproject.presentation.ui.root
 import app.duss.easyproject.presentation.ui.landing.LandingComponent
 import app.duss.easyproject.presentation.ui.login.LoginComponent
 import app.duss.easyproject.presentation.ui.main.MainComponent
-import app.duss.easyproject.presentation.ui.main.store.MainStore
-import app.duss.easyproject.presentation.ui.main.store.MainStoreFactory
+import app.duss.easyproject.presentation.ui.root.store.RootStore
+import app.duss.easyproject.presentation.ui.root.store.RootStoreFactory
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializerOrNull
 
 class RootComponent(
     componentContext: ComponentContext,
@@ -59,23 +61,25 @@ class RootComponent(
 
     private val rootStore =
         instanceKeeper.getStore {
-            MainStoreFactory(
+            RootStoreFactory(
                 storeFactory = storeFactory,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<MainStore.State> = rootStore.stateFlow
+    val state: StateFlow<RootStore.State> = rootStore.stateFlow
 
-    fun onEvent(event: MainStore.Intent) {
+    fun onEvent(event: RootStore.Intent) {
         rootStore.accept(event)
     }
 
     private val navigation = StackNavigation<Configuration>()
 
+    @OptIn(InternalSerializationApi::class)
     private val stack =
         childStack(
             source = navigation,
+            serializer = Configuration::class.serializerOrNull(),
             initialConfiguration = Configuration.Landing,
             handleBackButton = false,
             childFactory = ::createChild
@@ -99,7 +103,7 @@ class RootComponent(
     }
 
 
-    sealed class Configuration : Parcelable {
+    sealed class Configuration {
         @Serializable
         data object Main : Configuration()
 
@@ -111,18 +115,21 @@ class RootComponent(
     }
 
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun onMainOutput(output: MainComponent.Output): Unit =
         when (output) {
             MainComponent.Output.Unauthorized -> navigation.pushNew(Configuration.Login)
         }
 
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun onLandingOutput(output: LandingComponent.Output): Unit =
         when (output) {
             is LandingComponent.Output.Authorized -> navigation.pushNew(Configuration.Main)
             LandingComponent.Output.Unauthorized -> navigation.pushNew(Configuration.Login)
         }
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun onLoginOutput(output: LoginComponent.Output): Unit =
         when (output) {
             is LoginComponent.Output.Authorized -> {

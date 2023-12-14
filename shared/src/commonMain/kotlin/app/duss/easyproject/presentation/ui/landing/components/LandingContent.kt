@@ -1,12 +1,10 @@
 package app.duss.easyproject.presentation.ui.landing.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,13 +30,8 @@ internal fun LandingContent(
             modifier = Modifier.padding(paddingValue)
         ) {
 
-            state.error?.let { error ->
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(text = error)
-                }
+            state.error?.let { _ ->
+                onOutput(LandingComponent.Output.Unauthorized)
             }
 
             state.user?.let {
@@ -46,16 +39,12 @@ internal fun LandingContent(
             }
         }
 
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
 
             CircularProgressIndicator()
-
-            Divider(
-                color = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-            )
 
             Text(
                 text = "Loading",

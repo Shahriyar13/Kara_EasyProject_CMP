@@ -1,8 +1,8 @@
 package app.duss.easyproject.presentation.ui.landing.store
 
+import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.User
-import app.duss.easyproject.domain.usecase.UserLoggedInUseCase
-import app.duss.easyproject.utils.appDispatchers
+import app.duss.easyproject.domain.usecase.auth.UserLoggedInUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store

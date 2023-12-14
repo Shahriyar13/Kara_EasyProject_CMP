@@ -1,88 +1,78 @@
 package app.duss.easyproject.presentation.ui.item.components
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import app.duss.easyproject.presentation.helper.LocalSafeArea
+import app.duss.easyproject.presentation.components.SimpleListItemContent
+import app.duss.easyproject.presentation.components.SimplePagingVerticalGrid
+import app.duss.easyproject.presentation.components.TopAppBarDocumentList
 import app.duss.easyproject.presentation.ui.item.ItemComponent
 import app.duss.easyproject.presentation.ui.item.store.ItemStore
-import app.duss.easyproject.presentation.ui.project.components.PokemonGrid
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ItemContent(
     state: ItemStore.State,
     onEvent: (ItemStore.Intent) -> Unit,
     onOutput: (ItemComponent.Output) -> Unit,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {},
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+            TopAppBarDocumentList(
+                title = "Items",
+                onSearchValueChange = {
+                    onEvent(ItemStore.Intent.UpdateSearchValue(it))
+                },
+                searchValue = state.searchValue,
+                loadingState = state.isLoading,
+                onAddClicked = {
+                    //TODO()
+                },
             )
         },
-        modifier = Modifier.padding(LocalSafeArea.current)
-    ) {  paddingValue ->
-        Box(
+    ) { paddingValue ->
+
+        state.error?.let { error ->
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    error,
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Indefinite
+                )
+            }
+        }
+        SimplePagingVerticalGrid(
+            itemList = state.list,
+            loadMoreItems = {
+                if (state.list.isEmpty()) return@SimplePagingVerticalGrid
+                val nextPage = state.page + 1
+                onEvent(ItemStore.Intent.LoadByPage(page = nextPage))
+            },
+            isLoading = state.isLoading,
             modifier = Modifier.padding(paddingValue)
-        ) {
-
-            state.error?.let { error ->
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(text = error)
-                }
-            }
-
-            Column {
-                Text(
-                    text = "Database",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .padding(top = 20.dp, bottom = 6.dp)
-                )
-
-                Divider(
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = .4f),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
-                )
-
-                if (state.isLoading) {
-                    LinearProgressIndicator(
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                } else if (state.projectList.isEmpty()) {
-                    Text(
-                        text = "Your favorite list is empty!",
-                        color = MaterialTheme.colorScheme.onBackground.copy(.8f),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(20.dp)
-                    )
-                } else {
-                    PokemonGrid(
-                        onPokemonClicked = { name ->
-                            onOutput(ItemComponent.Output.NavigateToCustomerDetails(id = null))
-                        },
-                        projectList = state.projectList,
-                        isLoading = state.isLoading,
-                    )
-                }
-            }
+        ) { item, brush ->
+            SimpleListItemContent(
+                onClick = {
+                    if (state.selectMode) {
+                        onEvent(ItemStore.Intent.UpdateSelected(item = item))
+                    } else {
+                        item.id?.let {
+                            onEvent(ItemStore.Intent.Edit(id = item.id))
+                        }
+                    }
+                },
+                title = item.name,
+                subtitle = "${item.unit?.let { "Unit: $it  " }}${item.type?.let { "Type: $it  " }}${item.modelNo?.let { "Model No.: $it  " }}${item.hsCodeEu?.let { "EU HSCode: $it" }}",
+                caption = item.note ?: "",
+                brush = brush
+            )
         }
     }
 }

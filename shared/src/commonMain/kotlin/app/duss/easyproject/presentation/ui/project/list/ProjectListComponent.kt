@@ -1,20 +1,30 @@
 package app.duss.easyproject.presentation.ui.project.list
 
+import app.duss.easyproject.presentation.ui.project.details.ProjectDetailsComponent
 import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStore
 import app.duss.easyproject.presentation.ui.project.list.store.ProjectListStoreFactory
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializerOrNull
 
 class ProjectListComponent(
     componentContext: ComponentContext,
-    storeFactory: StoreFactory,
-    searchValue: String?,
+    val storeFactory: StoreFactory,
+    val searchValue: String?,
     private val output: (Output) -> Unit,
-): ComponentContext by componentContext {
+) : ComponentContext by componentContext {
 
     private val projectListStore =
         instanceKeeper.getStore {
@@ -24,19 +34,91 @@ class ProjectListComponent(
             ).create()
         }
 
+    private fun projectDetails(
+        componentContext: ComponentContext,
+        id: Long?,
+    ) = ProjectDetailsComponent(
+            componentContext = componentContext,
+            storeFactory = storeFactory,
+            id = id,
+            output = ::onDetailsOutput
+        )
+
+
+    private val navigation = StackNavigation<Configuration>()
+
+    @OptIn(InternalSerializationApi::class)
+    private val stack =
+        childStack(
+            source = navigation,
+            serializer = Configuration::class.serializerOrNull(),
+            initialConfiguration = Configuration.None,
+            handleBackButton = false,
+            childFactory = ::createChild
+        )
+
+    val childStack: Value<ChildStack<*, Child>> = stack
+
+    private fun createChild(
+        configuration: Configuration,
+        componentContext: ComponentContext
+    ): Child =
+        when (configuration) {
+            is Configuration.Details -> Child.Details(
+                projectDetails(
+                    componentContext,
+                    configuration.id,
+                )
+            )
+
+            Configuration.None -> Child.None
+        }
+
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<ProjectListStore.State> = projectListStore.stateFlow
 
     fun onEvent(event: ProjectListStore.Intent) {
         projectListStore.accept(event)
+        if (event is ProjectListStore.Intent.Edit) {
+            navigation.push(Configuration.Details(event.id))
+        } else if (event is ProjectListStore.Intent.AddNew) {
+            navigation.push(Configuration.Details(null))
+        }
     }
 
     fun onOutput(output: Output) {
         output(output)
     }
-    sealed class Output {
-        data class NavigateToDetails(val id: Long?) : Output()
+
+    sealed class Output
+
+    sealed class Child {
+        data class Details(val component: ProjectDetailsComponent) : Child()
+        data object None : Child()
+    }
+
+    sealed class Configuration {
+        @Serializable
+        data object None : Configuration()
+        @Serializable
+        data class Details(val id: Long?) : Configuration()
+
     }
 
 
+    private fun onDetailsOutput(output: ProjectDetailsComponent.Output) {
+        when (output) {
+            is ProjectDetailsComponent.Output.NavigateBack -> {
+                if (output.deletedId != null) {
+                    onEvent(ProjectListStore.Intent.DetailsDeleted(output.deletedId))
+                } else if (output.updatedProject != null) {
+                    onEvent(ProjectListStore.Intent.DetailsChanged(output.updatedProject))
+                } else {
+                    onEvent(ProjectListStore.Intent.DetailsDone)
+                }
+                navigation.pop()
+            }
+        }
+    }
 }

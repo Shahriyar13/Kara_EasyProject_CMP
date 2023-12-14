@@ -1,5 +1,6 @@
 package app.duss.easyproject.presentation.ui.company
 
+import app.duss.easyproject.domain.entity.Company
 import app.duss.easyproject.presentation.ui.company.store.CompanyStore
 import app.duss.easyproject.presentation.ui.company.store.CompanyStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -9,9 +10,19 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
+enum class CompanyFilter(val id: Int) {
+    ALL(0),
+    Customer(1),
+    Supplier(2),
+    FreightForwarder(3),
+}
+
 class CompanyComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    val selectMode: Boolean = false,
+    val filter: CompanyFilter = CompanyFilter.ALL,
+    val searchValue: String?,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
 
@@ -34,10 +45,8 @@ class CompanyComponent(
     }
 
     sealed class Output {
-        data class NavigateToCustomerDetails(val id: Long?) : Output()
-        data class NavigateToSupplierDetails(val id: Long?) : Output()
-        data class NavigateToItemDetails(val id: Long?) : Output()
-        data class NavigateToPersonDetails(val id: Long?) : Output()
+        data class CompanySelected(val company: Company) : Output()
+
     }
 
 }

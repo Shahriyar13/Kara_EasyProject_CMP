@@ -1,26 +1,21 @@
-import app.duss.easyproject.Configuration
-import app.duss.easyproject.Deps
-
 plugins {
-    kotlin("multiplatform")
-    kotlin("native.cocoapods")
-    kotlin("plugin.serialization")
-    id("com.android.library")
-    id("org.jetbrains.compose")
-    id("kotlin-parcelize")
-    id("app.cash.sqldelight")
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.androidLibrary)
 }
 
-@OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
     jvm("desktop") {
-//        jvmToolchain(17)
+        jvmToolchain(11)
     }
 
     androidTarget{
         compilations.all {
             kotlinOptions {
-                jvmTarget = "17"
+                jvmTarget = "11"
             }
         }
     }
@@ -38,74 +33,66 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
-            export(Deps.ArkIvanov.Decompose.decompose)
-            export(Deps.ArkIvanov.Essenty.lifecycle)
+            export(libs.arkivanov.decompose)
+            export(libs.arkivanov.essenty.lifecycle)
+//            export(libs.calf.ui)
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                // Compose
-                with(compose) {
-                    api(runtime)
-                    api(foundation)
-                    api(material)
-                    api(material3)
-                    api(materialIconsExtended)
-                }
+
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material)
+                api(compose.material3)
+                implementation(compose.materialIconsExtended)
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
 
                 // Ktor
-                with(Deps.Io.Ktor) {
-                    api(ktorClientCore)
-                    api(ktorClientResources)
-                    api(ktorSerializationKotlinxJson)
-                    api(ktorClientContentNegotiation)
-                    api(ktorClientLogging)
-                    api(ktorClientAuth)
-                }
+                api(libs.ktor.client.core)
+                api(libs.ktor.client.resources)
+                api(libs.ktor.serialization.kotlinx.json)
+                api(libs.ktor.client.content.negotiation)
+                api(libs.ktor.client.logging)
+                api(libs.ktor.client.auth)
 
                 // Logback for ktor logging
-                implementation(Deps.Logback.logbackClassic)
+                implementation(libs.logback.logback.classic)
 
                 // SqlDelight
-                with(Deps.CashApp.SQLDelight) {
-                    api(coroutinesExtensions)
-                    api(primitiveAdapters)
-                }
+                api(libs.sqldelight.extensions.coroutines)
+                api(libs.sqldelight.adapters.primitive)
 
                 // Koin
-                with(Deps.Koin) {
-                    api(core)
-                    api(test)
-                }
+                api(libs.koin.core)
+                api(libs.koin.test)
 
-                with(Deps.Org.JetBrains.Kotlinx) {
-                    // KotlinX Serialization Json
-                    implementation(kotlinxSerializationJson)
-                    // Coroutines
-                    implementation(coroutinesCore)
-                }
+                // KotlinX Serialization Json
+                implementation(libs.kotlinx.serialization.json)
+
+                // Coroutines
+                implementation(libs.kotlinx.coroutines.core)
+
 
                 // MVIKotlin
-                with(Deps.ArkIvanov.MVIKotlin) {
-                    api(mvikotlin)
-                    api(mvikotlinMain)
-                    api(mvikotlinExtensionsCoroutines)
-                }
+                api(libs.arkivanov.mvi)
+                api(libs.arkivanov.mvi.main)
+                api(libs.arkivanov.mvi.coroutines)
 
                 // Decompose
-                with(Deps.ArkIvanov.Decompose) {
-                    api(decompose)
-                    api(extensionsCompose)
-                }
+                api(libs.arkivanov.decompose)
+                api(libs.arkivanov.decompose.compose)
+                implementation(libs.arkivanov.essenty.lifecycle)
 
                 // Image Loading
-                api(Deps.Github.imageLoader)
-                implementation(Deps.ArkIvanov.Essenty.lifecycle)
+                api(libs.image.loader)
 
-                // File Picker
-                implementation(Deps.Github.filePicker)
+                // Calf
+//                api(libs.calf.ui)
+                implementation(libs.calf.file.picker)
             }
         }
         val commonTest by getting {
@@ -116,26 +103,25 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 // Ktor
-                implementation(Deps.Io.Ktor.ktorClientAndroid)
+                implementation(libs.ktor.client.android)
 
                 // SqlDelight
-                implementation(Deps.CashApp.SQLDelight.androidDriver)
+                implementation(libs.sqldelight.driver.android)
 
                 // Koin
-                implementation(Deps.Koin.android)
+                implementation(libs.koin.android)
+
             }
         }
         val androidUnitTest by getting
 
         val desktopMain by getting {
-            dependsOn(commonMain)
-
             dependencies {
                 // Ktor
-                implementation(Deps.Io.Ktor.ktorClientJava)
+                implementation(libs.ktor.client.java)
 
                 // SqlDelight
-                implementation(Deps.CashApp.SQLDelight.sqliteDriver)
+                implementation(libs.sqldelight.driver.sqlite)
             }
         }
 
@@ -150,13 +136,13 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 // Ktor
-                implementation(Deps.Io.Ktor.ktorClientDarwin)
+                implementation(libs.ktor.client.darwin)
 
                 // SqlDelight
-                implementation(Deps.CashApp.SQLDelight.nativeDriver)
+                implementation(libs.sqldelight.driver.native)
 
                 // TouchLab
-                implementation(Deps.Touchlab.statelyCommon)
+                implementation(libs.touchlab.stately.common)
             }
         }
 
@@ -174,19 +160,19 @@ kotlin {
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "11"
     }
 }
 
 android {
     namespace = "app.duss.easyproject"
-    compileSdk = Configuration.compileSdk
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 

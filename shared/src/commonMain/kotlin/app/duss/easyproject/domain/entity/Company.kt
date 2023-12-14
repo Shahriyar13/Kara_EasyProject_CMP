@@ -5,9 +5,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Company(
     val symbol: String?,
+    val customerCode: String?,
+    val supplierCode: String?,
+    val freightForwarderCode: String?,
     var street: String?,
     var postcode: String?,
-    val city: City?,
+    val city: RegionCity?,
     var taxNumber: String?,
     var vatNumber: String?,
     var handelsregisternumber: String?,
@@ -26,4 +29,10 @@ data class Company(
     override val modifiedBy: String?,
     override val creatorId: Long?,
     override val modifierId: Long?
-): BaseNamedEntity()
+): BaseNamedEntity() {
+    fun getAddress(): String = (street?.let { "$it, " } ?: "") +
+            (postcode?.let { "$it " } ?: "") +
+            (city?.name?.let { "$it, " } ?: "") +
+            (city?.state?.name?.let { "$it, " } ?: "") +
+            (city?.state?.country?.name ?: "")
+}

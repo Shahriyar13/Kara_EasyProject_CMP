@@ -6,12 +6,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.duss.easyproject.core.model.Video
+import app.duss.easyproject.domain.entity.FileAttachment
 
 @Composable
 internal fun VideoRow(
-    videoList: List<Video>,
-    onVideoClicked: (id: String) -> Unit,
+    fileAttachmentList: List<FileAttachment>,
+    onVideoClicked: (id: Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -19,10 +19,10 @@ internal fun VideoRow(
         contentPadding = PaddingValues(10.dp),
         modifier = modifier
     ) {
-        items(videoList, key = { it.id }) { video ->
+        items(fileAttachmentList, key = { it.id!! }) { video ->
             VideoItem(
-                onClick = { onVideoClicked(video.id) },
-                video = video,
+                onClick = { onVideoClicked(video.id!!) },
+                fileAttachment = video,
             )
         }
     }

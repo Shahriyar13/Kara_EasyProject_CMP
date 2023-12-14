@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import app.duss.easyproject.presentation.components.AsyncImage
 import app.duss.easyproject.presentation.ui.dashboard.state.CategoryState
 import app.duss.easyproject.presentation.theme.Black
 

@@ -13,13 +13,27 @@ val Red400 = Color(0xFFcb290b)
 val Red500 = Color(0xFF9C2221)
 
 val Blue300 = Color(0xFF54B1DF)
+val Blue400 = Color(0xFF4572E8)
 val Blue500 = Color(0xFF1E3DA8)
+
+val Purple300 = Color(0xFF7D3EB8)
+val Purple500 = Color(0xFF4A148C)
+
+val Orange300 = Color(0xFFFFB74D)
+val Orange500 = Color(0xFFFF9800)
+
+val Teal300 = Color(0xFF26A69A)
+val Teal500 = Color(0xFF00796B)
+
+val Pink300 = Color(0xFFF06292)
+val Pink500 = Color(0xFFE91E63)
+
+val Indigo300 = Color(0xFF7986CB)
+val Indigo500 = Color(0xFF3F51B5)
 
 val Yellow300 = Color(0xFFF1A22C)
 val Yellow400 = Color(0xFFfaae41)
 val Yellow500 = Color(0xFFCB5C0D)
-
-val Blue400 = Color(0xFF4572E8)
 
 val LightGray400 = Color(0xFFb8b6b3)
 

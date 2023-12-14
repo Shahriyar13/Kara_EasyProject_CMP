@@ -1,8 +1,8 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.composeMultiplatform)
 }
 
 group = "app.duss"
@@ -10,8 +10,8 @@ version = "1.0.0-SNAPSHOT"
 
 kotlin {
     jvm {
-//        jvmToolchain(17)
-//        withJava()
+        jvmToolchain(11)
+        withJava()
     }
     sourceSets {
         val jvmMain by getting {

@@ -1,5 +1,6 @@
 package app.duss.easyproject.presentation.ui.item
 
+import app.duss.easyproject.domain.entity.Item
 import app.duss.easyproject.presentation.ui.item.store.ItemStore
 import app.duss.easyproject.presentation.ui.item.store.ItemStoreFactory
 import com.arkivanov.decompose.ComponentContext
@@ -12,21 +13,25 @@ import kotlinx.coroutines.flow.StateFlow
 class ItemComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    val selectMode: Boolean = false,
+    val searchValue: String?,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
 
-    private val favoriteStore =
+    private val store =
         instanceKeeper.getStore {
             ItemStoreFactory(
                 storeFactory = storeFactory,
+                searchValue = searchValue,
+                selectMode = selectMode,
             ).create()
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<ItemStore.State> = favoriteStore.stateFlow
+    val state: StateFlow<ItemStore.State> = store.stateFlow
 
     fun onEvent(event: ItemStore.Intent) {
-        favoriteStore.accept(event)
+        store.accept(event)
     }
 
     fun onOutput(output: Output) {
@@ -34,10 +39,8 @@ class ItemComponent(
     }
 
     sealed class Output {
-        data class NavigateToCustomerDetails(val id: Long?) : Output()
-        data class NavigateToSupplierDetails(val id: Long?) : Output()
-        data class NavigateToItemDetails(val id: Long?) : Output()
-        data class NavigateToPersonDetails(val id: Long?) : Output()
+        data class ItemsSelected(val items: List<Item>) : Output()
+
     }
 
 }
