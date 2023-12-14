@@ -1,5 +1,6 @@
 package app.duss.easyproject.presentation.ui.ce.details.store
 
+import app.duss.easyproject.domain.entity.CustomerEnquiry
 import app.duss.easyproject.presentation.forms.CustomerEnquiryForm
 import com.arkivanov.mvikotlin.core.store.Store
 import com.mohamedrejeb.calf.io.KmpFile
@@ -8,7 +9,7 @@ interface CEDetailsStore: Store<CEDetailsStore.Intent, CEDetailsStore.State, Not
 
     sealed class Intent {
         data object EditState : Intent()
-        data object EditingState : Intent()
+        data class EditingState(val updated: CustomerEnquiry) : Intent()
         data class SaveState(val request: CustomerEnquiryForm, val isChanged: Boolean) : Intent()
         data class UploadFileState(val id: Long, val request: List<KmpFile>) : Intent()
         data class DeleteFileState(val id: Long, val fileId: Long) : Intent()

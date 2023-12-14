@@ -2,12 +2,16 @@ package app.duss.easyproject.presentation.ui.ce.details.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -100,15 +104,21 @@ internal fun CEDetailsContent(
                 }
 
                 state.form?.let { item ->
+                    val customerEnquiryState = state.form.updated
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         item("name") {
                             EditableText(
-                                value = item.updated.code?.replaceFirstChar { it.uppercaseChar() },
+                                value = customerEnquiryState.code?.replaceFirstChar { it.uppercaseChar() },
                                 onValueChange = {
-                                    state.form.updated.code = it ?: ""
-                                    onEvent(CEDetailsStore.Intent.EditingState)
+                                    onEvent(
+                                        CEDetailsStore.Intent.EditingState(
+                                            customerEnquiryState.copy(
+                                                code = it ?: ""
+                                            )
+                                        )
+                                    )
                                 },
                                 label = "Code",
                                 readOnly = !state.inEditeMode,
@@ -116,22 +126,18 @@ internal fun CEDetailsContent(
                             )
                         }
 
-                        item("items") {
-                            Button(
-                                onClick = {
-                                    component.off()
-                                }
-                            ) {
-                                Text("itemsselect")
-                            }
-                        }
-
                         item("title") {
                             EditableText(
-                                value = item.origin.title,
+                                value = customerEnquiryState.title,
                                 onValueChange = {
-                                    state.form.updated.title = it ?: ""
-                                    onEvent(CEDetailsStore.Intent.EditingState)
+                                    onEvent(
+                                        CEDetailsStore.Intent.EditingState(
+                                            customerEnquiryState.copy(
+                                                title = it ?: ""
+                                            )
+                                        )
+                                    )
+
                                 },
                                 label = "Title",
                                 readOnly = !state.inEditeMode,
@@ -139,6 +145,40 @@ internal fun CEDetailsContent(
                             )
                         }
 
+                        item("items") {
+
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(
+                                    "List of Customer-Enquiry-Items:",
+                                    modifier
+                                        .padding(top = 26.dp, bottom = 16.dp)
+                                )
+                                if (state.inEditeMode) {
+                                    Button(
+                                        onClick = {
+                                            component.itemPickerSelected()
+                                        }
+                                    ) {
+                                        Icon(Icons.Default.List, "List")
+                                        Text("Open Item List")
+                                    }
+                                }
+                            }
+
+                            CEItemColumn(
+                                customerEnquiryState.customerEnquiryItems,
+                                state.inEditeMode,
+                                onItemUpdate = {
+
+                                },
+                                onItemDelete = {
+
+                                }
+                            )
+                        }
                     }
                 }
             }

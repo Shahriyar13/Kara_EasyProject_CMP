@@ -1,6 +1,8 @@
 package app.duss.easyproject.presentation.ui.ce.details
 
 import app.duss.easyproject.domain.entity.CustomerEnquiry
+import app.duss.easyproject.domain.entity.CustomerEnquiryItem
+import app.duss.easyproject.domain.entity.Item
 import app.duss.easyproject.presentation.ui.ce.details.store.CEDetailsStore
 import app.duss.easyproject.presentation.ui.ce.details.store.CEDetailsStoreFactory
 import app.duss.easyproject.presentation.ui.company.CompanyComponent
@@ -93,8 +95,13 @@ class CEDetailsComponent(
             childFactory = ::createChild
         )
 
-    fun off() {
-        navigation.activate(Configuration.ItemConfig(), onComplete = {})
+    fun itemPickerSelected() {
+        navigation.activate(Configuration.ItemConfig(
+            selected = state.value.form?.updated?.customerEnquiryItems?.map { it.item }),
+            onComplete = {
+
+            }
+        )
     }
 
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
@@ -142,7 +149,16 @@ class CEDetailsComponent(
 
 
     private fun onItemOutput(output: ItemComponent.Output) {
-
+        when (output) {
+            is ItemComponent.Output.ItemsSelected -> onEvent(CEDetailsStore.Intent.EditingState(
+                state.value.form!!.updated.copy(
+                    customerEnquiryItems = output.items.map { item ->
+                        state.value.form?.updated?.customerEnquiryItems?.firstOrNull { it.item.id == item.id }
+                            ?: CustomerEnquiryItem(item = item)
+                    }
+                )
+            ))
+        }
     }
 
     private fun onCompanyOutput(output: CompanyComponent.Output) {
@@ -163,7 +179,7 @@ class CEDetailsComponent(
     }
     sealed class Configuration {
         @Serializable
-        data class ItemConfig(val searchValue: String? = "") : Configuration()
+        data class ItemConfig(val searchValue: String? = "", val selected: List<Item>? = emptyList()) : Configuration()
 
         @Serializable
         data class CompanyConfig(val searchValue: String? = "") : Configuration()

@@ -45,7 +45,7 @@ internal class CEDetailsStoreFactory(
             ) {}
 
     private sealed class Msg {
-        data object Changing : Msg()
+        data class Changing(val updated: CustomerEnquiry) : Msg()
         data object EditMode : Msg()
         data object ViewMode : Msg()
         data object InfoLoading : Msg()
@@ -89,7 +89,7 @@ internal class CEDetailsStoreFactory(
                 )
 
                 CEDetailsStore.Intent.EditState -> dispatch(Msg.EditMode)
-                CEDetailsStore.Intent.EditingState -> dispatch(Msg.Changing)
+                is CEDetailsStore.Intent.EditingState -> dispatch(Msg.Changing(intent.updated))
             }
 
         private var loadByIdJob: Job? = null
@@ -216,7 +216,10 @@ internal class CEDetailsStoreFactory(
                 Msg.FileUploading -> copy(isLoading = true)
                 Msg.EditMode -> copy(inEditeMode = true)
                 Msg.ViewMode -> copy(inEditeMode = false)
-                Msg.Changing -> copy(isChanged = form?.hasUnsavedChanges() ?: false)
+                is Msg.Changing -> copy(
+                    form = form?.copy(updated = msg.updated),
+                    isChanged = form?.hasUnsavedChanges() ?: false,
+                )
             }
     }
 
