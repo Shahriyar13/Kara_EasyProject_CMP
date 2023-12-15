@@ -4,7 +4,7 @@ import app.duss.easyproject.domain.entity.CustomerEnquiryItem
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CustomerEnquiryItemRequest (
+class CustomerEnquiryItemRequest(
     val id: Long?,
     val item: ItemRequest?,
     var quantity: Int,
@@ -12,8 +12,8 @@ class CustomerEnquiryItemRequest (
 )
 
 fun CustomerEnquiryItem.toDto() = CustomerEnquiryItemRequest(
-        id = id,
-        item = item.toDto(),
-        quantity = quantity,
-        note = note,
-    )
+    id = id,
+    item = item.toDto(),
+    quantity = quantity,
+    note = note,
+)
