@@ -4,11 +4,11 @@ import app.duss.easyproject.domain.entity.Item
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ItemRequest (
+class ItemRequest(
     val id: Long? = null,
     val type: String? = null,
     val modelNo: String? = null,
-    val unit: String? = "PCs",
+    val unit: String? = null,
     val hsCodeEu: String? = null,
 
     var name: String = "",
@@ -21,6 +21,10 @@ fun Item.toDto(): ItemRequest = ItemRequest(
     id = id,
     name = name,
     note = note,
+    type = type,
+    modelNo = modelNo,
+    unit = unit,
+    hsCodeEu = hsCodeEu,
     parentItem = parentItem?.toDto(),
     subItems = subItems?.map { it.toDto() }
 )
