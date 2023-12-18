@@ -13,6 +13,7 @@ interface ProjectListStore: Store<ProjectListStore.Intent, ProjectListStore.Stat
         data class DetailsChanged(val project: Project): Intent()
         data class DetailsDeleted(val deletedId: Long): Intent()
         data class Edit(val id: Long): Intent()
+        data object Refresh: Intent()
     }
 
     data class State(

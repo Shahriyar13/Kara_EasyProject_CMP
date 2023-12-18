@@ -3,6 +3,7 @@ package app.duss.easyproject.presentation.ui.project.details.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.Project
 import app.duss.easyproject.domain.params.FileAttachmentRequest
+import app.duss.easyproject.domain.params.toDto
 import app.duss.easyproject.domain.usecase.attachment.AttachmentDeleteUseCase
 import app.duss.easyproject.domain.usecase.attachment.AttachmentUploadUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectCodeIsValidUseCase
@@ -11,7 +12,6 @@ import app.duss.easyproject.domain.usecase.project.ProjectDeleteUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetByIdUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectGetNewUseCase
 import app.duss.easyproject.domain.usecase.project.ProjectUpdateUseCase
-import app.duss.easyproject.presentation.forms.ProjectForm
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -49,6 +49,7 @@ internal class ProjectDetailsStoreFactory(
             ) {}
 
     private sealed class Msg {
+        data object CheckChanges : Msg()
         data class Changing(val updated: Project) : Msg()
         data object EditMode : Msg()
         data object ViewMode : Msg()
@@ -93,7 +94,10 @@ internal class ProjectDetailsStoreFactory(
                 )
 
                 ProjectDetailsStore.Intent.EditState -> dispatch(Msg.EditMode)
-                is ProjectDetailsStore.Intent.EditingState -> dispatch(Msg.Changing(intent.updated))
+                is ProjectDetailsStore.Intent.EditingState -> {
+                    dispatch(Msg.Changing(intent.updated))
+                    dispatch(Msg.CheckChanges)
+                }
             }
 
         private var loadProjectByIdJob: Job? = null
@@ -127,20 +131,20 @@ internal class ProjectDetailsStoreFactory(
         }
 
         private var updateProjectJob: Job? = null
-        private fun updateProject(request: ProjectForm, isChanged: Boolean) {
-            if ((request.origin.id ?: -1) > 0 && !isChanged) return dispatch(Msg.Updated(request.origin))
+        private fun updateProject(request: Project, isChanged: Boolean) {
+            if ((request.id ?: -1) > 0 && !isChanged) return dispatch(Msg.Updated(request))
             if (updateProjectJob?.isActive == true) return
 
             updateProjectJob = scope.launch {
-                if ((request.origin.id ?: -1) > 0) {
+                if ((request.id ?: -1) > 0) {
                     dispatch(Msg.Updating)
                     projectUpdateUseCase
-                        .execute(request.toRequestDto())
+                        .execute(request.toDto())
                         .onSuccess { project -> dispatch(Msg.Updated(project)) }
                         .onFailure { e -> dispatch(Msg.UpdateFailed(e.message)) }
                 } else {
                     projectCreateUseCase
-                        .execute(request.toRequestDto())
+                        .execute(request.toDto())
                         .onSuccess { project -> dispatch(Msg.Updated(project)) }
                         .onFailure { e -> dispatch(Msg.UpdateFailed(e.message)) }
                 }
@@ -199,7 +203,7 @@ internal class ProjectDetailsStoreFactory(
             when (msg) {
                 is Msg.InfoLoading -> copy(isLoading = true)
                 is Msg.InfoLoaded -> copy(
-                    form = ProjectForm(msg.project),
+                    item = msg.project,
                     inEditeMode = (msg.project.id ?: -1) < 0,
                     isLoading = false
                 )
@@ -207,31 +211,24 @@ internal class ProjectDetailsStoreFactory(
                 is Msg.InfoFailed -> copy(error = msg.error, isLoading = false)
                 is Msg.Updating -> copy(isLoading = true)
                 is Msg.Updated -> copy(
-                    form = ProjectForm(msg.project),
+                    item = msg.project,
                     isChanged = false,
                     isUpdated = true,
                     isLoading = false,
                     inEditeMode = false,
                 )
-
                 is Msg.UpdateFailed -> copy(isLoading = false, error = msg.error)
-
-
                 is Msg.DeleteFailed -> copy(isLoading = false, error = msg.error)
                 Msg.Deleted -> copy(isDeleted = true)
-
                 Msg.Deleting -> copy(isLoading = true)
                 is Msg.FileDeleteFailed -> copy(isLoading = false, error = msg.error)
-
                 Msg.FileDeleting -> copy(isLoading = true)
                 is Msg.FileUploadFailed -> copy(isLoading = false, error = msg.error)
-
                 Msg.FileUploading -> copy(isLoading = true)
                 Msg.EditMode -> copy(inEditeMode = true)
                 Msg.ViewMode -> copy(inEditeMode = false)
-                is Msg.Changing -> copy(
-                    form = form?.copy(updated = msg.updated),
-                    isChanged = form?.hasUnsavedChanges() ?: false)
+                is Msg.Changing -> copy(item = msg.updated)
+                Msg.CheckChanges -> copy(isChanged = true)
             }
     }
 

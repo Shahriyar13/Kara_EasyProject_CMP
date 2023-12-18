@@ -41,6 +41,7 @@ internal fun ProjectListContent(
                 onEvent(ProjectListStore.Intent.LoadByPage(page = nextPage))
             },
             isLoading = state.isLoading,
+            isLastPageLoaded = state.isLastPageLoaded,
             modifier = Modifier.padding(paddingValues)
         ) { item, brush ->
             SimpleListItemContent(
