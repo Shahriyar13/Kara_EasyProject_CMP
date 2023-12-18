@@ -12,6 +12,7 @@ import app.duss.easyproject.presentation.components.Constants.colorsOfListItems
 internal fun <T> SimplePagingVerticalGrid(
     itemList: List<T>,
     isLoading: Boolean,
+    isLastPageLoaded: Boolean,
     loadMoreItems: () -> Unit = {},
     loadSize: Int = PageSize,
     modifier: Modifier = Modifier,
@@ -37,6 +38,7 @@ internal fun <T> SimplePagingVerticalGrid(
         loadMoreItems = {
            loadMoreItems()
         },
+        isLastPageLoaded = isLastPageLoaded,
         loadContent = { alpha ->
             SimpleListItemLoadingContent(alpha = alpha)
         }

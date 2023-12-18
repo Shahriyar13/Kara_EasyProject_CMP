@@ -33,17 +33,17 @@ internal fun DashboardContent(
 ) {
     val categories = listOf(
         CategoryState.database to DashboardComponent.Output.DatabaseClicked,
-        CategoryState.ce to DashboardComponent.Output.ComingSoonClicked,
+        CategoryState.ce to DashboardComponent.Output.CEClicked,
         CategoryState.project to DashboardComponent.Output.ProjectClicked,
-        CategoryState.se to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.sq to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.pi to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.po to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.packing to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.invoice to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.bafa to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.payment to DashboardComponent.Output.ComingSoonClicked,
-        CategoryState.profile to DashboardComponent.Output.ComingSoonClicked,
+        CategoryState.se to DashboardComponent.Output.SEClicked,
+        CategoryState.sq to DashboardComponent.Output.QuotationClicked,
+        CategoryState.pi to DashboardComponent.Output.PIClicked,
+        CategoryState.po to DashboardComponent.Output.POClicked,
+        CategoryState.packing to DashboardComponent.Output.PackingClicked,
+        CategoryState.invoice to DashboardComponent.Output.InvoiceClicked,
+        CategoryState.bafa to DashboardComponent.Output.BafaClicked,
+        CategoryState.payment to DashboardComponent.Output.PaymentClicked,
+        CategoryState.profile to DashboardComponent.Output.ProfileClicked,
     )
 
 

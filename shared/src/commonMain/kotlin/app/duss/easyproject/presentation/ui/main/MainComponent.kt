@@ -5,6 +5,7 @@ import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonComponent
 import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
 import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
+import app.duss.easyproject.presentation.ui.quotation.list.QuotationListComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -68,6 +69,19 @@ class MainComponent(
             output = output
         )
     }
+
+    private val quotation: (
+        ComponentContext,
+        searchValue: String?,
+        (QuotationListComponent.Output) -> Unit,
+    ) -> QuotationListComponent= { childContext, searchValue, output ->
+        QuotationListComponent(
+            componentContext = childContext,
+            storeFactory = storeFactory,
+            searchValue = searchValue ?: "",
+            output = output
+        )
+    }
     private val comingSoon: (
         ComponentContext,
         (ComingSoonComponent.Output) -> Unit,
@@ -117,8 +131,8 @@ class MainComponent(
          navigation.bringToFront(Configuration.SEConfig(searchValue))
     }
 
-    fun onSQTabClicked(searchValue: String? = null) {
-        navigation.bringToFront(Configuration.SQConfig(searchValue))
+    fun onQuotationTabClicked(searchValue: String? = null) {
+        navigation.bringToFront(Configuration.QuotationConfig(searchValue))
     }
 
      fun onPITabClicked(searchValue: String? = null) {
@@ -189,10 +203,11 @@ class MainComponent(
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.SQConfig -> Child.ComingSoonChild(
-                comingSoon(
+            is Configuration.QuotationConfig -> Child.QuotationChild(
+                quotation(
                     componentContext,
-                    ::onComingSoonOutput
+                    configuration.searchValue,
+                    ::onQuotationOutput
                 )
             )
             is Configuration.PIConfig -> Child.ComingSoonChild(
@@ -251,7 +266,7 @@ class MainComponent(
 
         data class SEChild(val component: ComingSoonComponent) : Child()
 
-        data class SQChild(val component: ComingSoonComponent) : Child()
+        data class QuotationChild(val component: QuotationListComponent) : Child()
 
         data class PIChild(val component: ComingSoonComponent) : Child()
 
@@ -288,7 +303,7 @@ class MainComponent(
         data class SEConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
-        data class SQConfig(val searchValue: String? = "") : Configuration()
+        data class QuotationConfig(val searchValue: String? = "") : Configuration()
 
         @Serializable
         data class PIConfig(val searchValue: String? = "") : Configuration()
@@ -323,7 +338,7 @@ class MainComponent(
             DashboardComponent.Output.ProjectClicked -> onProjectTabClicked()
             is DashboardComponent.Output.SearchSubmitted -> onProjectTabClicked(output.searchValue)
             DashboardComponent.Output.SEClicked -> onSETabClicked()
-            DashboardComponent.Output.SQClicked -> onSQTabClicked()
+            DashboardComponent.Output.QuotationClicked -> onQuotationTabClicked()
             DashboardComponent.Output.PIClicked -> onPITabClicked()
             DashboardComponent.Output.POClicked -> onPOTabClicked()
             DashboardComponent.Output.PackingClicked -> onPackingTabClicked()
@@ -338,6 +353,7 @@ class MainComponent(
 
     private fun onProjectOutput(output: ProjectListComponent.Output) {}
     private fun onCEOutput(output: CEListComponent.Output) {}
+    private fun onQuotationOutput(output: QuotationListComponent.Output) {}
 
     private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit = Unit
 

@@ -26,6 +26,7 @@ import app.duss.easyproject.data.network.NetworkConstants.PageSize
 internal fun <T> PagingVerticalGrid(
     itemList: List<T>,
     isLoading: Boolean,
+    isLastPageLoaded: Boolean,
     loadMoreItems: () -> Unit = {},
     loadSize: Int = PageSize,
     modifier: Modifier = Modifier,
@@ -63,7 +64,7 @@ internal fun <T> PagingVerticalGrid(
                     content(item)
                 }
 
-                if (isLoading) {
+                if (!isLastPageLoaded) {
                     items(loadSize) { index ->
                         LaunchedEffect(Unit) {
                             if (index == 0) loadMoreItems()

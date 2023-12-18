@@ -33,6 +33,7 @@ import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonScreen
 import app.duss.easyproject.presentation.ui.dashboard.DashboardScreen
 import app.duss.easyproject.presentation.ui.database.DatabaseScreen
 import app.duss.easyproject.presentation.ui.project.list.ProjectListScreen
+import app.duss.easyproject.presentation.ui.quotation.list.QuotationListScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -85,8 +86,8 @@ internal fun MainScreen(component: MainComponent) {
         MenuItemData(
             title = "Supplier Quotation",
             icon = Icons.Default.FormatQuote,
-            onClick = component::onSQTabClicked,
-            isSelected = activeComponent is MainComponent.Child.SQChild,
+            onClick = component::onQuotationTabClicked,
+            isSelected = activeComponent is MainComponent.Child.QuotationChild,
         ),
         MenuItemData(
             title = "Proforma Invoice",
@@ -194,7 +195,7 @@ internal fun MainScreen(component: MainComponent) {
                     is MainComponent.Child.POChild -> ComingSoonScreen(child.component)
                     is MainComponent.Child.PaymentChild -> ComingSoonScreen(child.component)
                     is MainComponent.Child.ProfileChild -> ComingSoonScreen(child.component)
-                    is MainComponent.Child.SQChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.QuotationChild -> QuotationListScreen(child.component)
                     is MainComponent.Child.PackingChild -> ComingSoonScreen(child.component)
                 }
             }

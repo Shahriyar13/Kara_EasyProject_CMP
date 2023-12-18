@@ -13,7 +13,10 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,29 +27,41 @@ fun LabelledCheckBox(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit),
     label: String,
+    checkedValue: String = "Is $label",
+    uncheckedValue: String = "Not $label",
+    readOnly: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    var checkState by remember { mutableStateOf(checked) }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clip(MaterialTheme.shapes.small)
             .clickable(
-                indication = rememberRipple(color = MaterialTheme.colorScheme.primary),
+                indication =
+                    if (!readOnly) rememberRipple(color = MaterialTheme.colorScheme.primary)
+                    else null,
                 interactionSource = remember { MutableInteractionSource() },
-                onClick = { onCheckedChange(!checked) }
+                onClick = {
+                    if (!readOnly) {
+                        checkState = !checkState
+                        onCheckedChange(checkState)
+                    }
+                }
             )
             .requiredHeight(ButtonDefaults.MinHeight)
             .padding(4.dp)
     ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = null
-        )
 
-        Spacer(Modifier.size(6.dp))
+        if (readOnly) {
+            Text(text = if (checkState) checkedValue else uncheckedValue)
+        } else {
+            Checkbox(checked = checkState, onCheckedChange = null)
 
-        Text(
-            text = label,
-        )
+            Spacer(Modifier.size(6.dp))
+
+            Text(text = label)
+        }
     }
 }

@@ -42,7 +42,7 @@ class DashboardComponent(
         data object CEClicked : Output()
         data object ProjectClicked : Output()
         data object SEClicked : Output()
-        data object SQClicked : Output()
+        data object QuotationClicked : Output()
         data object PIClicked : Output()
         data object POClicked : Output()
         data object PackingClicked : Output()

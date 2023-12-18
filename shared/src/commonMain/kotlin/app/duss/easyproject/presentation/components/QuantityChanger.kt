@@ -1,4 +1,4 @@
-package app.duss.easyproject.presentation.ui.ce.details.components
+package app.duss.easyproject.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
