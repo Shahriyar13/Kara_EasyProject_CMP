@@ -41,27 +41,66 @@ internal class CEListStoreFactory(
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
         data object LastPageLoaded : Msg()
+        data class LastPage(val page: Int) : Msg()
+        data object Refresh: Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<CEListStore.Intent, Unit, CEListStore.State, Msg, Nothing>(
         appDispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> CEListStore.State) {
-            loadListByPage(page = 0, searchValue = searchValue, isLastPageLoaded = false)
+            fetchList(
+                page = 0,
+                searchValue = searchValue,
+                isLastPageLoaded = false,
+            )
         }
 
         override fun executeIntent(intent: CEListStore.Intent, getState: () -> CEListStore.State): Unit =
             when (intent) {
-                is CEListStore.Intent.LoadByPage -> loadListByPage(intent.page, getState().searchValue, getState().isLastPageLoaded)
-                is CEListStore.Intent.UpdateSearchValue -> dispatch(Msg.SearchValueUpdated(intent.searchValue))
-                CEListStore.Intent.AddNew -> dispatch(Msg.AddNew)
-                is CEListStore.Intent.Details -> dispatch(Msg.NavigateToDetails(intent.id))
-                CEListStore.Intent.DetailsDone -> dispatch(Msg.DetailsDone)
-                is CEListStore.Intent.DetailsChanged -> dispatch(Msg.UpdateItem(intent.item))
-                is CEListStore.Intent.DetailsDeleted -> dispatch(Msg.DeleteItem(intent.deletedId))
+                is CEListStore.Intent.LoadByPage -> {
+                    dispatch(Msg.Refresh)
+                    fetchList(
+                        page = intent.page,
+                        isLastPageLoaded = getState().isLastPageLoaded,
+                        searchValue = getState().searchValue,
+                    )
+                }
+                is CEListStore.Intent.UpdateSearchValue -> {
+                    dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                    dispatch(Msg.Refresh)
+                    fetchList(
+                        page = getState().page,
+                        isLastPageLoaded = getState().isLastPageLoaded,
+                        searchValue = getState().searchValue,
+                    )
+                }
+                CEListStore.Intent.AddNew -> {
+                    dispatch(Msg.AddNew)
+                }
+                is CEListStore.Intent.Details -> {
+                    dispatch(Msg.NavigateToDetails(intent.id))
+                }
+                CEListStore.Intent.DetailsDone -> {
+                    dispatch(Msg.DetailsDone)
+                }
+                is CEListStore.Intent.DetailsChanged -> {
+                    dispatch(Msg.UpdateItem(intent.item))
+                }
+                is CEListStore.Intent.DetailsDeleted -> {
+                    dispatch(Msg.DeleteItem(intent.deletedId))
+                }
+                is CEListStore.Intent.Refresh -> {
+                    dispatch(Msg.Refresh)
+                    fetchList(
+                        page = getState().page,
+                        isLastPageLoaded = getState().isLastPageLoaded,
+                        searchValue = getState().searchValue,
+                    )
+                }
             }
 
         private var loadListByPageJob: Job? = null
-        private fun loadListByPage(
+        private fun fetchList(
             page: Int,
             searchValue: String? = null,
             isLastPageLoaded: Boolean = false
@@ -75,9 +114,8 @@ internal class CEListStoreFactory(
                 getAllUseCase
                     .execute(searchValue, page)
                     .onSuccess { list ->
-                        if (list.isNotEmpty()) {
-                            dispatch(Msg.ListLoaded(list))
-                        }
+                        dispatch(Msg.LastPage(page))
+                        dispatch(Msg.ListLoaded(list))
                         if (list.size < NetworkConstants.PageSize) {
                             dispatch(Msg.LastPageLoaded)
                         }
@@ -93,7 +131,7 @@ internal class CEListStoreFactory(
         override fun CEListStore.State.reduce(msg: Msg): CEListStore.State =
             when (msg) {
                 is Msg.ListLoading -> copy(isLoading = true)
-                is Msg.ListLoaded -> CEListStore.State(list = list + msg.list)
+                is Msg.ListLoaded -> copy(list = list + msg.list, isLoading = false)
                 is Msg.ListFailed -> copy(error = msg.error)
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true)
@@ -108,6 +146,8 @@ internal class CEListStoreFactory(
                         list + msg.item
                     }.sortedByDescending { it.code }
                 )
+                Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
+                is Msg.LastPage -> copy(page = msg.page)
             }
     }
 }

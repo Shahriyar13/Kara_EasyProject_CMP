@@ -13,6 +13,8 @@ interface CEListStore: Store<CEListStore.Intent, CEListStore.State, Nothing> {
         data class DetailsChanged(val item: CustomerEnquiry): Intent()
         data class DetailsDeleted(val deletedId: Long): Intent()
         data class Details(val id: Long): Intent()
+        data object Refresh: Intent()
+
     }
 
     data class State(

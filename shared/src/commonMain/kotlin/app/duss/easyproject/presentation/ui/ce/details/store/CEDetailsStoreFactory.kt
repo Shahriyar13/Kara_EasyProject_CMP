@@ -3,13 +3,13 @@ package app.duss.easyproject.presentation.ui.ce.details.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.CustomerEnquiry
 import app.duss.easyproject.domain.params.FileAttachmentRequest
+import app.duss.easyproject.domain.params.toDto
 import app.duss.easyproject.domain.usecase.attachment.AttachmentDeleteUseCase
 import app.duss.easyproject.domain.usecase.attachment.AttachmentUploadUseCase
 import app.duss.easyproject.domain.usecase.ce.CreateUseCase
 import app.duss.easyproject.domain.usecase.ce.DeleteUseCase
 import app.duss.easyproject.domain.usecase.ce.GetByIdUseCase
 import app.duss.easyproject.domain.usecase.ce.UpdateUseCase
-import app.duss.easyproject.presentation.forms.CustomerEnquiryForm
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -45,6 +45,7 @@ internal class CEDetailsStoreFactory(
             ) {}
 
     private sealed class Msg {
+        data object CheckChanges : Msg()
         data class Changing(val updated: CustomerEnquiry) : Msg()
         data object EditMode : Msg()
         data object ViewMode : Msg()
@@ -89,7 +90,11 @@ internal class CEDetailsStoreFactory(
                 )
 
                 CEDetailsStore.Intent.EditState -> dispatch(Msg.EditMode)
-                is CEDetailsStore.Intent.EditingState -> dispatch(Msg.Changing(intent.updated))
+                is CEDetailsStore.Intent.EditingState -> {
+                    dispatch(Msg.Changing(intent.updated))
+                    dispatch(Msg.CheckChanges)
+
+                }
             }
 
         private var loadByIdJob: Job? = null
@@ -115,20 +120,20 @@ internal class CEDetailsStoreFactory(
         }
 
         private var updateJob: Job? = null
-        private fun update(request: CustomerEnquiryForm, isChanged: Boolean) {
-            if ((request.origin.id ?: -1) > 0 && !isChanged) return dispatch(Msg.Updated(request.origin))
+        private fun update(request: CustomerEnquiry, isChanged: Boolean) {
+            if ((request.id ?: -1) > 0 && !isChanged) return dispatch(Msg.Updated(request))
             if (updateJob?.isActive == true) return
 
             updateJob = scope.launch {
-                if ((request.origin.id ?: -1) > 0) {
+                if ((request.id ?: -1) > 0) {
                     dispatch(Msg.Updating)
                     updateUseCase
-                        .execute(request.toRequestDto())
+                        .execute(request.toDto())
                         .onSuccess { item -> dispatch(Msg.Updated(item)) }
                         .onFailure { e -> dispatch(Msg.UpdateFailed(e.message)) }
                 } else {
                     createUseCase
-                        .execute(request.toRequestDto())
+                        .execute(request.toDto())
                         .onSuccess { item -> dispatch(Msg.Updated(item)) }
                         .onFailure { e -> dispatch(Msg.UpdateFailed(e.message)) }
                 }
@@ -156,7 +161,7 @@ internal class CEDetailsStoreFactory(
                 attachmentUploadUseCase
                     .execute(
                         FileAttachmentRequest(
-                            projectId = id,
+                            customerEnquiryId = id,
                             files = request,
                         )
                     )
@@ -186,7 +191,7 @@ internal class CEDetailsStoreFactory(
             when (msg) {
                 is Msg.InfoLoading -> copy(isLoading = true)
                 is Msg.InfoLoaded -> copy(
-                    form = CustomerEnquiryForm(msg.item),
+                    item = msg.item,
                     inEditeMode = (msg.item.id ?: -1) < 0,
                     isLoading = false
                 )
@@ -194,7 +199,7 @@ internal class CEDetailsStoreFactory(
                 is Msg.InfoFailed -> copy(error = msg.error, isLoading = false)
                 is Msg.Updating -> copy(isLoading = true)
                 is Msg.Updated -> copy(
-                    form = CustomerEnquiryForm(msg.item),
+                    item = msg.item,
                     isChanged = false,
                     isUpdated = true,
                     isLoading = false,
@@ -217,9 +222,9 @@ internal class CEDetailsStoreFactory(
                 Msg.EditMode -> copy(inEditeMode = true)
                 Msg.ViewMode -> copy(inEditeMode = false)
                 is Msg.Changing -> copy(
-                    form = form?.copy(updated = msg.updated),
-                    isChanged = form?.hasUnsavedChanges() ?: false,
+                    item = msg.updated,
                 )
+                Msg.CheckChanges -> copy(isChanged = true)
             }
     }
 

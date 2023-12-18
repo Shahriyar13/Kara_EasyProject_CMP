@@ -6,6 +6,7 @@ import app.duss.easyproject.domain.entity.Item
 import app.duss.easyproject.presentation.ui.ce.details.store.CEDetailsStore
 import app.duss.easyproject.presentation.ui.ce.details.store.CEDetailsStoreFactory
 import app.duss.easyproject.presentation.ui.company.CompanyComponent
+import app.duss.easyproject.presentation.ui.company.CompanyFilter
 import app.duss.easyproject.presentation.ui.item.ItemComponent
 import app.duss.easyproject.presentation.ui.person.PersonComponent
 import com.arkivanov.decompose.ComponentContext
@@ -36,15 +37,7 @@ class CEDetailsComponent(
             ).create()
         }
 
-    val itemComponent = ItemComponent(
-        componentContext,
-        storeFactory,
-        true,
-        "",
-        ::onItemOutput
-    )
-
-    val item: (
+    private val item: (
         ComponentContext,
         searchValue: String?,
         (ItemComponent.Output) -> Unit,
@@ -61,11 +54,13 @@ class CEDetailsComponent(
     private val company: (
         ComponentContext,
         searchValue: String?,
+        filter: CompanyFilter,
         (CompanyComponent.Output) -> Unit,
-    ) -> CompanyComponent = { childContext, searchValue, output ->
+    ) -> CompanyComponent = { childContext, searchValue, filter, output ->
         CompanyComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
+            filter = filter,
             searchValue = searchValue ?: "",
             output = output
         )
@@ -97,7 +92,7 @@ class CEDetailsComponent(
 
     fun itemPickerSelected() {
         navigation.activate(Configuration.ItemConfig(
-            selected = state.value.form?.updated?.customerEnquiryItems?.map { it.item }),
+            selected = state.value.item?.customerEnquiryItems?.map { it.item }),
             onComplete = {
 
             }
@@ -117,6 +112,7 @@ class CEDetailsComponent(
                 company(
                     componentContext,
                     null,
+                    CompanyFilter.Customer,
                     ::onCompanyOutput
                 )
             )
@@ -151,9 +147,9 @@ class CEDetailsComponent(
     private fun onItemOutput(output: ItemComponent.Output) {
         when (output) {
             is ItemComponent.Output.ItemsSelected -> onEvent(CEDetailsStore.Intent.EditingState(
-                state.value.form!!.updated.copy(
+                state.value.item!!.copy(
                     customerEnquiryItems = output.items.map { item ->
-                        state.value.form?.updated?.customerEnquiryItems?.firstOrNull { it.item.id == item.id }
+                        state.value.item?.customerEnquiryItems?.firstOrNull { it.item.id == item.id }
                             ?: CustomerEnquiryItem(item = item)
                     }
                 )

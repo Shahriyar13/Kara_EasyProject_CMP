@@ -39,6 +39,7 @@ internal fun CEListContent(
                 onEvent(CEListStore.Intent.LoadByPage(page = nextPage))
             },
             isLoading = state.isLoading,
+            isLastPageLoaded = state.isLastPageLoaded,
             modifier = Modifier.padding(paddingValues)
         ) { item, brush ->
             SimpleListItemContent(

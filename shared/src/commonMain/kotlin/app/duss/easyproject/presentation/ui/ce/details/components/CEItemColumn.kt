@@ -31,7 +31,7 @@ fun CEItemColumn(
                 onDelete = {
                     onItemDelete?.invoke(ceItem)
                 },
-                isAllowedToChangeItem = false,
+                isAllowedToChangeItem = true,
                 brush = remember(index) {
                     val colorIndex = index % Constants.colorsOfListItems.size
                     Brush.linearGradient(Constants.colorsOfListItems[colorIndex])

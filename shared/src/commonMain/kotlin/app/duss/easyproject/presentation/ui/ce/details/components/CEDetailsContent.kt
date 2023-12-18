@@ -45,11 +45,7 @@ internal fun CEDetailsContent(
     Box(contentAlignment = Alignment.TopCenter) {
 
         if (state.isDeleted) {
-            onOutput(CEDetailsComponent.Output.NavigateBack(state.form!!.origin.id))
-        }
-
-        state.form?.let { item ->
-
+            onOutput(CEDetailsComponent.Output.NavigateBack(state.item!!.id))
         }
 
         Scaffold(
@@ -59,20 +55,20 @@ internal fun CEDetailsContent(
                     onBack = {
                         onOutput(
                             CEDetailsComponent.Output.NavigateBack(
-                                updatedItem = if (state.isUpdated) state.form?.origin else null,
+                                updatedItem = if (state.isUpdated) state.item else null,
                             )
                         )
                     },
                     onSave = {
-                        if (!state.isLoading && state.form != null)
-                            onEvent(CEDetailsStore.Intent.SaveState(state.form, state.isChanged))
+                        if (!state.isLoading && state.item != null)
+                            onEvent(CEDetailsStore.Intent.SaveState(state.item, state.isChanged))
                     },
                     onEdit = {
                         onEvent(CEDetailsStore.Intent.EditState)
                     },
                     editState = state.inEditeMode,
                     showUnsavedChanges = state.isChanged,
-                    title = state.form?.updated?.code,
+                    title = if ((state.item?.id ?: -1) > 0) "Customer Enquiry: " + (state.item?.title ?: "") else "New Customer Enquiry",
                     loadingState = state.isLoading
                 )
             },
@@ -103,18 +99,17 @@ internal fun CEDetailsContent(
                     }
                 }
 
-                state.form?.let { item ->
-                    val customerEnquiryState = state.form.updated
+                state.item?.let { item ->
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         item("name") {
                             EditableText(
-                                value = customerEnquiryState.code?.replaceFirstChar { it.uppercaseChar() },
+                                value = item.code?.replaceFirstChar { it.uppercaseChar() },
                                 onValueChange = {
                                     onEvent(
                                         CEDetailsStore.Intent.EditingState(
-                                            customerEnquiryState.copy(
+                                            item.copy(
                                                 code = it ?: ""
                                             )
                                         )
@@ -128,11 +123,11 @@ internal fun CEDetailsContent(
 
                         item("title") {
                             EditableText(
-                                value = customerEnquiryState.title,
+                                value = item.title,
                                 onValueChange = {
                                     onEvent(
                                         CEDetailsStore.Intent.EditingState(
-                                            customerEnquiryState.copy(
+                                            item.copy(
                                                 title = it ?: ""
                                             )
                                         )
@@ -169,13 +164,35 @@ internal fun CEDetailsContent(
                             }
 
                             CEItemColumn(
-                                customerEnquiryState.customerEnquiryItems,
+                                item.customerEnquiryItems,
                                 state.inEditeMode,
-                                onItemUpdate = {
+                                onItemUpdate = { ceItem ->
+                                    item.customerEnquiryItems = item.customerEnquiryItems.map {
+                                        if ((it.item.id != null && it.item.id == ceItem.item.id) || it.hashCode() == ceItem.hashCode()) { //TODO check for item.id null
+                                            it.copy(
+                                                quantity = ceItem.quantity,
+                                                note = ceItem.note,
+                                                item = ceItem.item,
+                                            )
+                                        } else {
+                                            it
+                                        }
+                                    }
 
+                                    onEvent(
+                                        CEDetailsStore.Intent.EditingState(
+                                            item
+                                        )
+                                    )
                                 },
-                                onItemDelete = {
+                                onItemDelete = { ceItem ->
+                                    item.customerEnquiryItems = item.customerEnquiryItems.minus(ceItem)
 
+                                    onEvent(
+                                        CEDetailsStore.Intent.EditingState(
+                                            item
+                                        )
+                                    )
                                 }
                             )
                         }
