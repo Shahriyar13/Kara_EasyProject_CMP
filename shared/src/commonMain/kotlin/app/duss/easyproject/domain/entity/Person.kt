@@ -6,21 +6,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Person (
     val title: Title? = Title.Unknown,
-    val firstName: String?,
-    val lastName: String?,
-    val jobTitle: String?,
-    val email: String?,
-    val telephone: String?,
-    val mobile: String?,
-    val company: Company?,
-    val individualCompanyName: String?,
-    override val id: Long?,
-    override val creationTime: Long,
-    override val modificationTime: Long?,
-    override val createdBy: String,
-    override val modifiedBy: String?,
-    override val creatorId: Long?,
-    override val modifierId: Long?
+    var firstName: String? = null,
+    var lastName: String? = null,
+    var jobTitle: String? = null,
+    var email: String? = null,
+    var telephone: String? = null,
+    var mobile: String? = null,
+    val company: Company? = null,
+    var individualCompanyName: String? = null,
+    override val id: Long? = null,
+    override val creationTime: Long? = null,
+    override val modificationTime: Long? = null,
+    override val createdBy: String? = null,
+    override val modifiedBy: String? = null,
+    override val creatorId: Long? = null,
+    override val modifierId: Long? = null,
 ): BaseEntity() {
     fun fullName() = "${if (title != null && title != Title.Unknown) "${title.name}. " else ""}${if (firstName.isNullOrEmpty()) "" else "$firstName "}${if (lastName.isNullOrEmpty()) "" else lastName}"
 }

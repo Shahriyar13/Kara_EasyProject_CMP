@@ -3,7 +3,10 @@ package app.duss.easyproject.presentation.ui.person.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Person
+import app.duss.easyproject.domain.params.toDto
+import app.duss.easyproject.domain.usecase.person.CreateUseCase
 import app.duss.easyproject.domain.usecase.person.GetAllUseCase
+import app.duss.easyproject.domain.usecase.person.UpdateUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -20,6 +23,8 @@ class PersonStoreFactory(
     private val selectMode: Boolean = false,
 ) : KoinComponent {
 
+    private val updateUseCase by inject<UpdateUseCase>()
+    private val createUseCase by inject<CreateUseCase>()
     private val getAllUseCase by inject<GetAllUseCase>()
 
     fun create(): PersonStore =
@@ -34,9 +39,9 @@ class PersonStoreFactory(
 
     private sealed class Msg {
         data object SelectMode : Msg()
-        data object New : Msg()
+        data class New(val item: Person) : Msg()
+        data class Edit(val item: Person) : Msg()
         data object Refresh: Msg()
-        data class Edit(val id: Long?) : Msg()
         data object EditDone : Msg()
         data class Update(val item: Person) : Msg()
         data class Delete(val id: Long) : Msg()
@@ -47,6 +52,7 @@ class PersonStoreFactory(
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
         data object LastPageLoaded: Msg()
+        data class LastPage(val page: Int) : Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<PersonStore.Intent, Unit, PersonStore.State, Msg, Nothing>(
@@ -64,7 +70,7 @@ class PersonStoreFactory(
                     dispatch(Msg.Delete(intent.deletedId))
                 }
                 is PersonStore.Intent.Edit -> {
-                    dispatch(Msg.Edit(intent.id))
+                    dispatch(Msg.Edit(getState().list.first { it.id == intent.id }))
                 }
                 PersonStore.Intent.EditDone -> {
                     dispatch(Msg.EditDone)
@@ -77,10 +83,10 @@ class PersonStoreFactory(
                     )
                 }
                 PersonStore.Intent.New -> {
-                    dispatch(Msg.New)
+                    getNew()
                 }
                 is PersonStore.Intent.Update -> {
-                    dispatch(Msg.Update(intent.item))
+                    updateItem(intent.item)
                 }
                 is PersonStore.Intent.UpdateSearchValue -> {
                     dispatch(Msg.Refresh)
@@ -94,8 +100,52 @@ class PersonStoreFactory(
                 is PersonStore.Intent.UpdateSelected -> {
                     dispatch(Msg.Selected(intent.item))
                 }
+
+                PersonStore.Intent.Refresh -> {
+                    dispatch(Msg.Refresh)
+                    fetchList(
+                        page = getState().page,
+                        isLastPageLoaded = getState().isLastPageLoaded,
+                        searchValue = getState().searchValue,
+                    )
+                }
             }
         }
+
+        private fun getNew() {
+            dispatch(Msg.New(Person()))
+        }
+
+        private var updateItemJob: Job? = null
+        private fun updateItem(item: Person) {
+            if (updateItemJob?.isActive == true) return
+
+            updateItemJob = scope.launch {
+                dispatch(Msg.ListLoading)
+                if ((item.id ?: -1) > 0) {
+                    updateUseCase
+                        .execute(item.toDto())
+                        .onSuccess { item ->
+                            dispatch(Msg.Update(item))
+                            dispatch(Msg.EditDone)
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.ListFailed(e.message))
+                        }
+                } else {
+                    createUseCase
+                        .execute(item.toDto())
+                        .onSuccess { item ->
+                            dispatch(Msg.Update(item))
+                            dispatch(Msg.EditDone)
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.ListFailed(e.message))
+                        }
+                }
+            }
+        }
+
 
         private var getAllJob: Job? = null
         private fun fetchList(
@@ -112,9 +162,8 @@ class PersonStoreFactory(
                 getAllUseCase
                     .execute(searchValue, page)
                     .onSuccess { list ->
-                        if (list.isNotEmpty()) {
-                            dispatch(Msg.ListLoaded(list))
-                        }
+                        dispatch(Msg.LastPage(page))
+                        dispatch(Msg.ListLoaded(list))
                         if (list.size < NetworkConstants.PageSize) {
                             dispatch(Msg.LastPageLoaded)
                         }
@@ -146,11 +195,12 @@ class PersonStoreFactory(
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true, isLoading = false)
                 Msg.SelectMode -> copy(selectMode = true)
-                Msg.New -> copy(id = -1)
-                is Msg.Edit -> copy(id = msg.id)
-                is Msg.EditDone -> copy(id = null)
+                is Msg.New -> copy(detail = msg.item)
+                is Msg.Edit -> copy(detail = msg.item)
+                is Msg.EditDone -> copy(detail = null)
                 is Msg.Delete -> copy(list = list.filterNot { it.id == msg.id })
                 is Msg.Update -> copy(
+                    isLoading = false,
                     list = if (list.any { it.id == msg.item.id }) {
                         list.map { if (it.id == msg.item.id) msg.item else it }
                     } else {
@@ -158,6 +208,7 @@ class PersonStoreFactory(
                     }.sortedByDescending { it.creationTime }
                 )
                 Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
+                is Msg.LastPage -> copy(page = msg.page)
             }
     }
 }

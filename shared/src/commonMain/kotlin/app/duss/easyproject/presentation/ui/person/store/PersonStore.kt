@@ -14,11 +14,12 @@ interface PersonStore: Store<PersonStore.Intent, PersonStore.State, Nothing> {
         data class UpdateSelected(val item: Person): Intent()
         data class Delete(val deletedId: Long): Intent()
         data class Edit(val id: Long): Intent()
+        data object Refresh: Intent()
     }
 
     data class State(
         var page: Int = 0,
-        var id: Long? = null,
+        var detail: Person? = null,
         val selectMode: Boolean = false,
         val isLoading: Boolean = false,
         val isLastPageLoaded: Boolean = false,

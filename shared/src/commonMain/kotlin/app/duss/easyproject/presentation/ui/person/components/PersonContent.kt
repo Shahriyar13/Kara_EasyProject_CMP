@@ -33,7 +33,7 @@ internal fun PersonContent(
                 searchValue = state.searchValue,
                 loadingState = state.isLoading,
                 onAddClicked = {
-                    //TODO()
+                    onEvent(PersonStore.Intent.New)
                 },
             )
         },
@@ -47,6 +47,17 @@ internal fun PersonContent(
                 )
             }
         }
+        state.detail?.let { detail ->
+            PersonDetailsContent(
+                init = detail,
+                onDismiss = {
+                    onEvent(PersonStore.Intent.EditDone)
+                }
+            ) {
+                onEvent(PersonStore.Intent.Update(it))
+            }
+        }
+
         SimplePagingVerticalGrid(
             itemList = state.list,
             loadMoreItems = {
@@ -55,6 +66,7 @@ internal fun PersonContent(
                 onEvent(PersonStore.Intent.LoadByPage(page = nextPage))
             },
             isLoading = state.isLoading,
+            isLastPageLoaded = state.isLastPageLoaded,
             modifier = Modifier.padding(paddingValue)
         ) { item, brush ->
             SimpleListItemContent(
