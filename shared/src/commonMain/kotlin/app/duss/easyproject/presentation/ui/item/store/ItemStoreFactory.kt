@@ -3,7 +3,10 @@ package app.duss.easyproject.presentation.ui.item.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Item
+import app.duss.easyproject.domain.params.toDto
+import app.duss.easyproject.domain.usecase.item.CreateUseCase
 import app.duss.easyproject.domain.usecase.item.GetAllUseCase
+import app.duss.easyproject.domain.usecase.item.UpdateUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -21,6 +24,8 @@ class ItemStoreFactory(
 ) : KoinComponent {
 
     private val getAllUseCase by inject<GetAllUseCase>()
+    private val updateUseCase by inject<UpdateUseCase>()
+    private val createUseCase by inject<CreateUseCase>()
 
     fun create(): ItemStore =
         object : ItemStore,
@@ -34,8 +39,8 @@ class ItemStoreFactory(
 
     private sealed class Msg {
         data object SelectMode : Msg()
-        data object New : Msg()
-        data class Edit(val id: Long?) : Msg()
+        data class New(val item: Item) : Msg()
+        data class Edit(val item: Item) : Msg()
         data object EditDone : Msg()
         data class Update(val item: Item) : Msg()
         data class Delete(val id: Long) : Msg()
@@ -46,6 +51,7 @@ class ItemStoreFactory(
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
         data object Refresh: Msg()
+        data class LastPage(val page: Int) : Msg()
         data object LastPageLoaded : Msg()
     }
 
@@ -64,7 +70,7 @@ class ItemStoreFactory(
                     dispatch(Msg.Delete(intent.deletedId))
                 }
                 is ItemStore.Intent.Edit -> {
-                    dispatch(Msg.Edit(intent.id))
+                    dispatch(Msg.Edit(getState().list.first { it.id == intent.id }))
                 }
                 ItemStore.Intent.EditDone -> {
                     dispatch(Msg.EditDone)
@@ -73,10 +79,10 @@ class ItemStoreFactory(
                     fetchList(intent.page, getState().isLastPageLoaded, getState().searchValue)
                 }
                 ItemStore.Intent.New -> {
-                    dispatch(Msg.New)
+                    getNew()
                 }
                 is ItemStore.Intent.Update -> {
-                    dispatch(Msg.Update(intent.item))
+                    updateItem(intent.item)
                 }
                 is ItemStore.Intent.UpdateSearchValue -> {
                     dispatch(Msg.SearchValueUpdated(intent.searchValue))
@@ -89,6 +95,49 @@ class ItemStoreFactory(
                 }
                 is ItemStore.Intent.UpdateSelected -> {
                     dispatch(Msg.Selected(intent.item))
+                }
+
+                ItemStore.Intent.Refresh -> {
+                    dispatch(Msg.Refresh)
+                    fetchList(
+                        page = getState().page,
+                        isLastPageLoaded = getState().isLastPageLoaded,
+                        searchValue = getState().searchValue,
+                    )
+                }
+            }
+        }
+
+        private fun getNew() {
+            dispatch(Msg.New(Item()))
+        }
+
+        private var updateItemJob: Job? = null
+        private fun updateItem(item: Item) {
+            if (updateItemJob?.isActive == true) return
+
+            updateItemJob = scope.launch {
+                dispatch(Msg.ListLoading)
+                if ((item.id ?: -1) > 0) {
+                    updateUseCase
+                        .execute(item.toDto())
+                        .onSuccess { item ->
+                            dispatch(Msg.Update(item))
+                            dispatch(Msg.EditDone)
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.ListFailed(e.message))
+                        }
+                } else {
+                    createUseCase
+                        .execute(item.toDto())
+                        .onSuccess { item ->
+                            dispatch(Msg.Update(item))
+                            dispatch(Msg.EditDone)
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.ListFailed(e.message))
+                        }
                 }
             }
         }
@@ -108,9 +157,8 @@ class ItemStoreFactory(
                 getAllUseCase
                     .execute(searchValue, page)
                     .onSuccess { list ->
-                        if (list.isNotEmpty()) {
-                            dispatch(Msg.ListLoaded(list))
-                        }
+                        dispatch(Msg.LastPage(page))
+                        dispatch(Msg.ListLoaded(list))
                         if (list.size < NetworkConstants.PageSize) {
                             if (list.isNotEmpty()) {
                                 dispatch(Msg.ListLoaded(list))
@@ -145,11 +193,12 @@ class ItemStoreFactory(
                 is Msg.SearchValueUpdated -> copy(searchValue = msg.searchValue)
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true, isLoading = false)
                 Msg.SelectMode -> copy(selectMode = true)
-                Msg.New -> copy(id = -1)
-                is Msg.Edit -> copy(id = msg.id)
-                is Msg.EditDone -> copy(id = null)
+                is Msg.New -> copy(detail = msg.item)
+                is Msg.Edit -> copy(detail = msg.item)
+                is Msg.EditDone -> copy(detail = null)
                 is Msg.Delete -> copy(list = list.filterNot { it.id == msg.id })
                 is Msg.Update -> copy(
+                    isLoading = false,
                     list = if (list.any { it.id == msg.item.id }) {
                         list.map { if (it.id == msg.item.id) msg.item else it }
                     } else {
@@ -157,6 +206,7 @@ class ItemStoreFactory(
                     }.sortedByDescending { it.creationTime }
                 )
                 Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
+                is Msg.LastPage -> copy(page = msg.page)
             }
     }
 }

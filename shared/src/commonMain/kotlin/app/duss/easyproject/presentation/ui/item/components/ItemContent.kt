@@ -33,7 +33,7 @@ internal fun ItemContent(
                 searchValue = state.searchValue,
                 loadingState = state.isLoading,
                 onAddClicked = {
-                    //TODO()
+                    onEvent(ItemStore.Intent.New)
                 },
             )
         },
@@ -48,6 +48,18 @@ internal fun ItemContent(
                 )
             }
         }
+
+        state.detail?.let { detail ->
+            ItemDetailsContent(
+                init = detail,
+                onDismiss = {
+                    onEvent(ItemStore.Intent.EditDone)
+                }
+            ) {
+                onEvent(ItemStore.Intent.Update(it))
+            }
+        }
+
         SimplePagingVerticalGrid(
             itemList = state.list,
             loadMoreItems = {
@@ -56,6 +68,7 @@ internal fun ItemContent(
                 onEvent(ItemStore.Intent.LoadByPage(page = nextPage))
             },
             isLoading = state.isLoading,
+            isLastPageLoaded = state.isLastPageLoaded,
             modifier = Modifier.padding(paddingValue)
         ) { item, brush ->
             SimpleListItemContent(

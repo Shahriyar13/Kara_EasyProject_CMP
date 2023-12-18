@@ -59,6 +59,7 @@ internal fun ItemSelectContent(
                 val nextPage = state.page + 1
                 onEvent(ItemStore.Intent.LoadByPage(page = nextPage))
             },
+            isLastPageLoaded = state.isLastPageLoaded,
             isLoading = state.isLoading,
         ) { item, brush ->
             SimpleListItemContent(
@@ -72,7 +73,7 @@ internal fun ItemSelectContent(
                     }
                 },
                 title = item.name,
-                subtitle = "${item.unit?.let { "Unit: $it  " }}${item.type?.let { "Type: $it  " }}${item.modelNo?.let { "Model No.: $it  " }}${item.hsCodeEu?.let { "EU HSCode: $it" }}",
+                subtitle = "${item.unit?.let { "Unit: $it  | " }}${item.type?.let { "Type: $it  | " }}${item.modelNo?.let { "Model No.: $it  | " }}${item.hsCodeEu?.let { "EU HSCode: $it" }}",
                 caption = item.note ?: "",
                 brush = brush
             )

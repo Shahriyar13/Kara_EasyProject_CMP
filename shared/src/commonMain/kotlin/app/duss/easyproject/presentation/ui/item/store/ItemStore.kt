@@ -13,12 +13,13 @@ interface ItemStore: Store<ItemStore.Intent, ItemStore.State, Nothing> {
         data class Update(val item: Item): Intent()
         data class UpdateSelected(val item: Item): Intent()
         data class Delete(val deletedId: Long): Intent()
-        data class Edit(val id: Long): Intent()
+        data class Edit(val id: Long?): Intent()
+        data object Refresh: Intent()
     }
 
     data class State(
         var page: Int = 0,
-        var id: Long? = null,
+        var detail: Item? = null,
         val selectMode: Boolean = false,
         val isLoading: Boolean = false,
         val isLastPageLoaded: Boolean = false,
