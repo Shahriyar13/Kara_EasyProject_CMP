@@ -4,10 +4,13 @@ package app.duss.easyproject.presentation.ui.company.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Company
+import app.duss.easyproject.domain.params.toDto
+import app.duss.easyproject.domain.usecase.company.CreateUseCase
 import app.duss.easyproject.domain.usecase.company.GetAllCustomersUseCase
 import app.duss.easyproject.domain.usecase.company.GetAllFreightForwardersUseCase
 import app.duss.easyproject.domain.usecase.company.GetAllSuppliersUseCase
 import app.duss.easyproject.domain.usecase.company.GetAllUseCase
+import app.duss.easyproject.domain.usecase.company.UpdateUseCase
 import app.duss.easyproject.presentation.ui.company.CompanyFilter
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -15,7 +18,6 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,6 +29,8 @@ class CompanyStoreFactory(
     private val filter: CompanyFilter = CompanyFilter.ALL,
 ): KoinComponent {
 
+    private val updateUseCase by inject<UpdateUseCase>()
+    private val createUseCase by inject<CreateUseCase>()
     private val getAllUseCase by inject<GetAllUseCase>()
     private val getAllSuppliersUseCase by inject<GetAllSuppliersUseCase>()
     private val getAllCustomersUseCase by inject<GetAllCustomersUseCase>()
@@ -44,8 +48,8 @@ class CompanyStoreFactory(
     private sealed class Msg {
         data object SelectMode : Msg()
         data class Filer(val filter: CompanyFilter) : Msg()
-        data object New : Msg()
-        data class Edit(val id: Long?) : Msg()
+        data class New(val newItem: Company) : Msg()
+        data class Edit(val existingItem: Company) : Msg()
         data object EditDone : Msg()
         data class Update(val item: Company) : Msg()
         data class Delete(val id: Long) : Msg()
@@ -56,6 +60,7 @@ class CompanyStoreFactory(
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
         data object Refresh: Msg()
+        data class LastPage(val page: Int) : Msg()
         data object LastPageLoaded : Msg()
     }
 
@@ -75,11 +80,14 @@ class CompanyStoreFactory(
                 is CompanyStore.Intent.Delete -> {
                     dispatch(Msg.Delete(intent.deletedId))
                 }
-                is CompanyStore.Intent.Edit -> {
-                    dispatch(Msg.Edit(intent.id))
-                }
-                CompanyStore.Intent.EditDone -> {
+                is CompanyStore.Intent.EditDone -> {
                     dispatch(Msg.EditDone)
+                }
+                is CompanyStore.Intent.Edit -> {
+                    dispatch(Msg.Edit(getState().list.first { it.id == intent.id }))
+                }
+                is CompanyStore.Intent.Update -> {
+                    updateItem(intent.item)
                 }
                 is CompanyStore.Intent.LoadByPage -> {
                     fetchList(
@@ -90,13 +98,19 @@ class CompanyStoreFactory(
                     )
                 }
                 CompanyStore.Intent.New -> {
-                    dispatch(Msg.New)
-                }
-                is CompanyStore.Intent.Update -> {
-                    dispatch(Msg.Update(intent.item))
+                    getNew()
                 }
                 is CompanyStore.Intent.UpdateSearchValue -> {
                     dispatch(Msg.SearchValueUpdated(intent.searchValue))
+                    dispatch(Msg.Refresh)
+                    fetchList(
+                        page = getState().page,
+                        isLastPageLoaded = getState().isLastPageLoaded,
+                        searchValue = getState().searchValue,
+                        filter = getState().filter,
+                    )
+                }
+                is CompanyStore.Intent.Refresh -> {
                     dispatch(Msg.Refresh)
                     fetchList(
                         page = getState().page,
@@ -120,6 +134,41 @@ class CompanyStoreFactory(
                 }
             }
         }
+
+        private fun getNew() {
+            dispatch(Msg.New(Company()))
+        }
+
+        private var updateItemJob: Job? = null
+        private fun updateItem(item: Company) {
+            if (updateItemJob?.isActive == true) return
+
+            updateItemJob = scope.launch {
+                dispatch(Msg.ListLoading)
+                if ((item.id ?: -1) > 0) {
+                    updateUseCase
+                        .execute(item.toDto())
+                        .onSuccess { item ->
+                            dispatch(Msg.Update(item))
+                            dispatch(Msg.EditDone)
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.ListFailed(e.message))
+                        }
+                } else {
+                    createUseCase
+                        .execute(item.toDto())
+                        .onSuccess { item ->
+                            dispatch(Msg.Update(item))
+                            dispatch(Msg.EditDone)
+                        }
+                        .onFailure { e ->
+                            dispatch(Msg.ListFailed(e.message))
+                        }
+                }
+            }
+        }
+
         private var getAllJob: Job? = null
         private fun fetchList(
             page: Int,
@@ -132,20 +181,14 @@ class CompanyStoreFactory(
 
             getAllJob = scope.launch {
                 dispatch(Msg.ListLoading)
-
-                delay(2000)
                 when (filter) {
                     CompanyFilter.ALL -> {
                         getAllUseCase
                             .execute(searchValue, page)
                             .onSuccess { list ->
-                                if (list.isNotEmpty()) {
-                                    dispatch(Msg.ListLoaded(list))
-                                }
+                                dispatch(Msg.LastPage(page))
+                                dispatch(Msg.ListLoaded(list))
                                 if (list.size < NetworkConstants.PageSize) {
-                                    if (list.isNotEmpty()) {
-                                        dispatch(Msg.ListLoaded(list))
-                                    }
                                     dispatch(Msg.LastPageLoaded)
                                 }
                             }
@@ -157,13 +200,9 @@ class CompanyStoreFactory(
                         getAllSuppliersUseCase
                             .execute(searchValue, page)
                             .onSuccess { list ->
-                                if (list.isNotEmpty()) {
-                                    dispatch(Msg.ListLoaded(list))
-                                }
+                                dispatch(Msg.LastPage(page))
+                                dispatch(Msg.ListLoaded(list))
                                 if (list.size < NetworkConstants.PageSize) {
-                                    if (list.isNotEmpty()) {
-                                        dispatch(Msg.ListLoaded(list))
-                                    }
                                     dispatch(Msg.LastPageLoaded)
                                 }
                             }
@@ -175,13 +214,9 @@ class CompanyStoreFactory(
                         getAllCustomersUseCase
                             .execute(searchValue, page)
                             .onSuccess { list ->
-                                if (list.isNotEmpty()) {
-                                    dispatch(Msg.ListLoaded(list))
-                                }
+                                dispatch(Msg.LastPage(page))
+                                dispatch(Msg.ListLoaded(list))
                                 if (list.size < NetworkConstants.PageSize) {
-                                    if (list.isNotEmpty()) {
-                                        dispatch(Msg.ListLoaded(list))
-                                    }
                                     dispatch(Msg.LastPageLoaded)
                                 }
                             }
@@ -193,13 +228,9 @@ class CompanyStoreFactory(
                         getAllFreightForwardersUseCase
                             .execute(searchValue, page)
                             .onSuccess { list ->
-                                if (list.isNotEmpty()) {
-                                    dispatch(Msg.ListLoaded(list))
-                                }
+                                dispatch(Msg.LastPage(page))
+                                dispatch(Msg.ListLoaded(list))
                                 if (list.size < NetworkConstants.PageSize) {
-                                    if (list.isNotEmpty()) {
-                                        dispatch(Msg.ListLoaded(list))
-                                    }
                                     dispatch(Msg.LastPageLoaded)
                                 }
                             }
@@ -233,11 +264,12 @@ class CompanyStoreFactory(
                 Msg.LastPageLoaded -> copy(isLastPageLoaded = true, isLoading = false)
                 Msg.SelectMode -> copy(selectMode = true)
                 is Msg.Filer -> copy(filter = msg.filter)
-                Msg.New -> copy(id = -1)
-                is Msg.Edit -> copy(id = msg.id)
-                is Msg.EditDone -> copy(id = null)
+                is Msg.New -> copy(detail = msg.newItem)
+                is Msg.Edit -> copy(detail = msg.existingItem)
+                is Msg.EditDone -> copy(detail = null)
                 is Msg.Delete -> copy(list = list.filterNot { it.id == msg.id })
                 is Msg.Update -> copy(
+                    isLoading = false,
                     list = if (list.any { it.id == msg.item.id }) {
                         list.map { if (it.id == msg.item.id) msg.item else it }
                     } else {
@@ -245,6 +277,7 @@ class CompanyStoreFactory(
                     }.sortedByDescending { it.creationTime }
                 )
                 Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
+                is Msg.LastPage -> copy(page = msg.page)
             }
     }
 }

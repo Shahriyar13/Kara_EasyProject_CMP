@@ -11,15 +11,16 @@ interface CompanyStore: Store<CompanyStore.Intent, CompanyStore.State, Nothing> 
         data class UpdateSearchValue(val searchValue: String): Intent()
         data class Filter(val filter: CompanyFilter): Intent()
         data object New: Intent()
-        data object EditDone: Intent()
+        data object Refresh: Intent()
         data class Update(val item: Company): Intent()
         data class UpdateSelected(val item: Company): Intent()
         data class Delete(val deletedId: Long): Intent()
         data class Edit(val id: Long): Intent()
+        data object EditDone: Intent()
     }
     data class State(
         var page: Int = 0,
-        var id: Long? = null,
+        var detail: Company? = null,
         val selectMode: Boolean = false,
         val filter: CompanyFilter = CompanyFilter.ALL,
         val isLoading: Boolean = false,

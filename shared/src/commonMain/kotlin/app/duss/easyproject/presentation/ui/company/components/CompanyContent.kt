@@ -44,7 +44,7 @@ internal fun CompanyContent(
                 searchValue = state.searchValue,
                 loadingState = state.isLoading,
                 onAddClicked = {
-                    //TODO()
+                    onEvent(CompanyStore.Intent.New)
                 },
             ) {
                 if (!state.selectMode) {
@@ -87,7 +87,7 @@ internal fun CompanyContent(
                                     CompanyStore.Intent.Filter(CompanyFilter.FreightForwarder)
                                 )
                             },
-                            label = "FreightForwarders",
+                            label = "Freight Forwarders",
                         )
                     }
                 }
@@ -104,6 +104,18 @@ internal fun CompanyContent(
                 )
             }
         }
+
+        state.detail?.let { detail ->
+            CompanyDetailsContent(
+                init = detail,
+                onDismiss = {
+                    onEvent(CompanyStore.Intent.EditDone)
+                }
+            ) {
+                onEvent(CompanyStore.Intent.Update(it))
+            }
+        }
+
         SimplePagingVerticalGrid(
             itemList = state.list,
             loadMoreItems = {
@@ -112,6 +124,7 @@ internal fun CompanyContent(
                 onEvent(CompanyStore.Intent.LoadByPage(page = nextPage))
             },
             isLoading = state.isLoading,
+            isLastPageLoaded = state.isLastPageLoaded,
             modifier = Modifier.padding(paddingValue)
         ) { item, brush ->
             SimpleListItemContent(
@@ -119,8 +132,8 @@ internal fun CompanyContent(
                     if (state.selectMode) {
                         onEvent(CompanyStore.Intent.UpdateSelected(item = item))
                     } else {
-                        item.id?.let {
-                            onEvent(CompanyStore.Intent.Edit(id = item.id))
+                        item.id?.let { id ->
+                            onEvent(CompanyStore.Intent.Edit(id = id))
                         }
                     }
                 },
