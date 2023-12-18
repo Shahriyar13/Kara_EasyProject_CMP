@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.domain.entity.QuotationItem
 import app.duss.easyproject.presentation.components.BasicEditableText
-import app.duss.easyproject.presentation.ui.ce.details.components.QuantityChanger
+import app.duss.easyproject.presentation.components.QuantityChanger
 
 @Composable
 fun QuotationItemContent(

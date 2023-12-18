@@ -39,6 +39,7 @@ internal fun QuotationListContent(
                 onEvent(QuotationListStore.Intent.LoadByPage(page = nextPage))
             },
             isLoading = state.isLoading,
+            isLastPageLoaded = state.isLastPageLoaded,
             modifier = Modifier.padding(paddingValues)
         ) { item, brush ->
             SimpleListItemContent(

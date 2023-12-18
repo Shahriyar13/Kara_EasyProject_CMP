@@ -40,6 +40,7 @@ internal class QuotationListStoreFactory(
         data class ListLoaded(val list: List<Quotation>) : Msg()
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
+        data class LastPage(val page: Int) : Msg()
         data object LastPageLoaded : Msg()
         data object Refresh: Msg()
     }
@@ -104,6 +105,7 @@ internal class QuotationListStoreFactory(
                 getAllUseCase
                     .execute(searchValue, page)
                     .onSuccess { list ->
+                        dispatch(Msg.LastPage(page))
                         dispatch(Msg.ListLoaded(list))
                         if (list.size < NetworkConstants.PageSize) {
                             dispatch(Msg.LastPageLoaded)
@@ -136,6 +138,7 @@ internal class QuotationListStoreFactory(
                     }.sortedByDescending { it.code }
                 )
                 Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
+                is Msg.LastPage -> copy(page = msg.page)
             }
     }
 }
