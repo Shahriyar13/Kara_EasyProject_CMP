@@ -7,4 +7,8 @@ data class RegionCity(
     val name: String,
     val id: Long?,
     val state: RegionState? = null,
-)
+) {
+    override fun toString(): String {
+        return name
+    }
+}

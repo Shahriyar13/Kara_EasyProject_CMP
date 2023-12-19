@@ -61,7 +61,7 @@ val useCaseModule = module {
     // person
     factory { app.duss.easyproject.domain.usecase.person.CreateUseCase( get() ) }
     factory { app.duss.easyproject.domain.usecase.person.DeleteUseCase( get() ) }
-    factory { app.duss.easyproject.domain.usecase.person.GetAllUseCase( get() ) }
+    factory { app.duss.easyproject.domain.usecase.person.PersonGetAllUseCase( get() ) }
     factory { app.duss.easyproject.domain.usecase.person.GetByIdUseCase( get() ) }
     factory { app.duss.easyproject.domain.usecase.person.UpdateUseCase( get() ) }
 

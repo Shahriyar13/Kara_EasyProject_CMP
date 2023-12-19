@@ -14,8 +14,8 @@ class UserDao(
         query.get().executeAsOneOrNull()
     }
 
-    suspend fun set(pokemonInfoEntity: UserEntity) = withContext(appDispatchers.io) {
+    suspend fun set(entity: UserEntity) = withContext(appDispatchers.io) {
         query.delete()
-        query.insert(pokemonInfoEntity)
+        query.insert(entity)
     }
 }

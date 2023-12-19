@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS RegionCountryEntity (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  code TEXT NOT NULL,
+  region TEXT NOT NULL,
+  subregion TEXT NOT NULL,
+  phoneCode TEXT NOT NULL,
+  nationality TEXT NOT NULL,
+  emoji TEXT NOT NULL,
+  emojiU TEXT NOT NULL
+);
+
+getAll:
+SELECT *
+FROM RegionCountryEntity
+ORDER BY id;
+
+getById:
+SELECT *
+FROM RegionCountryEntity
+WHERE id = ?
+LIMIT 1;
+
+delete:
+DELETE FROM RegionCountryEntity;
+
+insert:
+INSERT OR REPLACE INTO RegionCountryEntity(
+    id,
+    name,
+    code,
+    region,
+    subregion,
+    phoneCode,
+    nationality,
+    emoji,
+    emojiU
+  )
+  VALUES ?;

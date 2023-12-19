@@ -13,10 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -28,7 +24,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun BasicEditableText(
+internal fun BasicEditableTextStateless(
     modifier: Modifier = Modifier,
     value: String?,
     label: String = "",
@@ -43,12 +39,10 @@ internal fun BasicEditableText(
     interactionSource: InteractionSource = MutableInteractionSource(),
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
-    var textValue by remember { mutableStateOf(value) }
 
     BasicTextField(
-        value = textValue ?: "",
+        value = value ?: "",
         onValueChange = {
-            textValue = it
             onValueChange(it)
         },
         readOnly = readOnly,
@@ -61,10 +55,10 @@ internal fun BasicEditableText(
         singleLine = singleLine,
         modifier = modifier,
     ) {
-        val containerColor = MaterialTheme.colorScheme.background.copy(alpha = if (readOnly) 0f else .1f)
+        val containerColor = MaterialTheme.colorScheme.surface.copy(alpha = if (readOnly) 0f else .1f)
 
         TextFieldDefaults.DecorationBox(
-            value = textValue ?: "",
+            value = value ?: "",
             innerTextField = it,
             singleLine = singleLine,
             enabled = true,

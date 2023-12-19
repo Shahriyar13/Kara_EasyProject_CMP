@@ -1,5 +1,10 @@
 package app.duss.easyproject.data.repository
 
+import app.duss.easyproject.data.database.dao.RegionCityDao
+import app.duss.easyproject.data.database.dao.RegionCountryDao
+import app.duss.easyproject.data.database.dao.RegionStateDao
+import app.duss.easyproject.data.mapToDatabaseEntity
+import app.duss.easyproject.data.mapToDomainEntity
 import app.duss.easyproject.data.network.client.RegionClient
 import app.duss.easyproject.domain.entity.RegionCity
 import app.duss.easyproject.domain.entity.RegionCountry
@@ -13,10 +18,21 @@ class RegionRepositoryImpl : RegionRepository, KoinComponent {
 
     private val client by inject<RegionClient>()
 
+    private val cityDao by inject<RegionCityDao>()
+    private val stateDao by inject<RegionStateDao>()
+    private val countryDao by inject<RegionCountryDao>()
+
     override suspend fun getAllCities(query: String?, page: Int?): Result<List<RegionCity>> {
         return try {
-            val response = client.getAllCities(query = query, page = page ?: -1)
-            Result.success(response.data ?: emptyList())
+            var cities = cityDao.getAll().map { it.mapToDomainEntity() }
+            if (cities.isEmpty()) {
+                val response = client.getAllCities(query = query, page = page ?: -1)
+                response.data?.forEach {
+                    cityDao.set(it.mapToDatabaseEntity())
+                }
+                cities = cityDao.getAll().map { it.mapToDomainEntity() }
+            }
+            Result.success(cities)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
@@ -25,9 +41,16 @@ class RegionRepositoryImpl : RegionRepository, KoinComponent {
 
     override suspend fun getCityById(id: Long): Result<RegionCity> {
         return try {
-            val response = client.getCityById(id = id)
-            if (response.data != null) {
-                Result.success(response.data)
+            var city = cityDao.getById(id)
+            if (city == null) {
+                val response = client.getCityById(id = id)
+                if (response.data != null) {
+                    cityDao.set(response.data.mapToDatabaseEntity())
+                }
+                city = cityDao.getById(id)
+            }
+            if (city != null) {
+                Result.success(city.mapToDomainEntity())
             } else {
                 Result.failure(Exception("Not found"))
             }
@@ -35,10 +58,18 @@ class RegionRepositoryImpl : RegionRepository, KoinComponent {
             Result.failure(e)
         }
     }
+
     override suspend fun getAllStates(query: String?, page: Int?): Result<List<RegionState>> {
         return try {
-            val response = client.getAllStates(query = query, page = page ?: -1)
-            Result.success(response.data ?: emptyList())
+            var states = stateDao.getAll().map { it.mapToDomainEntity() }
+            if (states.isEmpty()) {
+                val response = client.getAllStates(query = query, page = page ?: -1)
+                response.data?.forEach {
+                    stateDao.set(it.mapToDatabaseEntity())
+                }
+                states = stateDao.getAll().map { it.mapToDomainEntity() }
+            }
+            Result.success(states)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
@@ -47,9 +78,16 @@ class RegionRepositoryImpl : RegionRepository, KoinComponent {
 
     override suspend fun getStateById(id: Long): Result<RegionState> {
         return try {
-            val response = client.getStateById(id = id)
-            if (response.data != null) {
-                Result.success(response.data)
+            var state = stateDao.getById(id)
+            if (state == null) {
+                val response = client.getStateById(id = id)
+                if (response.data != null) {
+                    stateDao.set(response.data.mapToDatabaseEntity())
+                }
+                state = stateDao.getById(id)
+            }
+            if (state != null) {
+                Result.success(state.mapToDomainEntity())
             } else {
                 Result.failure(Exception("Not found"))
             }
@@ -57,10 +95,18 @@ class RegionRepositoryImpl : RegionRepository, KoinComponent {
             Result.failure(e)
         }
     }
+
     override suspend fun getAllCountries(query: String?, page: Int?): Result<List<RegionCountry>> {
         return try {
-            val response = client.getAllCountries(query = query, page = page ?: -1)
-            Result.success(response.data ?: emptyList())
+            var countries = countryDao.getAll().map { it.mapToDomainEntity() }
+            if (countries.isEmpty()) {
+                val response = client.getAllCountries(query = query, page = page ?: -1)
+                response.data?.forEach {
+                    countryDao.set(it.mapToDatabaseEntity())
+                }
+                countries = countryDao.getAll().map { it.mapToDomainEntity() }
+            }
+            Result.success(countries)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
@@ -69,9 +115,16 @@ class RegionRepositoryImpl : RegionRepository, KoinComponent {
 
     override suspend fun getCountryById(id: Long): Result<RegionCountry> {
         return try {
-            val response = client.getCountryById(id = id)
-            if (response.data != null) {
-                Result.success(response.data)
+            var country = countryDao.getById(id)
+            if (country == null) {
+                val response = client.getCountryById(id = id)
+                if (response.data != null) {
+                    countryDao.set(response.data.mapToDatabaseEntity())
+                }
+                country = countryDao.getById(id)
+            }
+            if (country != null) {
+                Result.success(country.mapToDomainEntity())
             } else {
                 Result.failure(Exception("Not found"))
             }
@@ -79,7 +132,11 @@ class RegionRepositoryImpl : RegionRepository, KoinComponent {
             Result.failure(e)
         }
     }
-    override suspend fun getAllCustomsPorts(query: String?, page: Int?): Result<List<RegionCustomsPort>> {
+
+    override suspend fun getAllCustomsPorts(
+        query: String?,
+        page: Int?
+    ): Result<List<RegionCustomsPort>> {
         return try {
             val response = client.getAllCustomsPorts(query = query, page = page ?: -1)
             Result.success(response.data ?: emptyList())

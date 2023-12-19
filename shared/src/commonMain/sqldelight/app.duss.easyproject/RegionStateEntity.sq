@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS RegionStateEntity (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  countryId INTEGER NOT NULL
+);
+
+getAll:
+SELECT *
+FROM RegionStateEntity
+ORDER BY id;
+
+getById:
+SELECT *
+FROM RegionStateEntity
+WHERE id = ?
+LIMIT 1;
+
+getCountryById:
+SELECT *
+FROM RegionStateEntity
+WHERE countryId = ?;
+
+delete:
+DELETE FROM RegionStateEntity;
+
+insert:
+INSERT OR REPLACE INTO RegionStateEntity(
+    id,
+    name,
+    countryId
+  )
+  VALUES ?;
