@@ -7,32 +7,64 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Packing(
-    val standardNumber: String?,
-    val cbNumber: String?,
-    val loadingPort: RegionCustomsPort?,
-    val dischargingPort: RegionCustomsPort?,
-    val insuranceCompany: Insurance?,
-    val insurancePolicyNumber: String?,
-    val buyerCommercialCardNumber: String?,
-    val termOfDelivery: String?,
-    val originCountry: RegionCountry?,
-    val paymentType: PaymentType = PaymentType.Unknown,
-    val packingType: PackingType = PackingType.Unknown,
-    val transportType: TransportType = TransportType.Unknown,
-    val notAssignedBoxes: List<Box> = listOf(),
-    val container: List<Container> = listOf(),
-    val fileAttachments: List<FileAttachment> = listOf(),
-    val project: Project,
-    override val code: String?,
-    override val codeExtension: String?,
-    override val time: Long?,
-    override val sendTime: Long?,
-    override val annualId: Int?,
-    override val id: Long?,
-    override val creationTime: Long,
-    override val modificationTime: Long?,
-    override val createdBy: String,
-    override val modifiedBy: String?,
-    override val creatorId: Long?,
-    override val modifierId: Long?
-): BaseDocumentEntity()
+    var standardNumber: String? = null,
+    var cbNumber: String? = null,
+    var loadingPort: RegionCustomsPort? = null,
+    var dischargingPort: RegionCustomsPort? = null,
+    var insuranceCompany: Insurance? = null,
+    var insurancePolicyNumber: String? = null,
+    var buyerCommercialCardNumber: String? = null,
+    var termOfDelivery: String? = null,
+    var originCountry: RegionCountry? = null,
+    var paymentType: PaymentType = PaymentType.Unknown,
+    var packingType: PackingType = PackingType.Unknown,
+    var transportType: TransportType = TransportType.Unknown,
+    var quotationItems: List<QuotationItem> = listOf(),
+    var boxes: List<BoxOfItem> = listOf(),
+    var containers: List<Container> = listOf(),
+    var fileAttachments: List<FileAttachment> = listOf(),
+    var project: Project? = null,
+    override val code: String? = null,
+    override val codeExtension: String? = null,
+    override val time: Long? = null,
+    override val sendTime: Long? = null,
+    override val annualId: Int? = null,
+    override val id: Long? = null,
+    override val creationTime: Long? = null,
+    override val modificationTime: Long? = null,
+    override val createdBy: String? = null,
+    override val modifiedBy: String? = null,
+    override val creatorId: Long? = null,
+    override val modifierId: Long? = null,
+): BaseDocumentEntity() {
+
+    // Function to find all quotationItems not fully contained in any boxes
+    fun findQuotationItemsNotInBoxes(): List<QuotationItem> {
+        val itemsInBoxes = boxes.flatMap { box ->
+            box.boxItems.flatMap { boxItem ->
+                List(boxItem.quantity) { boxItem.quotationItem }
+            }
+        }
+        val itemQuantitiesInBoxes = itemsInBoxes.groupBy { it }.mapValues { it.value.size }
+        return quotationItems.filter { item -> (itemQuantitiesInBoxes[item] ?: 0) < item.quantity
+        }
+    }
+
+    // Boolean method to check if there are any quotationItems not fully contained in any boxes
+    fun hasQuotationItemsNotInBoxes(): Boolean {
+        return findQuotationItemsNotInBoxes().isNotEmpty()
+    }
+
+    // Function to find all boxes not fully contained in any containers
+    fun findBoxesNotInContainers(): List<BoxOfItem> {
+        val boxesInContainers = containers.flatMap { it.boxes }.distinct()
+        val boxQuantitiesInContainers = boxesInContainers.groupBy { it }.mapValues { it.value.size }
+        return boxes.filter { box -> (boxQuantitiesInContainers[box] ?: 0) < box.boxItems.size
+        }
+    }
+
+    // Boolean method to check if there are any boxes not fully contained in any containers
+    fun hasBoxesNotInContainers(): Boolean {
+        return findBoxesNotInContainers().isNotEmpty()
+    }
+}

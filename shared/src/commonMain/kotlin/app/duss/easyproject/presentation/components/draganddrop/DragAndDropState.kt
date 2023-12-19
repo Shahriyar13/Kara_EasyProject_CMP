@@ -33,14 +33,14 @@ class DragAndDropState constructor(
      */
     var dragOffset by mutableStateOf(Offset.Zero)
 
-    var cardDraggedId by mutableStateOf(-1)
-    var cardDraggedInitialListId by mutableStateOf(-1)
-    var cardDraggedCurrentListId by mutableStateOf(-1)
-    var listIdWithCardInBounds by mutableStateOf(-1)
+    var cardDraggedId by mutableStateOf(-1L)
+    var cardDraggedInitialListId by mutableStateOf(-1L)
+    var cardDraggedCurrentListId by mutableStateOf(-1L)
+    var listIdWithCardInBounds by mutableStateOf(-1L)
     var movingCardData by mutableStateOf(INITIAL_CARD_LIST_PAIR)
 
     companion object {
-        val INITIAL_CARD_LIST_PAIR = Pair(-1, -1)
+        val INITIAL_CARD_LIST_PAIR = Pair(-1L, -1L)
     }
 
     fun hasCardMoved(): Boolean {

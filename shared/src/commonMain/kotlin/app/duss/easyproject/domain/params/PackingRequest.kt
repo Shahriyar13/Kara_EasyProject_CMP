@@ -1,5 +1,6 @@
 package app.duss.easyproject.domain.params
 
+import app.duss.easyproject.domain.entity.Packing
 import app.duss.easyproject.domain.enums.PackingType
 import app.duss.easyproject.domain.enums.PaymentType
 import app.duss.easyproject.domain.enums.TransportType
@@ -12,7 +13,7 @@ data class PackingRequest (
     val codeExtension: String?,
     val annualId: Int?,
     val projectId: Long,
-    val time: Long,
+    val time: Long?,
     val sendTime: Long?,
 
     val buyerCommercialCardNumber: String?,
@@ -29,4 +30,28 @@ data class PackingRequest (
     val transportType: TransportType? = TransportType.Unknown,
     val notAssignedBoxes: List<BoxRequest>?,
     val containers: List<ContainerRequest>?,
+)
+
+fun Packing.toDto() = PackingRequest(
+    id = id,
+    code = code,
+    annualId = annualId,
+    codeExtension = codeExtension,
+    time = time,
+    projectId = project!!.id!!,
+    sendTime = sendTime,
+    buyerCommercialCardNumber = buyerCommercialCardNumber,
+    termOfDelivery = termOfDelivery,
+    standardNumber = standardNumber,
+    cbNumber = cbNumber,
+    loadingPort = loadingPort?.toDto(),
+    dischargingPort = dischargingPort?.toDto(),
+    insuranceCompany = insuranceCompany?.toDto(),
+    insurancePolicyNumber = insurancePolicyNumber,
+    originCountryId = originCountry?.id,
+    paymentType = paymentType,
+    packingType = packingType,
+    transportType = transportType,
+    notAssignedBoxes = boxes.map { it.toDto() },
+    containers = containers.map { it.toDto() },
 )

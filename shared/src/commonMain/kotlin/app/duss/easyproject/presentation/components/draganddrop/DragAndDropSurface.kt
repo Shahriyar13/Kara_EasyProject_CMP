@@ -4,7 +4,6 @@ import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
@@ -69,10 +67,9 @@ fun DragAndDropSurface(
 @Composable
 fun DragSurface(
     modifier: Modifier,
-    cardId: Int = 0,
-    cardListId: Int = 0,
-    content: @Composable
-    () -> Unit
+    cardId: Long = 0,
+    cardListId: Long = 0,
+    content: @Composable () -> Unit
 ) {
     val dragNDropState = LocalDragAndDropState.current
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
@@ -122,10 +119,10 @@ fun DragSurface(
                             dragOffset = Offset.Zero
 
                             // Metadata
-                            cardDraggedId = -1
-                            cardDraggedCurrentListId = -1
-                            cardDraggedInitialListId = -1
-                            listIdWithCardInBounds = -1
+                            cardDraggedId = -1L
+                            cardDraggedCurrentListId = -1L
+                            cardDraggedInitialListId = -1L
+                            listIdWithCardInBounds = -1L
                             movingCardData = DragAndDropState.INITIAL_CARD_LIST_PAIR
                         }
                     }
@@ -137,7 +134,7 @@ fun DragSurface(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(LocalDensity.current.run { targetHeight.toDp() })
+//                    .height(LocalDensity.current.run { targetHeight.toDp() })
             )
         } else {
             content()
@@ -148,7 +145,7 @@ fun DragSurface(
 @Composable
 fun DropSurface(
     modifier: Modifier,
-    listId: Int,
+    listId: Long,
     content: @Composable BoxScope.(isInBound: Boolean, dragOffset: Offset) -> Unit
 ) {
     val dragNDropState = LocalDragAndDropState.current

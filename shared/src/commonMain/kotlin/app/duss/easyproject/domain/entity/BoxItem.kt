@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 data class BoxItem (
         var quotationItem: QuotationItem,
         var quantity: Int,
-        val code: String?,
-        override var id: Long?,
-        override var creationTime: Long?,
-        override var modificationTime: Long?,
-        override var createdBy: String?,
-        override var modifiedBy: String?,
-        override var creatorId: Long?,
-        override var modifierId: Long?
+        val code: String? = null,
+        override var id: Long? = null,
+        override var creationTime: Long? = null,
+        override var modificationTime: Long? = null,
+        override var createdBy: String? = null,
+        override var modifiedBy: String? = null,
+        override var creatorId: Long? = null,
+        override var modifierId: Long? = null,
 ): BaseEntity()
