@@ -1,6 +1,8 @@
 package app.duss.easyproject.presentation.ui.company.store
 
 import app.duss.easyproject.domain.entity.Company
+import app.duss.easyproject.domain.entity.Person
+import app.duss.easyproject.domain.entity.RegionCity
 import app.duss.easyproject.presentation.ui.company.CompanyFilter
 import com.arkivanov.mvikotlin.core.store.Store
 
@@ -27,6 +29,8 @@ interface CompanyStore: Store<CompanyStore.Intent, CompanyStore.State, Nothing> 
         val isLastPageLoaded: Boolean = false,
         val error: String? = null,
         val list: List<Company> = emptyList(),
+        val cities: List<RegionCity> = emptyList(),
+        val people: List<Person> = emptyList(),
         val selected: List<Company> = emptyList(),
         val selectingDone: Boolean= false,
         val searchValue: String = "",

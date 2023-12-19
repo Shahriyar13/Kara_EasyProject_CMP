@@ -5,7 +5,7 @@ import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Person
 import app.duss.easyproject.domain.params.toDto
 import app.duss.easyproject.domain.usecase.person.CreateUseCase
-import app.duss.easyproject.domain.usecase.person.GetAllUseCase
+import app.duss.easyproject.domain.usecase.person.PersonGetAllUseCase
 import app.duss.easyproject.domain.usecase.person.UpdateUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -25,7 +25,7 @@ class PersonStoreFactory(
 
     private val updateUseCase by inject<UpdateUseCase>()
     private val createUseCase by inject<CreateUseCase>()
-    private val getAllUseCase by inject<GetAllUseCase>()
+    private val getAllUseCase by inject<PersonGetAllUseCase>()
 
     fun create(): PersonStore =
         object : PersonStore,

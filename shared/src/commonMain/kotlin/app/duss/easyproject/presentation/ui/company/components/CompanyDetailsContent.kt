@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -14,26 +15,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.domain.entity.Company
+import app.duss.easyproject.domain.entity.Person
+import app.duss.easyproject.domain.entity.RegionCity
+import app.duss.easyproject.presentation.components.Constants
+import app.duss.easyproject.presentation.components.DropDownMenu
 import app.duss.easyproject.presentation.components.EditableText
 import app.duss.easyproject.presentation.components.LabelledCheckBox
 import app.duss.easyproject.presentation.components.LabelledModalBottomSheet
+import app.duss.easyproject.presentation.components.PersonItemContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompanyDetailsContent(
     init: Company,
+    people: List<Person>,
+    cities: List<RegionCity>,
     onDismiss: () -> Unit,
     onSave: (Company) -> Unit,
 ) {
     val detailsState by remember { mutableStateOf(init) }
-    var editState by remember { mutableStateOf((detailsState.id ?: -1 ) <= 0 ) }
+    var editState by remember { mutableStateOf((detailsState.id ?: -1) <= 0) }
     val modalBottomSheetState = rememberModalBottomSheetState()
 
     LabelledModalBottomSheet(
-        title = if ((detailsState.id ?: -1) > 0 ) "Company: ${detailsState.name}" else "New Company",
+        title = if ((detailsState.id ?: -1) > 0) "Company: ${detailsState.name}" else "New Company",
         editState = editState,
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
@@ -172,21 +181,73 @@ fun CompanyDetailsContent(
                 },
                 modifier = Modifier.weight(1F),
             )
-            EditableText(
+            Spacer(Modifier.size(16.dp))
+            DropDownMenu(
+                options = cities,
                 readOnly = !editState,
                 label = "City",
-                value = detailsState.city?.name ?: "",
+                value = detailsState.city,
                 onValueChange = {
-                    //TODO
+                    detailsState.city = it
+                },
+                onNoneSelect = {
+                    detailsState.city = null
                 },
                 modifier = Modifier.weight(1F),
             )
         }
 
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
+            var searchPerson by remember { mutableStateOf<Person?>(null) }
+            DropDownMenu(
+                options = people,
+                readOnly = !editState,
+                label = "Contact Person",
+                value = searchPerson,
+                onValueChange = {
+                    if (it != null) {
+                        searchPerson = it
+                        detailsState.contactPersons =
+                            (detailsState.contactPersons ?: listOf()).plus(it)
+                    }
+                },
+                onAddNewSelect = {
+                    detailsState.contactPersons =
+                        listOf(Person()).plus(elements = detailsState.contactPersons ?: listOf())
+                },
+                modifier = Modifier.width(200.dp),
+            )
+
+            var index = -1
+            detailsState.contactPersons?.map {
+                index++
+                PersonItemContent(
+                    person = it,
+                    onChange = { uP ->
+                        detailsState.contactPersons = detailsState.contactPersons?.map { oP ->
+                            if (oP.id == uP.id) uP
+                            else oP
+                        }
+                    },
+                    onDelete = {
+                        detailsState.contactPersons = detailsState.contactPersons?.minus(it)
+                    },
+                    editState = editState,
+                    brush = remember(index) {
+                        val colorIndex = index % Constants.colorsOfListItems.size
+                        Brush.linearGradient(Constants.colorsOfListItems[colorIndex])
+                    },
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             LabelledCheckBox(
                 label = "Customer",
                 readOnly = !editState,

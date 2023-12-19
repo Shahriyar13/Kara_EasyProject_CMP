@@ -108,6 +108,8 @@ internal fun CompanyContent(
         state.detail?.let { detail ->
             CompanyDetailsContent(
                 init = detail,
+                people = state.people,
+                cities = state.cities,
                 onDismiss = {
                     onEvent(CompanyStore.Intent.EditDone)
                 }

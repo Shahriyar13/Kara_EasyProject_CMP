@@ -4,6 +4,8 @@ package app.duss.easyproject.presentation.ui.company.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.data.network.NetworkConstants
 import app.duss.easyproject.domain.entity.Company
+import app.duss.easyproject.domain.entity.Person
+import app.duss.easyproject.domain.entity.RegionCity
 import app.duss.easyproject.domain.params.toDto
 import app.duss.easyproject.domain.usecase.company.CreateUseCase
 import app.duss.easyproject.domain.usecase.company.GetAllCustomersUseCase
@@ -11,6 +13,10 @@ import app.duss.easyproject.domain.usecase.company.GetAllFreightForwardersUseCas
 import app.duss.easyproject.domain.usecase.company.GetAllSuppliersUseCase
 import app.duss.easyproject.domain.usecase.company.GetAllUseCase
 import app.duss.easyproject.domain.usecase.company.UpdateUseCase
+import app.duss.easyproject.domain.usecase.person.PersonGetAllUseCase
+import app.duss.easyproject.domain.usecase.region.GetAllCitiesUseCase
+import app.duss.easyproject.domain.usecase.region.GetAllCountriesUseCase
+import app.duss.easyproject.domain.usecase.region.GetAllStatesUseCase
 import app.duss.easyproject.presentation.ui.company.CompanyFilter
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
@@ -36,6 +42,12 @@ class CompanyStoreFactory(
     private val getAllCustomersUseCase by inject<GetAllCustomersUseCase>()
     private val getAllFreightForwardersUseCase by inject<GetAllFreightForwardersUseCase>()
 
+    private val getAllPersonsUseCase by inject<PersonGetAllUseCase>()
+    private val getAllCountriesUseCase by inject<GetAllCountriesUseCase>()
+    private val getAllStatesUseCase by inject<GetAllStatesUseCase>()
+    private val getAllCitiesUseCase by inject<GetAllCitiesUseCase>()
+
+
     fun create(): CompanyStore =
         object : CompanyStore, Store<CompanyStore.Intent, CompanyStore.State, Nothing> by storeFactory.create(
             name = CompanyStore::class.simpleName,
@@ -57,6 +69,8 @@ class CompanyStoreFactory(
         data class Selected(val item: Company) : Msg()
         data object SelectDone : Msg()
         data class ListLoaded(val list: List<Company>) : Msg()
+        data class PersonsLoaded(val list: List<Person>) : Msg()
+        data class CitiesLoaded(val list: List<RegionCity>) : Msg()
         data class ListFailed(val error: String?) : Msg()
         data class SearchValueUpdated(val searchValue: String) : Msg()
         data object Refresh: Msg()
@@ -73,6 +87,8 @@ class CompanyStoreFactory(
                 searchValue = searchValue,
                 filter = filter,
             )
+            fetchPersons()
+            fetchCities()
         }
 
         override fun executeIntent(intent: CompanyStore.Intent, getState: () -> CompanyStore.State) {
@@ -166,6 +182,39 @@ class CompanyStoreFactory(
                             dispatch(Msg.ListFailed(e.message))
                         }
                 }
+            }
+        }
+
+        private var getPersonsJob: Job? = null
+        private fun fetchPersons() {
+            if (getPersonsJob?.isActive == true) return
+            getPersonsJob = scope.launch {
+                dispatch(Msg.ListLoading)
+                getAllPersonsUseCase
+                    .execute(null, -1)
+                    .onSuccess { list ->
+                        dispatch(Msg.PersonsLoaded(list))
+                    }
+                    .onFailure { e ->
+                        dispatch(Msg.ListFailed(e.message))
+                    }
+            }
+        }
+
+
+        private var getCitiesJob: Job? = null
+        private fun fetchCities() {
+            if (getCitiesJob?.isActive == true) return
+            getCitiesJob = scope.launch {
+                dispatch(Msg.ListLoading)
+                getAllCitiesUseCase
+                    .execute(null, -1)
+                    .onSuccess { list ->
+                        dispatch(Msg.CitiesLoaded(list))
+                    }
+                    .onFailure { e ->
+                        dispatch(Msg.ListFailed(e.message))
+                    }
             }
         }
 
@@ -278,6 +327,8 @@ class CompanyStoreFactory(
                 )
                 Msg.Refresh -> copy(page = 0, isLastPageLoaded = false, list = emptyList(), error = null)
                 is Msg.LastPage -> copy(page = msg.page)
+                is Msg.CitiesLoaded -> copy(cities = msg.list)
+                is Msg.PersonsLoaded -> copy(people = msg.list)
             }
     }
 }

@@ -42,7 +42,7 @@ fun TopAppBarDocumentDetails(
             },
             title = {
                 Text(
-                    text = if (showUnsavedChanges) "Unsaved Changes" else title ?: "",
+                    text = if (showUnsavedChanges) "Unsaved Changes" else if (loadingState) "wait..." else title ?: "",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold

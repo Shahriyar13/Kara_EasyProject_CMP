@@ -2,6 +2,7 @@ package app.duss.easyproject.presentation.ui.quotation.details.store
 
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.Quotation
+import app.duss.easyproject.domain.entity.SupplierEnquiry
 import app.duss.easyproject.domain.params.FileAttachmentRequest
 import app.duss.easyproject.domain.params.toDto
 import app.duss.easyproject.domain.usecase.attachment.AttachmentDeleteUseCase
@@ -114,7 +115,7 @@ internal class QuotationDetailsStoreFactory(
                             dispatch(Msg.InfoFailed(e.message))
                         }
                 } else {
-                    dispatch(Msg.InfoLoaded(Quotation(null)))//TODO
+                    dispatch(Msg.InfoLoaded(Quotation(null)))
                 }
             }
         }

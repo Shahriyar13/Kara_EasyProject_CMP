@@ -4,7 +4,7 @@ import app.duss.easyproject.domain.entity.Person
 import app.duss.easyproject.domain.repository.PersonRepository
 import app.duss.easyproject.domain.usecase.BaseCoroutinesUseCaseMultiParam
 
-class GetAllUseCase(
+class PersonGetAllUseCase(
     private val repository: PersonRepository,
 ): BaseCoroutinesUseCaseMultiParam<String?, Int, List<Person>>() {
 

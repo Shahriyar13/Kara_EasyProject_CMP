@@ -3,12 +3,16 @@ package app.duss.easyproject.presentation.ui.landing.store
 import app.duss.easyproject.core.utils.appDispatchers
 import app.duss.easyproject.domain.entity.User
 import app.duss.easyproject.domain.usecase.auth.UserLoggedInUseCase
+import app.duss.easyproject.domain.usecase.region.GetAllCitiesUseCase
+import app.duss.easyproject.domain.usecase.region.GetAllCountriesUseCase
+import app.duss.easyproject.domain.usecase.region.GetAllStatesUseCase
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -17,6 +21,9 @@ class LandingStoreFactory(
     private val storeFactory: StoreFactory,
 ) : KoinComponent {
 
+    private val getAllCountriesUseCase by inject<GetAllCountriesUseCase>()
+    private val getAllStatesUseCase by inject<GetAllStatesUseCase>()
+    private val getAllCitiesUseCase by inject<GetAllCitiesUseCase>()
     private val loggedInUserUseCase by inject<UserLoggedInUseCase>()
 
     fun create(): LandingStore =
@@ -60,6 +67,12 @@ class LandingStoreFactory(
 
             job = scope.launch {
                 dispatch(Msg.Loading)
+
+                getAllCountriesUseCase.execute(null, -1)
+                getAllStatesUseCase.execute(null, -1)
+                getAllCitiesUseCase.execute(null, -1)
+
+                joinAll()
 
                 loggedInUserUseCase
                     .execute(null)

@@ -4,6 +4,7 @@ import app.duss.easyproject.presentation.ui.ce.list.CEListComponent
 import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonComponent
 import app.duss.easyproject.presentation.ui.dashboard.DashboardComponent
 import app.duss.easyproject.presentation.ui.database.DatabaseComponent
+import app.duss.easyproject.presentation.ui.packing.list.PackingListComponent
 import app.duss.easyproject.presentation.ui.project.list.ProjectListComponent
 import app.duss.easyproject.presentation.ui.quotation.list.QuotationListComponent
 import com.arkivanov.decompose.ComponentContext
@@ -76,6 +77,19 @@ class MainComponent(
         (QuotationListComponent.Output) -> Unit,
     ) -> QuotationListComponent= { childContext, searchValue, output ->
         QuotationListComponent(
+            componentContext = childContext,
+            storeFactory = storeFactory,
+            searchValue = searchValue ?: "",
+            output = output
+        )
+    }
+
+    private val packing: (
+        ComponentContext,
+        searchValue: String?,
+        (PackingListComponent.Output) -> Unit,
+    ) -> PackingListComponent= { childContext, searchValue, output ->
+        PackingListComponent(
             componentContext = childContext,
             storeFactory = storeFactory,
             searchValue = searchValue ?: "",
@@ -222,10 +236,11 @@ class MainComponent(
                     ::onComingSoonOutput
                 )
             )
-            is Configuration.PackingConfig -> Child.ComingSoonChild(
-                comingSoon(
+            is Configuration.PackingConfig -> Child.PackingChild(
+                packing(
                     componentContext,
-                    ::onComingSoonOutput
+                    configuration.searchValue,
+                    ::onPackingOutput
                 )
             )
             is Configuration.InvoiceConfig -> Child.ComingSoonChild(
@@ -272,7 +287,7 @@ class MainComponent(
 
         data class POChild(val component: ComingSoonComponent) : Child()
 
-        data class PackingChild(val component: ComingSoonComponent) : Child()
+        data class PackingChild(val component: PackingListComponent) : Child()
 
         data class InvoiceChild(val component: ComingSoonComponent) : Child()
 
@@ -353,6 +368,7 @@ class MainComponent(
 
     private fun onProjectOutput(output: ProjectListComponent.Output) {}
     private fun onCEOutput(output: CEListComponent.Output) {}
+    private fun onPackingOutput(output: PackingListComponent.Output) {}
     private fun onQuotationOutput(output: QuotationListComponent.Output) {}
 
     private fun onDatabaseOutput(output: DatabaseComponent.Output): Unit = Unit

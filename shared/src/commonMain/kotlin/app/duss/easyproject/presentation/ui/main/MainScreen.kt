@@ -32,6 +32,7 @@ import app.duss.easyproject.presentation.ui.ce.list.CEListScreen
 import app.duss.easyproject.presentation.ui.comingsoon.ComingSoonScreen
 import app.duss.easyproject.presentation.ui.dashboard.DashboardScreen
 import app.duss.easyproject.presentation.ui.database.DatabaseScreen
+import app.duss.easyproject.presentation.ui.packing.list.PackingListScreen
 import app.duss.easyproject.presentation.ui.project.list.ProjectListScreen
 import app.duss.easyproject.presentation.ui.quotation.list.QuotationListScreen
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
@@ -196,7 +197,7 @@ internal fun MainScreen(component: MainComponent) {
                     is MainComponent.Child.PaymentChild -> ComingSoonScreen(child.component)
                     is MainComponent.Child.ProfileChild -> ComingSoonScreen(child.component)
                     is MainComponent.Child.QuotationChild -> QuotationListScreen(child.component)
-                    is MainComponent.Child.PackingChild -> ComingSoonScreen(child.component)
+                    is MainComponent.Child.PackingChild -> PackingListScreen(child.component)
                 }
             }
         }
