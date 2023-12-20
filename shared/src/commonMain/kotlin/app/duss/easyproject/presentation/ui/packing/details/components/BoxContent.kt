@@ -1,11 +1,14 @@
 package app.duss.easyproject.presentation.ui.packing.details.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,17 +42,38 @@ fun BoxContent(
             draggedElevation = 0.dp,
             disabledElevation = 0.dp,
         ),
-        modifier = modifier.requiredHeight(200.dp).fillMaxWidth()
+        modifier = modifier
+            .background(brush, shape = ShapeDefaults.Small, alpha = 1F)
+            .wrapContentHeight()
+            .fillMaxWidth(),
     ) {
+        Text(
+            text = "Box: ${itemState.code ?: itemState.id ?: "New Created"}",
+            modifier = Modifier.padding(start = 16.dp)
+        )
         BoxItemColumn(
-            modifier = Modifier.padding(50.dp),
-            item.boxItems,
-            editState,
+            modifier = Modifier.padding(16.dp),
+            list = itemState.boxItems,
+            editState = editState,
             onItemUpdate = { updatedItem ->
-
+                itemState.boxItems = itemState.boxItems.map {
+                    if (updatedItem.uniqueId == it.uniqueId) {
+                        updatedItem
+                    } else {
+                        it
+                    }
+                }
+                onChange(itemState)
             },
             onItemDelete = { deletedItem ->
-
+                itemState.boxItems = itemState.boxItems.mapNotNull {
+                    if (deletedItem.uniqueId == it.uniqueId) {
+                        null
+                    } else {
+                        it
+                    }
+                }
+                onChange(itemState)
             }
         )
     }

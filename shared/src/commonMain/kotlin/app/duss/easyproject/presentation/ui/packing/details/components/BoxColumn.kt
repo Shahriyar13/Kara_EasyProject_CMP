@@ -4,19 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.domain.entity.BoxOfItem
-import app.duss.easyproject.domain.entity.CustomerEnquiryItem
 import app.duss.easyproject.presentation.components.Constants
 import app.duss.easyproject.presentation.components.draganddrop.DragAndDropState
 import app.duss.easyproject.presentation.components.draganddrop.DropSurface
@@ -27,35 +28,49 @@ fun BoxColumn(
     modifier: Modifier = Modifier,
     list: List<BoxOfItem>,
     editState: Boolean,
-    onItemUpdate: ((CustomerEnquiryItem) -> Unit)? = null,
-    onItemDelete: ((CustomerEnquiryItem) -> Unit)? = null,
+    onItemUpdate: ((BoxOfItem) -> Unit)? = null,
+    onItemDelete: ((BoxOfItem) -> Unit)? = null,
 ) {
-    var mostNegativeBoxId = 0L
+    var listState by remember { mutableStateOf(list) }
     var index = -1
     Column(
-        modifier = modifier,
+        modifier = modifier.wrapContentHeight(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text("Packages:")
 
-        list.map { item ->
+        listState.map { item ->
             DropSurface(
-                listId = item.id ?: --mostNegativeBoxId,
+                listId = item.uniqueId,
                 modifier = Modifier.fillMaxWidth(),
             ) { isInBound, _ ->
                 BoxContent(
                     modifier = Modifier.background(
                         color = getDropSurfaceBgColor(isInBound, boardState.isDragging)
                     ).fillMaxWidth()
-                        .requiredHeight(200.dp)
+                        .wrapContentHeight()
                         .padding(8.dp),
                     editState = editState,
                     item = item,
-                    onChange = {
-//                    onItemUpdate?.invoke(it)
+                    onChange = { updated ->
+                        listState = list.map {
+                            if (it.id == updated.id) {
+                                updated
+                            } else {
+                                it
+                            }
+                        }
+                        onItemUpdate?.invoke(updated)
                     },
                     onDelete = {
-//                    onItemDelete?.invoke(item)
+                        listState = list.mapNotNull {
+                            if (it.id == item.id) {
+                                null
+                            } else {
+                                it
+                            }
+                        }
+                        onItemDelete?.invoke(item)
                     },
                     brush = remember(++index) {
                         val colorIndex = index % Constants.colorsOfListItems.size
@@ -63,30 +78,6 @@ fun BoxColumn(
                     },
                 )
             }
-        }
-        DropSurface(
-            listId = -1000L,
-            modifier = Modifier.fillMaxWidth(),
-        ) { isInBound, offset ->
-            BoxContent(
-                modifier = Modifier.background(
-                    color = getDropSurfaceBgColor(isInBound, boardState.isDragging)
-                ).fillMaxWidth()
-                    .offset(x = offset.x.dp, y = offset.y.dp)
-                    .padding(8.dp),
-                editState = editState,
-                item = BoxOfItem(),
-                onChange = {
-//                    onItemUpdate?.invoke(it)
-                },
-                onDelete = {
-//                    onItemDelete?.invoke(item)
-                },
-                brush = remember(++index) {
-                    val colorIndex = index % Constants.colorsOfListItems.size
-                    Brush.linearGradient(Constants.colorsOfListItems[colorIndex])
-                },
-            )
         }
     }
 }

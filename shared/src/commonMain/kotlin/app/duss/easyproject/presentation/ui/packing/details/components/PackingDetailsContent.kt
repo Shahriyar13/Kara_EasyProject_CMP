@@ -7,18 +7,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -47,6 +44,11 @@ internal fun PackingDetailsContent(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    val itemState by remember { mutableStateOf(state.item) }
+
+    val quotationItemsNotInBoxes by remember { mutableStateOf(itemState?.quotationItemsNotInBoxes) }
+    val boxes by remember { mutableStateOf(itemState?.boxes) }
 
     Box(contentAlignment = Alignment.TopCenter) {
 
@@ -171,30 +173,30 @@ internal fun PackingDetailsContent(
 
                         item("items") {
 
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth(),
-                            ) {
-                                Text(
-                                    "List of Packs:",
-                                    modifier
-                                        .padding(top = 26.dp, bottom = 16.dp)
-                                )
-                                if (state.inEditeMode) {
-                                    Button(
-                                        onClick = {
-                                            component.itemPickerSelected()
-                                        }
-                                    ) {
-                                        Icon(Icons.Default.List, "List")
-                                        Text("Open Item List")
-                                    }
-                                }
-                            }
+//                            Row(
+//                                horizontalArrangement = Arrangement.SpaceBetween,
+//                                modifier = Modifier.fillMaxWidth(),
+//                            ) {
+//                                Text(
+//                                    "List of Packs:",
+//                                    modifier
+//                                        .padding(top = 26.dp, bottom = 16.dp)
+//                                )
+//                                if (state.inEditeMode) {
+//                                    Button(
+//                                        onClick = {
+//                                            component.itemPickerSelected()
+//                                        }
+//                                    ) {
+//                                        Icon(Icons.Default.List, "List")
+//                                        Text("Open Item List")
+//                                    }
+//                                }
+//                            }
 
                             DragAndDropSurface(
                                 state = boardState,
-                                modifier = modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxSize(),
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -202,7 +204,7 @@ internal fun PackingDetailsContent(
                                 ) {
                                     QuotationItemColumn(
                                         modifier = Modifier.weight(1F),
-                                        list = item.findQuotationItemsNotInBoxes(),
+                                        list = quotationItemsNotInBoxes ?: listOf(),
                                         editState = state.inEditeMode,
                                         onItemUpdate = { updatedItem ->
 
@@ -215,10 +217,19 @@ internal fun PackingDetailsContent(
                                     BoxColumn(
                                         boardState = boardState,
                                         modifier = Modifier.weight(2F),
-                                        list = item.boxes,
+                                        list = boxes ?: listOf(),
                                         editState = state.inEditeMode,
                                         onItemUpdate = { updatedItem ->
-
+//                                            itemState?.boxes = itemState!!.boxes.map {
+//                                                if (updatedItem.uniqueId == it.uniqueId) {
+//                                                    updatedItem
+//                                                } else {
+//                                                    it
+//                                                }
+//                                            }
+                                            onEvent(PackingDetailsStore.Intent.EditingState(
+                                                itemState!!
+                                            ))
                                         },
                                         onItemDelete = { deletedItem ->
 

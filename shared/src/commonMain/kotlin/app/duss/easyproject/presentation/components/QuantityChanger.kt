@@ -28,8 +28,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun QuantityChanger(
+    max: Int? = null,
     quantity: Int,
-    unit: String,
+    unit: String?,
     editState: Boolean,
     onChange: (Int) -> Unit,
 ) {
@@ -43,7 +44,7 @@ fun QuantityChanger(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         IconButton(
-            enabled = editState,
+            enabled = editState && quantityState < (max ?: Int.MAX_VALUE),
             onClick = {
                 if (editState) onChange(++quantityState)
             }) {
@@ -65,7 +66,7 @@ fun QuantityChanger(
             },
         )
         BasicText(
-            text = unit,
+            text = unit ?: "Unit",
             style = TextStyle(
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,

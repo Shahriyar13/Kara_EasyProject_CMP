@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.duss.easyproject.domain.entity.BoxItem
 import app.duss.easyproject.presentation.components.BasicEditableText
+import app.duss.easyproject.presentation.components.QuantityChanger
 
 @Composable
 fun BoxItemContent(
@@ -46,7 +48,7 @@ fun BoxItemContent(
             draggedElevation = 0.dp,
             disabledElevation = 0.dp,
         ),
-        modifier = modifier
+        modifier = modifier.width(200.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -71,22 +73,16 @@ fun BoxItemContent(
                     singleLine = true,
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    BasicEditableText(
-                        label = "Type",
-                        readOnly = true,
-                        value = itemState.quotationItem.customerEnquiryItem.item.type ?: "",
-                        onValueChange = {
-                            itemState.quotationItem.customerEnquiryItem.item.type = it
-                            onChange(itemState)
-                        },
-                        singleLine = true,
-                        modifier = Modifier.weight(1F)
-                    )
-                }
+                QuantityChanger(
+                    max = itemState.quotationItem.quantity,
+                    quantity = itemState.quantity,
+                    editState = editState,
+                    unit = itemState.quotationItem.customerEnquiryItem.item.unit,
+                    onChange = {
+                        itemState.quantity = it
+                        onChange(itemState)
+                    }
+                )
             }
         }
     }

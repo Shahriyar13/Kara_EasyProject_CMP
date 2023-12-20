@@ -28,7 +28,7 @@ fun QuotationItemColumn(
         Text("Quotation Items:")
         list.map { item ->
             index ++
-            DragSurface(modifier = Modifier, cardId = item.id!!, cardListId = 0) {
+            DragSurface(modifier = Modifier, cardId = item.id!!, cardListId = -1) {
                 QuotationItemContent(
                     item = item,
                     brush = remember(index) {

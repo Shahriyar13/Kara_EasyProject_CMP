@@ -201,7 +201,10 @@ internal class PackingDetailsStoreFactory(
             when (msg) {
                 is Msg.InfoLoading -> copy(isLoading = true)
                 is Msg.InfoLoaded -> copy(
-                    item = msg.item,
+                    item = msg.item.also {
+                        it.quotationItemsNotInBoxes = it.findQuotationItemsNotInBoxes()
+                        it.boxes = it.boxes + BoxOfItem()
+                    },
                     inEditeMode = (msg.item.id ?: -1) < 0,
                     isLoading = false
                 )
@@ -237,11 +240,11 @@ internal class PackingDetailsStoreFactory(
                 Msg.CheckChanges -> copy(isChanged = true)
                 is Msg.MoveQuotationItemToBox -> {
                     val quotationItem = item!!.quotationItems.first { it.id == msg.quotationItemId }
-                    val boxes = if (msg.newBoxId == -1000L) {
-                        item.boxes.plus(BoxOfItem(boxItems = listOf(BoxItem(quotationItem = quotationItem, quantity = quotationItem.quantity))))
+                    var boxes = if (msg.newBoxId == -1000L) {
+                        item.boxes + BoxOfItem(boxItems = listOf(BoxItem(quotationItem = quotationItem, quantity = quotationItem.quantity)))
                     } else {
                         item.boxes.map { box ->
-                            if (box.id == msg.newBoxId) {
+                            if (box.uniqueId == msg.newBoxId) {
                                 box.copy(
                                     boxItems = box.boxItems.plus(BoxItem(quotationItem = quotationItem, quantity = quotationItem.quantity))
                                 )
@@ -250,7 +253,13 @@ internal class PackingDetailsStoreFactory(
                             }
                         }
                     }
-                    copy(item = item.copy(boxes = boxes))
+                    if (!boxes.lastOrNull()?.boxItems.isNullOrEmpty()) {
+                        boxes = boxes + BoxOfItem()
+                    }
+                    val newItem = item
+                    newItem.boxes = boxes
+                    newItem.quotationItemsNotInBoxes = newItem.findQuotationItemsNotInBoxes()
+                    copy(item = newItem)
                 }
             }
     }

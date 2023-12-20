@@ -50,8 +50,8 @@ fun QuotationItemContent(
                 .padding(8.dp),
         ) {
             Text(
-                text = "Name: ${itemState.customerEnquiryItem.item.name}",
-                fontSize = 18.sp
+                text = itemState.customerEnquiryItem.item.name,
+                fontSize = 16.sp
             )
 
             Text(

@@ -24,6 +24,7 @@ data class Packing(
     var containers: List<Container> = listOf(),
     var fileAttachments: List<FileAttachment> = listOf(),
     var project: Project? = null,
+    var quotationItemsNotInBoxes: List<QuotationItem> = listOf(),
     override val code: String? = null,
     override val codeExtension: String? = null,
     override val time: Long? = null,
