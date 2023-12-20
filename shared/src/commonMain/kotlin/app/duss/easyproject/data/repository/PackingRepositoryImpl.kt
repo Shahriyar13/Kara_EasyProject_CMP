@@ -19,6 +19,67 @@ class PackingRepositoryImpl : PackingRepository, KoinComponent {
             e.printStackTrace()
             Result.failure(e)
         }
+//
+//        val qItems = listOf(
+//            QuotationItem(
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        name = "mock item 1"
+//                    )
+//                ),
+//                price = 23.00,
+//                quantity = 100
+//            ),
+//            QuotationItem(
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        name = "mock item 2"
+//                    )
+//                ),
+//                price = 20.00,
+//                quantity = 50
+//            ),
+//            QuotationItem(
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        name = "mock item 3"
+//                    )
+//                ),
+//                price = 200.00,
+//                quantity = 20
+//            ),
+//            QuotationItem(
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        name = "mock item 4"
+//                    )
+//                ),
+//                price = 250.00,
+//                quantity = 20
+//            )
+//        )
+//        val mockBoxes = listOf(
+//            BoxOfItem(
+//                boxItems = listOf(
+//                    BoxItem(
+//                        quotationItem = qItems[0],
+//                        quantity = 50,
+//                    ),
+//                    BoxItem(
+//                        quotationItem = qItems[1],
+//                        quantity = 50,
+//                    )
+//                )
+//            )
+//        )
+//        return Result.success(listOf(
+//            Packing(
+//                id = 1,
+//                quotationItems = qItems,
+//                boxes = mockBoxes,
+//                containers = listOf()
+//            ),
+//        ))
     }
 
     override suspend fun getAllByProjectId(
@@ -55,6 +116,89 @@ class PackingRepositoryImpl : PackingRepository, KoinComponent {
         } catch (e: Exception) {
             Result.failure(e)
         }
+
+//        val qItems = listOf(
+//            QuotationItem(
+//                id = 1,
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        id = 1,
+//                        name = "mock item 1"
+//                    )
+//                ),
+//                price = 23.00,
+//                quantity = 100
+//            ),
+//            QuotationItem(
+//                id = 2,
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        id = 2,
+//                        name = "mock item 2"
+//                    )
+//                ),
+//                price = 20.00,
+//                quantity = 50
+//            ),
+//            QuotationItem(
+//                id = 3,
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        id = 3,
+//                        name = "mock item 3"
+//                    )
+//                ),
+//                price = 200.00,
+//                quantity = 20
+//            ),
+//            QuotationItem(
+//                id = 4,
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        id = 4,
+//                        name = "mock item 4"
+//                    )
+//                ),
+//                price = 250.00,
+//                quantity = 20
+//            ),
+//            QuotationItem(
+//                id = 5,
+//                customerEnquiryItem = CustomerEnquiryItem(
+//                    Item(
+//                        id = 5,
+//                        name = "mock item 5"
+//                    )
+//                ),
+//                price = 250.00,
+//                quantity = 50
+//            ),
+//        )
+//        val mockBoxes = listOf(
+//            BoxOfItem(
+//                id = 1,
+//                boxItems = listOf(
+//                    BoxItem(
+//                        id = 1,
+//                        quotationItem = qItems[3],
+//                        quantity = 20,
+//                    ),
+//                    BoxItem(
+//                        id = 2,
+//                        quotationItem = qItems[4],
+//                        quantity = 50,
+//                    )
+//                )
+//            )
+//        )
+//        return Result.success(
+//            Packing(
+//                id = 1,
+//                quotationItems = qItems,
+//                boxes = mockBoxes,
+//                containers = listOf()
+//            ),
+//        )
     }
 
     override suspend fun create(param: PackingRequest): Result<Packing> {

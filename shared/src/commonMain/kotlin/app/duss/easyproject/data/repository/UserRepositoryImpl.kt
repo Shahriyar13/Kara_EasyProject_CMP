@@ -40,6 +40,13 @@ class UserRepositoryImpl: UserRepository, KoinComponent {
         } catch (e: Exception) {
             Result.failure(e)
         }
+
+//        return Result.success(
+//            User(
+//                username = "Admin",
+//                id = 1,
+//            )
+//        )
     }
 
     override suspend fun getToken(): String? {
